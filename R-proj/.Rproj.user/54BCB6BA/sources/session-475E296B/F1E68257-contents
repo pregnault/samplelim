@@ -1,0 +1,113 @@
+library(tidyverse)
+library(limSolve)
+library(LIM)
+library("SampleLIM")
+library("profvis")
+library(GGally)
+
+
+
+
+A=matrix(c(-1,0,0,-1,0.2,1,0.5,-1),ncol = 2,byrow = T)
+b=c(-0.5,-3,20,30)
+tol=sqrt(.Machine$double.eps)
+# P<-Hpolytope(A=A,b=b)
+# inner_ball(P)
+# res<-as_tibble(t(sample_points(P, n=10,random_walk = list(walk = "BiW", nburns = 0, walk_length = 1))))
+# colnames(res)<-c("x","y")
+
+
+mirror <- function(q1,g,h,jmp)   {
+  
+  ##if (any((g%*%q1)<h)) stop("starting point of mirroring is not in feasible space")
+  n=ncol(g)
+  q2 <- rnorm(n,q1,jmp)
+  rebound<-matrix(q1,ncol = 2)
+  if (!is.null(g))    {
+    
+    residual <- g%*%q2-h
+    q10 <- q1
+    
+    while (any(residual<0))  {              #mirror
+      epsilon <- q2-q10                     #vector from q1 to q2: our considered light-ray that will be mirrored at the boundaries of the space
+      w <- which(residual<0)                #which mirrors are hit?
+      alfa <- ((h-g%*%q10)/g%*%epsilon)[w]  #alfa: at which point does the light-ray hit the mirrors? g*(q1+alfa*epsilon)-h=0
+      whichminalfa <- which.min(alfa)
+      j <- w[whichminalfa]                  #which smallest element of alfa: which mirror is hit first?
+      d <- -residual[j]/sum(g[j,]^2)        #add to q2 a vector d*Z[j,] which is oriented perpendicular to the plane Z[j,]%*%x+p; the result is in the plane.
+      q2 <- q2+2*d*g[j,]                    #mirrored point
+      residual <- g%*%q2-h
+      q10 <- q10+alfa[whichminalfa]*epsilon #point of reflection
+      rebound<-rbind(rebound,t(q10))
+    }
+  }
+  return(rbind(rebound,t(q2)))
+}
+
+
+BiW <- function(q1,g,h,tau,jmp)   {
+  
+  n=ncol(g)
+  k=nrow(g)
+  q2<-NULL
+  if (!is.null(g))    {
+    
+    while(is.null(q2)){
+      # Choose a direction uniformly on the unit sphere
+      v<-as_vector(rnorm(n))
+      v<-v/norm(v,type="2")
+      # Compute the length of the trajectory
+      L<--tau*log(runif(1))
+      rebound<-matrix(q1,ncol = 2)
+      q10 <- q1
+      nb_reb<-0
+      while (nb_reb<10*n)  {   
+        t=c()
+        #print(q10)
+        # for (j in 1:k){ # Compute t such that the points x+tl is on a border
+        #   t<-append(t,(h[j]-t(g)[,j]%*%q10)/(t(g)[,j]%*%v))
+        #   #print((h[j]-t(g)[,j]%*%q1)/(t(g)[,j]%*%v))
+        # } 
+        t<-((h-g%*%q10)/g%*%v)
+        min_t<-min(t[which(t>tol)])
+        min_t_index<-which(t==min_t)
+        if (min_t>L | min_t==Inf){  #Test if the closest border is met, if not the sampled point is inside the polytope
+          q2<-q10+L*v
+          break}
+        q10<-q10+v*min_t
+        rebound<-rbind(rebound,t(q10))
+        L<-L-min_t #update of the length of the trajectory
+        v<-as.vector(v-2*(t(v)%*%g[min_t_index,])%*%g[min_t_index,])
+        nb_reb=nb_reb+1
+      }
+    }
+    
+  }
+  return(rbind(rebound,t(q2)))
+}
+
+rangesP<-xranges(G=-A,H=-b)
+diamP<-as_vector(rangesP[,2]-rangesP[,1])
+dim<-ncol(A)
+P=Hpolytope(A=A,b=b)
+
+x0<-as_vector(inner_ball(P)[1:dim])
+distr<-matrix(c(0,0,0,0),ncol = 4)
+tau=mean(diamP)
+for (i in 1:50000){
+  q2 <- rnorm(4,0,mean(diamP))
+  distr<-rbind(distr,q2)
+}
+ggpairs(as_tibble(distr))
+
+res<-t(sample_points(P,1000,random_walk = list("walk"="mirror","L"=1)))
+plot(res)
+# res1=as_tibble(x1)
+# res2=as_tibble(x2)
+ggplot()+
+  geom_point(data=res,aes(x=V1,y=V2),size=0.1)+
+  geom_segment(aes(x=0.5,y=0,xend=0.5,yend=25))+ # x=0.5
+  geom_segment(aes(x=0,y=20,xend=100,yend=0))+ #y=20-0.2x
+  geom_segment(aes(x=0,y=3,xend=120,yend=3))+ #y=3
+  geom_segment(aes(x=60,y=0,xend=90,yend=15)) #y=0.5x-30
+

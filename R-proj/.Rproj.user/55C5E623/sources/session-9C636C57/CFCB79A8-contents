@@ -1,0 +1,129 @@
+library("LIM")
+library("limSolve")
+library("volesti")
+library("quadprog")
+library("lpSolve")
+library("MASS")
+library("GGally")
+library("profvis")
+library("tidyverse")
+
+
+Biw_Trophic <- function(lim, iter=3000, burn=1000,jmp=1, ...){
+  
+  tol=sqrt(.Machine$double.eps) #the smallest positive floating-point number x such that 1 + x != 1 on the current machine
+  ## 0. Setup problem
+  
+  Ncomp  <- lim$NComponents
+  Nx     <- lim$NUnknowns
+  
+  #Equalities A*X=B
+  A    <- lim$A[]
+  B    <- lim$B[]
+ 
+  # Inequalities G*X>=H
+  G <- lim$G
+  H <- lim$H
+  
+  
+  ## find a particular solution x0
+
+  l <- lsei(A=NULL,B=NULL,E=A,F=B,G=G,H=H)
+  if (l$residualNorm>1e-6)
+    stop("no particular solution found;incompatible constraints")
+  else
+    x0 <- l$X
+  lx <- length(x0)
+  
+  
+  Z <- Null(t(A)); Z[abs(Z)<tol] <- 0  #x=x0+Zq ; AZ=0
+  
+  k <- ncol(Z)
+  
+  #Projection de G et H sur l'espace réduit
+  g <- G%*%Z
+  h <- H-G%*%x0                                            
+  g[abs(g)<tol] <- 0
+  h[abs(h)<tol] <- 0
+  h<-as.numeric(h)
+  
+  # Création du polytope
+  
+  P <- Hpolytope(A = -g, b = -h)
+  res_volesti<-t(sample_points(P, n=iter,random_walk = list(walk = "BiW", nburns = burn, walk_length = jmp)))
+  res<-matrix(nrow=iter,ncol=lx,dimnames=list(NULL,colnames(A)))
+  dim(Z)
+  dim(res_volesti)
+  for(i in 1:iter){
+    res[i,]<-x0+Z%*%as_vector(res_volesti[i,])
+  }
+  
+  
+  colnames(res) <- lim$Unknowns
+  
+  return(list("innerball"=inner_ball(P),"sample"=res))
+  
+}
+
+filename="channel_d1.txt"
+web.lim<- Setup(filename)
+# profvis({
+# test<-as_tibble(Biw_Trophic(web.lim,iter=5000,burn=1000))
+# #test2<-Xsample(web.lim,iter=500000,burninlength=100000)
+# })
+# ggpairs(test,columns=8:10, lower=list(continuous=wrap("points",alpha=0.3,size=0.1),combo=wrap("dot",alpha=0.4,size=0.2)),title =paste(filename,"Volesti"))
+# Exp_ranges<-matrix(nrow=ncol(test),ncol=2,dimnames=list(colnames(test),c("min","max")))
+# for (i in 1:ncol(test)){
+#   Exp_ranges[i,]=range(test[,i])
+#   
+# }
+# Real_ranges<-as_tibble(Xranges(web.lim),rownames=NA)
+
+#Sample par volesti
+temp_n=tibble(n=as.integer(), t=as.double())
+for (n1 in c(1:5)){
+  for (n2 in c(1,5)){
+    ne<-5*10**5
+    start_time <- Sys.time()
+    res_volesti<-as_tibble(Biw_Trophic(web.lim,iter=ne,burn=0))
+    end_time <- Sys.time()
+    vt=as.double(end_time - start_time)
+    temp_n<-add_row(temp_n,tibble_row(n=ne,t=vt))
+  }}
+
+plot(temp_n)
+temp_n<-temp_n[-c(10,11),]
+start_time <- Sys.time()
+res_volesti<-Biw_Trophic(web.lim,iter=500000,burn=5000,jmp=1)
+sample=as_tibble(res_volesti$sample)
+ball=res_volesti$innerball
+end_time <- Sys.time()
+vt=end_time - start_time
+as.double(vt)
+
+
+#Sample par xsample 
+# /!\ Temps de calcul très long sur DeclarationFileBOWF.txt
+start_time <- Sys.time()
+res_xsample<-as_tibble(Xsample(web.lim,iter=5000,burninlength=1000,jmp=50))
+end_time <- Sys.time()
+vt=end_time - start_time
+vt
+
+temp_n2=tibble(n=as.integer(), t=as.double())
+for (n1 in c(1:2)){
+  for (n2 in c(1,5)){
+    ne<-n2*10**n1
+    start_time <- Sys.time()
+    res_xsample<-as_tibble(Xsample(web.lim,iter=ne,burninlength=0))
+    end_time <- Sys.time()
+    vt=as.double(end_time - start_time)
+    temp_n2<-add_row(temp_n,tibble_row(n=ne,t=vt))
+  }}
+
+
+# Visualisation des données
+ggpairs(sample,columns=1:7, lower=list(continuous=wrap("points",alpha=0.3,size=0.1),combo=wrap("dot",alpha=0.4,size=0.2)),title =paste(filename,"Volesti"))
+X11()
+ggpairs(res_xsample,columns=1:7, lower=list(continuous=wrap("points",alpha=0.3,size=0.1),combo=wrap("dot",alpha=0.4,size=0.2)),title =paste(filename,"Xsample"))
+
