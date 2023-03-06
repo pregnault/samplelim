@@ -9,6 +9,7 @@
 
 #include <chrono>
 #include <boost/random.hpp>
+#include <boost/function.hpp>
 #include <vector>
 
 /////////////////// Random numbers generator
@@ -60,18 +61,24 @@ struct BoostRandomNumberGenerator<RNGType, NT>
         return _ndist(_rng);
     }
 
-  std::vector<NT> sample_mndists()
-  {
-    std::vector<NT> sample;
-    for(const auto& dist : _mndists)
-      sample.push_back(dist(_rng));
-    return sample;
-  }
+    std::vector<NT> sample_mndists()
+    {
+      std::vector<NT> sample;
+      for(auto& dist : _mndists)
+        sample.push_back(dist(_rng));
+      return sample;
+    }
 
+    void set_variances(int d, std::vector<NT> variances)
+    {
+      for (int i=0; i<d; i++)
+        _mndists[i]=boost::random::normal_distribution<NT>(0,variances[i]);
+    }
 
   
-    void set_seed(unsigned rng_seed){
-        _rng.seed(rng_seed);
+    void set_seed(unsigned rng_seed)
+    {
+      _rng.seed(rng_seed);
     }
 
 private :
@@ -123,13 +130,18 @@ struct BoostRandomNumberGenerator<RNGType, NT, Seed>
         return _ndist(_rng);
     }
 
-  std::vector<NT> sample_mndist()
-  {
-    std::vector<NT> sample;
-    for(const auto& dist : _mndists)
-      sample.push_back(dist(_rng));
-    return sample;
-  }
+    std::vector<NT> sample_mndist()
+    {
+      std::vector<NT> sample;
+      for(auto& dist : _mndists)
+        sample.push_back(dist(_rng));
+      return sample;
+    }
+    void set_variances(int d, std::vector<NT> variances)
+    {
+      for (int i=0; i<d; i++)
+        _mndists[i]=boost::random::normal_distribution<NT>(0,variances[i]);
+    }
 
     void set_seed(unsigned rng_seed){
         _rng.seed(rng_seed);
@@ -141,6 +153,7 @@ private :
     boost::random::uniform_int_distribution<> _uidist;
     boost::random::normal_distribution<NT> _ndist;
     std::vector<boost::random::normal_distribution<NT>> _mndists;
+    
 };
 
 #endif // GENERATORS_BOOST_RANDOM_NUMBER_GENERATOR_HPP
