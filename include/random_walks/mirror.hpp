@@ -136,8 +136,7 @@ struct Walk
             _v = GetDirection<Point>::apply(n, rng); */
             std::tie(T, _v)=GetLengthDirection_Mirror<NT, Point>::apply(n, rng);
             Point p0 = _p;
-            int it = 0;
-            while (it < 500*n)
+            while (T>0)
             {
                 auto pbpair = P.line_positive_intersect(_p, _v, _lambdas,
                                                         _Av, _lambda_prev);
@@ -150,10 +149,6 @@ struct Walk
                 _p += (_lambda_prev * _v);
                 T -= _lambda_prev;
                 P.compute_reflection(_v, _p, pbpair.second);
-                it++;
-            }
-            if (it == 50*n){
-                _p = p0;
             }
         }
         p = _p;
@@ -202,7 +197,7 @@ private :
         T -= _lambda_prev;
         P.compute_reflection(_v, _p, pbpair.second);
 
-        while (it <= 500*n) // change the limit from 50n to 500n
+        while (T>0) // change the limit from 50n to 500n
         {
             std::pair<NT, int> pbpair
                     = P.line_positive_intersect(_p, _v, _lambdas, _Av, _lambda_prev);
@@ -210,16 +205,11 @@ private :
                 _p += (T * _v);
                 _lambda_prev = T;
                 break;
-            }else if (it == 50*n) {
-                _lambda_prev = rng.sample_urdist() * pbpair.first;
-                _p += (_lambda_prev * _v);
-                break;
             }
             _lambda_prev = dl * pbpair.first;
             _p += (_lambda_prev * _v);
             T -= _lambda_prev;
             P.compute_reflection(_v, _p, pbpair.second);
-            it++;
         }
         //if (it == 30*n) _p = p0;
 
