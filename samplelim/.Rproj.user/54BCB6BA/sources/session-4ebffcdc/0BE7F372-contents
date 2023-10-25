@@ -1,0 +1,63 @@
+volesti_rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, W=1, iter=3000, jmp=NULL, x0=NULL){
+  
+  automatedjump <- function(G,H,scale=10)   {
+    ranges<-poly_ranges(G=G,H=H)[,3]
+    return(ranges/scale)
+    
+  }
+  
+  
+  ## conversions vectors to matrices and checks
+  if (is.data.frame(A)) A <- as.matrix(A)
+  if (is.data.frame(G)) G <- as.matrix(G)
+  if (is.vector(A)) A <- t(A)
+  if (is.vector(G)) G <- t(G)
+  
+  if(is.null(G)){
+    stop("G is null, the polytope is not defined")
+  }
+  
+  ## full dimensionnal polytope
+  
+  if(is.null(A)){
+    x0<-0
+    Z<-diag(ncol(G))
+    g=G
+    h=as.numeric(H)
+  }else{
+    full_pol <-full_dim_poly(A,B,G,H)
+    x0<-full_pol$x0
+    Z<-full_pol$Z
+    g=full_pol$G
+    h=as.numeric(full_pol$H)
+    
+  }
+  
+  P <- Hpolytope(A = -g, b = -h)
+  #exploration
+  
+if (is.null(jmp)) {
+      random_walk <- list("walk"="BiW")
+    }else{
+      random_walk <- list("walk"="BiW",L=jmp)
+    }
+
+  res_redspace<-as.matrix(volesti::sample_points(P,n=W*iter,random_walk = random_walk))
+  
+  res<-x0+Z%*%res_redspace
+  x<-t(res)
+  x<-x[c(1:iter)*W,]
+  
+  
+  xnames <- colnames(A)
+  if (is.null(xnames)) xnames <- colnames(G)
+  colnames (x) <- xnames
+  return(x)
+  
+}
+
+
+volesti_rlim<- function(lim, W=1, iter=3000, jmp=NULL,
+                tol=sqrt(.Machine$double.eps), x0=NULL){
+  
+  return(volesti_rpol(A=lim$A,B=lim$B,G=lim$G,H=lim$H, W=W, iter=iter, jmp=jmp, x0=x0))   }

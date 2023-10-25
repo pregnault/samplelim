@@ -59,7 +59,7 @@ struct GetLengthDirection_Mirror
 
 
 
-// Billiard walk for uniform distribution
+// Mirror walk for uniform distribution
 
 struct Mirror
 {
