@@ -7,15 +7,8 @@
 #ifndef RANDOM_WALKS_RANDOM_WALKS_HPP
 #define RANDOM_WALKS_RANDOM_WALKS_HPP
 
-#include "random_walks/boundary_cdhr_walk.hpp"
-#include "random_walks/boundary_rdhr_walk.hpp"
-#include "random_walks/gaussian_ball_walk.hpp"
-#include "random_walks/gaussian_cdhr_walk.hpp"
-#include "random_walks/gaussian_rdhr_walk.hpp"
-#include "random_walks/uniform_ball_walk.hpp"
+
 #include "random_walks/uniform_billiard_walk.hpp"
-#include "random_walks/uniform_cdhr_walk.hpp"
-#include "random_walks/uniform_rdhr_walk.hpp"
 #include "random_walks/mirror.hpp"
 
 #endif // RANDOM_WALKS_RANDOM_WALKS_HPP

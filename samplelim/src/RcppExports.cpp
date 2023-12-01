@@ -11,18 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// direct_sampling
-Rcpp::NumericMatrix direct_sampling(Rcpp::List body, int n);
-RcppExport SEXP _samplelim_direct_sampling(SEXP bodySEXP, SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type body(bodySEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(direct_sampling(body, n));
-    return rcpp_result_gen;
-END_RCPP
-}
 // inner_ball
 Rcpp::NumericVector inner_ball(Rcpp::Reference P);
 RcppExport SEXP _samplelim_inner_ball(SEXP PSEXP) {
@@ -35,24 +23,22 @@ BEGIN_RCPP
 END_RCPP
 }
 // sample_points
-Rcpp::NumericMatrix sample_points(Rcpp::Reference P, int n, Rcpp::Nullable<Rcpp::List> random_walk, Rcpp::Nullable<Rcpp::List> distribution);
-RcppExport SEXP _samplelim_sample_points(SEXP PSEXP, SEXP nSEXP, SEXP random_walkSEXP, SEXP distributionSEXP) {
+Rcpp::NumericMatrix sample_points(Rcpp::Reference P, int n, Rcpp::Nullable<Rcpp::List> random_walk);
+RcppExport SEXP _samplelim_sample_points(SEXP PSEXP, SEXP nSEXP, SEXP random_walkSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::Reference >::type P(PSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::List> >::type random_walk(random_walkSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::List> >::type distribution(distributionSEXP);
-    rcpp_result_gen = Rcpp::wrap(sample_points(P, n, random_walk, distribution));
+    rcpp_result_gen = Rcpp::wrap(sample_points(P, n, random_walk));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_samplelim_direct_sampling", (DL_FUNC) &_samplelim_direct_sampling, 2},
     {"_samplelim_inner_ball", (DL_FUNC) &_samplelim_inner_ball, 1},
-    {"_samplelim_sample_points", (DL_FUNC) &_samplelim_sample_points, 4},
+    {"_samplelim_sample_points", (DL_FUNC) &_samplelim_sample_points, 3},
     {NULL, NULL, 0}
 };
 

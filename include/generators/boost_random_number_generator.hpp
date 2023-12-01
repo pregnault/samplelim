@@ -9,7 +9,7 @@
 
 #include <chrono>
 #include <boost/random.hpp>
-#include <boost/function.hpp>
+//#include <boost/function.hpp>
 #include <vector>
 
 /////////////////// Random numbers generator
