@@ -2,7 +2,7 @@
 rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, walk_length=NULL, nburns=NULL, iter=3000, type="mirror", jmp=NULL, starting_point=NULL,seed=NULL){
   
   automatedjump <- function(G,H,scale=10)   {
-    ranges<-poly_ranges(G=G,H=H)[,3]
+    ranges<-pol.ranges(G=G,H=H)[,3]
     return(ranges/scale)
     
   }
@@ -26,7 +26,7 @@ rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, walk_length=NULL, nburns=NULL, ite
     g=G
     h=as.numeric(H)
   }else{
-    full_pol <-full_dim_poly(A,B,G,H)
+    full_pol <-redpol(A,B,G,H)
     x0<-full_pol$x0
     Z<-full_pol$Z
     g=full_pol$G

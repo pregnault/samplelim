@@ -1,7 +1,7 @@
 
 #' @importFrom Rglpk Rglpk_solve_LP
 
-poly_ranges <- function(A=NULL,B=NULL,G,H)   {
+pol.ranges <- function(A=NULL,B=NULL,G,H)   {
 
   if (is.data.frame(A)) A <- as.matrix(A)
   if (is.data.frame(G)) G <- as.matrix(G)
@@ -52,7 +52,7 @@ poly_ranges <- function(A=NULL,B=NULL,G,H)   {
 }
 
 
-lim_ranges<- function(lim){
-  return(poly_ranges(A=lim$A,B=lim$B,G=lim$G,H=lim$H))
+lim.ranges<- function(lim){
+  return(pol.ranges(A=lim$A,B=lim$B,G=lim$G,H=lim$H))
 }
 

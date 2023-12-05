@@ -3,7 +3,7 @@
 #' @importFrom MASS Null
 
 
-full_dim_poly <-function(A,B,G,H,test=TRUE){
+redpol <-function(A,B,G,H,test=TRUE){
   tol=sqrt(.Machine$double.eps) #the smallest positive floating-point number x such that 1 + x != 1 on the current machine
   ## 0. Setup problem
   
@@ -48,11 +48,11 @@ full_dim_poly <-function(A,B,G,H,test=TRUE){
   
 }
 
-lim_full_dim_poly<-function(lim,test=TRUE){
-  return(full_dim_poly(A=lim$A,B=lim$B,G=lim$G,H=lim$H,test=test))
+lim.redpol<-function(lim,test=TRUE){
+  return(redpol(A=lim$A,B=lim$B,G=lim$G,H=lim$H,test=test))
 }
 
-transform_sample_from_redspace <- function(sample,x0,Z){
+red2original<- function(sample,x0,Z){
   xnames=colnames(sample)
   res<-x0+Z%*%t(as.matrix(sample))
   x<-t(res)
