@@ -1,13 +1,23 @@
-Package: samplelim
 Type: Package
-Title: Sampling solutions of a linear inverse problem
-Version: 1.0
-Date: 2023-09-11
-Author: Your Name
-Maintainer: Your Name <your@email.com>
-Description: One paragraph description of what the package
-      does as one or more full sentences.
-License: GPL (>= 2)
-Imports: methods,stats, lsei, MASS, Rglpk
-Depends: Rcpp (>= 1.0.10)
-LinkingTo: Rcpp, RcppEigen, BH
+Package: samplelim
+Title: MCMC sampling algorithms for linear inverse models
+Version: 0.1
+Date: 2023-11-30
+Authors@R: c(
+    person("Théo", "Grente", , "theo.grente@gmail.com", role = c("aut", "cre", "com")),
+    person("Philippe", "Regnault", , "philipperegnault@hotmail.com", role = "aut",
+           comment = c(ORCID = "0000-0002-7086-9030")),
+    person("Matthieu", "Dien", , "matthieu.dien@unicaen.fr", role = "aut"),
+    person("Quentin", "Noguès", role = "dtc")
+  )
+Description: The package samplelim provides performant implementations (C++ encoded) of several Monte Carlo Markov Chains (MCMC) methods for uniformly sampling hig-dimensional polytopes. It is particularly convenient for solving linear inverse models (LIM) in metabolic (trophic, biochemical or urban) networks. Particularly, some support functions inspired by the package limsolve are designed to ease its use by ecological practitioners. 
+License: LGPL (>= 3)
+Copyright: file inst/COPYRIGHTS
+Encoding: UTF-8
+NeedsCompilation: yes
+Depends:
+    Rcpp (>= 1.0.10)
+Imports: lsei, MASS, methods, Rglpk, stats
+LinkingTo: BH, Rcpp, RcppEigen
+URL: https://github.com/GrenteTheo/samplelim.git
+BugReports: https://github.com/GrenteTheo/samplelim/issues
