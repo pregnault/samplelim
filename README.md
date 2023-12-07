@@ -9,23 +9,23 @@ developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repo
 v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/regexplain)](https://cran.r-project.org/package=samplelim)
 
-The package `{samplelim}` provides performant implementations (C++
-encoded) of several Monte Carlo Markov Chains (MCMC) methods for
-uniformly sampling hig-dimensional polytopes. It is particularly
-convenient for solving linear inverse models (LIM) in metabolic
-(trophic, biochemical or urban) networks. Particularly, some support
-functions inspired by the package limsolve are designed to ease its use
-by ecological practitioners.
+The package `{samplelim}` for the R statistical software provides
+performant implementations (C++ encoded) of Monte Carlo Markov Chains
+(MCMC) algorithms for uniformly sampling hig-dimensional polytopes. It
+is particularly convenient for solving linear inverse models (LIM) in
+metabolic (trophic, biochemical or urban) networks. Particularly, some
+support functions inspired by the package limsolve are designed to ease
+its use by ecological practitioners.
 
 ## Objective
 
 `{samplelim}` aims at providing performant implementations of two MCMC
 algorithms for sampling high-dimensional polytopes; namely, the Mirror
-Walk (MiW) introduced by ….. and the Billard Walk (BiW) introduced by
-Chalkis *et al.* (2014). It also provides support functions to ease its
-use by ecologists practitioners interested in solving LIM for trophic
-networks. Hence, `{samplelim}` can be viewed as an updated, extended and
-low-level-encoded version of the R package
+Walk (MiW) introduced by Van Oevelen *et al.* (2010) and the Billard
+Walk (BiW) introduced by Chalkis *et al.* (2014). It also provides
+support functions to ease its use by ecologists practitioners interested
+in solving LIM for trophic networks. Hence, `{samplelim}` can be viewed
+as an updated, extended and low-level-encoded version of the R package
 [`{limsolve}`](https://cran.r-project.org/web/packages/limSolve/index.html).
 
 `{samplelim}` is built upon the C++ library
@@ -74,9 +74,11 @@ ADD 2 or 3 EXAMPLES.
 A complete user guide has been included in the package, in the form of a
 vignette.
 
-## Additional documentation and ressources
-
-ADD REFERENCE TO OUR PAPER AND OTHERS.
+A comparison study, including computation time and sampling quality,
+between the implementations of the MiW of `{samplelim}`, the BiW of
+`{volesti}` (1.1.2-6) and the Coordinate Hit-and-Run with Rounding
+(CHRR) of the MatLab library `{COBRA}`, has been performed; see Girardin
+*et al.* (2023).
 
 ## Credits
 
@@ -87,7 +89,8 @@ Théo GRENTE.
 The R packaging has been performed by Théo GRENTE and Philippe REGNAULT.
 
 The Declaration Files in `inst/extdata` have been produced by Quentin
-NOGUÈS.
+NOGUÈS; see Noguès *at al.* (2020) for details on the ecological network
+they rely on.
 
 We refer to the [`credits.md`
 file](https://github.com/GeomScale/volesti/blob/v1.1.1/doc/credits.md)
@@ -102,3 +105,28 @@ General Public License](LICENSE.md) as published by Free Software
 Foundation, either version 3 of the License, or (at your option) any
 later version. It is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY.
+
+## References
+
+V. Girardin, T. Grente, N. Niquil and P. Regnault, *Comparing and
+updating R packages of MCMC Algorithms for Linear Inverse Modeling of
+Metabolic Networks*, hal: (2023)
+
+Q. Noguès, A. Raoux, E. Araignous, T. Hattab, B. Leroy, F. Ben Rais
+Lasram, F. Le Loc’h, J. Dauvin and N. Niquil, *Cumulative effects of
+marine renewable energy and climate change on ecosystem properties:
+Sensitivity of ecological network analysis*, Ecological Indicators
+**121**, 107128 (2020)
+
+L. Cales, A. Chalkis, I.Z. Emiris and V. Fisikopoulos, *Practical volume
+computation of structured convex bodies, and an application to modeling
+portfolio dependencies and financial crises*, Proc. of Symposium on
+Computational Geometry, Budapest, Hungary (2018).
+
+B.T. Polyak and E.N. Gryazina, *Billiard walk - a new sampling algorithm
+for control and optimization*, IFAC Proceedings Volumes, **47(3)**,
+6123-6128 (2014)
+
+D. Van Oevelen, K. Van den Meersche, F. J. R. Meysman, K. Soetaert, J.
+J. Middelburg and A. F. Vézina, *Quantifying Food Web Flows Using Linear
+Inverse Models*, Ecosystems **13**, 32-45 (2010)
