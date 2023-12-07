@@ -10,7 +10,7 @@ Authors@R: c(
     person("Matthieu", "Dien", , "matthieu.dien@unicaen.fr", role = "aut"),
     person("Quentin", "Noguès", role = "dtc")
   )
-Description: The package samplelim provides performant implementations (C++ encoded) of several Monte Carlo Markov Chains (MCMC) methods for uniformly sampling hig-dimensional polytopes. 
+Description: The package samplelim provides performant implementations (C++ encoded) of Monte Carlo Markov Chains (MCMC) algorithms for uniformly sampling hig-dimensional polytopes. 
     It is particularly convenient for solving linear inverse models (LIM) in metabolic (trophic, biochemical or urban) networks.
     Particularly, some support functions inspired by the package limsolve are designed to ease its use by ecological practitioners. 
 License: LGPL (>= 3)
