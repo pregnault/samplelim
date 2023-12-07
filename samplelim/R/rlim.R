@@ -1,8 +1,8 @@
 
-rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, W=1, iter=3000, type="mirror", jmp=NULL, x0=NULL){
+rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, walk_length=NULL, nburns=NULL, iter=3000, type="mirror", jmp=NULL, starting_point=NULL,seed=NULL){
   
   automatedjump <- function(G,H,scale=10)   {
-    ranges<-poly_ranges(G=G,H=H)[,3]
+    ranges<-pol.ranges(G=G,H=H)[,3]
     return(ranges/scale)
     
   }
@@ -26,7 +26,7 @@ rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, W=1, iter=3000, type="mirror", jmp
     g=G
     h=as.numeric(H)
   }else{
-    full_pol <-full_dim_poly(A,B,G,H)
+    full_pol <-redpol(A,B,G,H)
     x0<-full_pol$x0
     Z<-full_pol$Z
     g=full_pol$G
@@ -37,7 +37,7 @@ rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, W=1, iter=3000, type="mirror", jmp
   P <- Hpolytope(A = -g, b = -h)
   #exploration
   
-  if (type=="Biw"){
+  if (type=="BiW"){
     if (is.null(jmp)) {
       random_walk <- list("walk"="BiW")
     }else{
@@ -57,11 +57,23 @@ rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, W=1, iter=3000, type="mirror", jmp
     stop("The walk type is not valid")
     
   }
-  res_redspace<-as.matrix(sample_points(P,n=W*iter,random_walk = random_walk))
+  if (!is.null(walk_length)){
+    random_walk<-c(random_walk,list("walk_length"=walk_length))
+  }
+  if (!is.null(nburns)){
+    random_walk<-c(random_walk,list("nburns"=nburns))
+  }
+  if (!is.null(starting_point)){
+    random_walk<-c(random_walk,list("starting_point"=starting_point))
+  }
+  if (!is.null(seed)){
+    random_walk<-c(random_walk,list("seed"=seed))
+  }
+  
+  res_redspace<-as.matrix(sample_points(P,n=iter,random_walk = random_walk))
   
   res<-x0+Z%*%res_redspace
   x<-t(res)
-  x<-x[c(1:iter)*W,]
   
   
   xnames <- colnames(A)
@@ -79,7 +91,7 @@ rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, W=1, iter=3000, type="mirror", jmp
 #' Billard walks (MiW and BiW).
 #'
 #' @param lim A \code{lim} object representing the polytope to be sampled; see the documentation of \code{\link{lim}} object.
-#' @param W An integer giving the thinning parameter for the MCMC algorithm. Default is 1 (no thinning).
+#' @param walk_length An integer giving the thinning parameter for the MCMC algorithm. Default is 1 (no thinning).
 #' @param iter An integer value giving the number of sampled points in the polytope. 
 #' @param type A character string specifying the MCMC algorithm to be used for sampling, 
 # 'whether \code{"MiW"} for the Mirror Walk or \code{"BiW"} for the Billard Walk. See \emph{Details} Section below.
@@ -94,7 +106,6 @@ rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, W=1, iter=3000, type="mirror", jmp
 #' ADD.
 #'
 #' @examples
-rlim<- function(lim, W=1L, iter=3000L, type="mirror", jmp=NULL,
-                tol=sqrt(.Machine$double.eps), x0=NULL){
-
-return(rpol(A=lim$A,B=lim$B,G=lim$G,H=lim$H, W=W, iter=iter, type=type, jmp=jmp, x0=x0))   }
+rlim<- function(lim, walk_length=NULL, nburns=NULL, iter=3000, type="mirror", jmp=NULL,
+                tol=sqrt(.Machine$double.eps), starting_point=NULL,seed=NULL){
+return(rpol(A=lim$A,B=lim$B,G=lim$G,H=lim$H, walk_length=walk_length, nburns=nburns, iter=iter, type=type, jmp=jmp, starting_point=starting_point,seed=seed))   }

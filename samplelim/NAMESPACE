@@ -1,4 +1,3 @@
-export(direct_sampling)
 export(inner_ball)
 export(rlim)
 exportClasses(Hpolytope)
