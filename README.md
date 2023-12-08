@@ -1,4 +1,4 @@
-samplelim : MCMC sampling algorithms for linear inverse models
+samplelim : MCMC sampling algorithms for linear inverse models in R
 ================
 
 ![](https://img.shields.io/badge/lifecycle-maturing-blue.svg) [![Project

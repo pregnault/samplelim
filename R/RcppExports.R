@@ -23,12 +23,12 @@ inner_ball <- function(P) {
     .Call(`_samplelim_inner_ball`, P)
 }
 
-#' Sample uniformly or normally distributed points from a convex Polytope (H-polytope, V-polytope, zonotope or intersection of two V-polytopes).
+#' Sample uniformly distributed points from a convex Polytope (H-polytope, V-polytope, zonotope or intersection of two V-polytopes).
 #'
-#' Sample n points with uniform or multidimensional spherical gaussian -with a mode at any point- as the target distribution.
+#' Sample n points with uniform distribution as the target distribution.
 #'
-#' @param P A convex polytope. It is an object from class (a) Hpolytope or (b) Vpolytope or (c) Zonotope or (d) VpolytopeIntersection.
-#' @param n The number of points that the function is going to sample from the convex polytope.
+#' @param P A convex polytope. It is an object from class \link{Hpolytope}.
+#' @param n The number of points that the function is going to sample into the convex polytope P.
 #' @param random_walk Optional. A list that declares the random walk and some related parameters as follows:
 #' \itemize{
 #' \item{\code{walk} }{ A string to declare the random walk: i) \code{'CDHR'} for Coordinate Directions Hit-and-Run, ii) \code{'RDHR'} for Random Directions Hit-and-Run, iii) \code{'BaW'} for Ball Walk, iv) \code{'BiW'} for Billiard walk, v) \code{'BCDHR'} boundary sampling by keeping the extreme points of CDHR or vi) \code{'BRDHR'} boundary sampling by keeping the extreme points of RDHR. The default walk is \code{'BiW'} for the uniform distribution or \code{'CDHR'} for the Gaussian distribution.}
@@ -62,7 +62,6 @@ inner_ball <- function(P) {
 #' P = gen_rand_hpoly(2,20)
 #' points = sample_points(P, n = 100, random_walk = list("walk" = "BRDHR"))
 #'
-#' @export
 sample_points <- function(P, n, random_walk = NULL) {
     .Call(`_samplelim_sample_points`, P, n, random_walk)
 }

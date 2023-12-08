@@ -1,5 +1,5 @@
 ---
-title: "samplelim : MCMC sampling algorithms for linear inverse models"
+title: "samplelim : MCMC sampling algorithms for linear inverse models in R"
 output: github_document
 ---
 
