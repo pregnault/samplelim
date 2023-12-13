@@ -3,7 +3,11 @@
 #' @importFrom MASS Null
 
 
-redpol <-function(A,B,G,H,test=TRUE){
+lim.redpol <-function(lim,test=TRUE){
+  A=lim$A
+  B=lim$B
+  G=lim$G
+  H=lim$H
   tol=sqrt(.Machine$double.eps) #the smallest positive floating-point number x such that 1 + x != 1 on the current machine
   ## 0. Setup problem
   
@@ -48,15 +52,17 @@ redpol <-function(A,B,G,H,test=TRUE){
   
 }
 
-lim.redpol<-function(lim,test=TRUE){
-  return(redpol(A=lim$A,B=lim$B,G=lim$G,H=lim$H,test=test))
-}
 
-red2original<- function(sample,x0,Z){
-  xnames=colnames(sample)
+
+red2full<- function(sample,x0,Z){
   res<-x0+Z%*%t(as.matrix(sample))
   x<-t(res)
-  colnames (x) <- xnames
   
   return(x)
+}
+
+full2red<- function(sample,x0,Z){
+  #todo
+  
+  return(NULL)
 }

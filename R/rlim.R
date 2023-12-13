@@ -1,5 +1,5 @@
 
-rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, walk_length=NULL, nburns=NULL, iter=3000, type="mirror", jmp=NULL, starting_point=NULL,seed=NULL){
+rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, walk_length=NULL, nburns=NULL, iter=3000, type="mirror", jmp=NULL, scale=10,starting_point=NULL,seed=NULL){
   
   automatedjump <- function(G,H,scale=10)   {
     ranges<-pol.ranges(G=G,H=H)[,3]
@@ -26,7 +26,7 @@ rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, walk_length=NULL, nburns=NULL, ite
     g=G
     h=as.numeric(H)
   }else{
-    full_pol <-redpol(A,B,G,H)
+    full_pol <-lim.redpol(lim)
     x0<-full_pol$x0
     Z<-full_pol$Z
     g=full_pol$G
@@ -48,7 +48,7 @@ rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, walk_length=NULL, nburns=NULL, ite
   else if (type=="mirror"){
     if (is.null(jmp)) {
       
-      random_walk <- list("walk"="mirror","jump"=automatedjump(g,h))
+      random_walk <- list("walk"="mirror","jump"=automatedjump(g,h,scale=scale))
     }else{
       random_walk <- list("walk"="mirror","jump"=jmp)
     }
@@ -110,4 +110,4 @@ rlim<- function(lim,
                 walk_length=NULL, nburns=NULL, iter=3000, type="mirror", jmp=NULL, scale = 10,
                 tol=sqrt(.Machine$double.eps), 
                 starting_point=NULL,seed=NULL){
-return(rpol(A=lim$A,B=lim$B,G=lim$G,H=lim$H, walk_length=walk_length, nburns=nburns, iter=iter, type=type, jmp=jmp, starting_point=starting_point,seed=seed))   }
+return(rpol(A=lim$A,B=lim$B,G=lim$G,H=lim$H, walk_length=walk_length, nburns=nburns, iter=iter, type=type, jmp=jmp, scale=scale, starting_point=starting_point,seed=seed))   }

@@ -1,4 +1,4 @@
 
-DF.Setup<-function(filename){
+df2lim<-function(filename){
   return(Setup.liminput(Read(filename)))
 }

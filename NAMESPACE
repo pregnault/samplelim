@@ -1,4 +1,12 @@
 export(rlim)
+export(df2lim)
+export(pol.ranges)
+export(lim.ranges)
+export(red2full)
+export(full2red)
+export(lim.redpol)
+
+export(Hpolytope)
 exportClasses(Hpolytope)
 importFrom("methods","new")
 importFrom("stats","cov")
