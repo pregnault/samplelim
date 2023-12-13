@@ -15,7 +15,7 @@ redpol <-function(A,B,G,H,test=TRUE){
   
   ## additional checks for equalities, hidden in inequalities... (Karline S.)
   if (test && !is.null(G))   {
-    xr <- poly_ranges(A,B,G,H)
+    xr <- pol.ranges(A,B,G,H)
     ii <- which (xr[,3]==0)
     if (length(ii)>0) { # if they exist: add regular equalities !
       dia <- diag(nrow=nrow(xr))
