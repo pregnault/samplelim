@@ -75,8 +75,10 @@ $\mathcal{P}$ is an $n$-dimensional convex set defined as the
 intersection of hyper-planes and half-spaces.
 <!-- It is mathematically characterized by two couples of a matrix and a vector, $(A, B)$ and $(G,H)$, with A of dimension $d\times ..$, $B$ of dimension $..$, $G$ of dimension $d \times ..$ and $H$ of dimension $..$, describing respectively the hyper-planes and half-spaces.  -->
 More precisely,
-$$\mathcal{P} = \left\{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \right\},$$
-where $A$ is an $m\times n$ matrix, with $m \leq n$,
+
+$$
+\mathcal{P} = \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \},
+$$ where $A$ is an $m\times n$ matrix, with $m \leq n$,
 $B \in \mathbb{R}^m$, $G$ is a $k \times n$ matrix, with $k \geq ..$ and
 $H \in \mathbb{R}^k$. Inequality constraints, represented by the matrix
 $G$, involved in linear inverse models for metabolic networks make the
