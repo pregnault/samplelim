@@ -1,7 +1,5 @@
-export(inner_ball)
 export(rlim)
 exportClasses(Hpolytope)
-exportPattern("^[[:alpha:]]+")
 importFrom("methods","new")
 importFrom("stats","cov")
 importFrom("utils","read.csv")

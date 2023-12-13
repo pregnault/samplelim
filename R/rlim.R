@@ -95,17 +95,19 @@ rpol <- function(A=NULL,B=NULL,G=NULL,H=NULL, walk_length=NULL, nburns=NULL, ite
 #' @param iter An integer value giving the number of sampled points in the polytope. 
 #' @param type A character string specifying the MCMC algorithm to be used for sampling, 
 # 'whether \code{"MiW"} for the Mirror Walk or \code{"BiW"} for the Billard Walk. See \emph{Details} Section below.
-#' @param jmp A numeric value, the jump rate parameter of the MCMC algorithm to be used. If \code{NULL}, a default value is computed from \env{lim}. See \emph{Details} Section below.
+#' @param jmp A numeric value, the jump length parameter of the MCMC algorithm to be used. If \code{NULL}, a default value is computed from \env{lim}. See \emph{Details} Section below.
 #' @param tol A numeric value specifying the tolerance for numeric computations.
-#' @param x0 A numeric vector giving the coordinates of a point inside the polytope, used as starting point in the MCMC algorithm.
+#' @param starting_point A numeric vector giving the coordinates of a point inside the polytope, used as starting point in the MCMC algorithm.
 #'
 #' @return A \code{iter}*\code{p} matrix whose rows are the coordinates of the \code{iter} points sampled in the polytope.
 #' @export
 #'
 #' @details
 #' ADD.
-#'
+#' 
 #' @examples
-rlim<- function(lim, walk_length=NULL, nburns=NULL, iter=3000, type="mirror", jmp=NULL,
-                tol=sqrt(.Machine$double.eps), starting_point=NULL,seed=NULL){
+rlim<- function(lim, 
+                walk_length=NULL, nburns=NULL, iter=3000, type="mirror", jmp=NULL, scale = 10,
+                tol=sqrt(.Machine$double.eps), 
+                starting_point=NULL,seed=NULL){
 return(rpol(A=lim$A,B=lim$B,G=lim$G,H=lim$H, walk_length=walk_length, nburns=nburns, iter=iter, type=type, jmp=jmp, starting_point=starting_point,seed=seed))   }
