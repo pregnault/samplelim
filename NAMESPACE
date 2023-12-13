@@ -5,7 +5,6 @@ export(lim.ranges)
 export(red2full)
 export(full2red)
 export(lim.redpol)
-
 export(Hpolytope)
 exportClasses(Hpolytope)
 importFrom("methods","new")
