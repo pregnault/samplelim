@@ -1,0 +1,141 @@
+################################
+channel_d1
+
+Automn_2018
+
+FLOW:
+source ->sink or flow(source,sink)
+in mg.C.m-2.day-1
+################################
+##COMPONENTS
+
+mic ! microphytoplankton
+nan ! nanophytoplankton
+pic ! picophytoplankton
+bac ! bacteria
+pro ! protozooplankton
+mes ! mesozooplankton
+det ! detritus
+doc ! dissolved organic carbon
+
+##END COMPONENTS
+
+##EXTERNAL
+
+gpp  ! gross primary production
+res  ! respiration
+los  ! sinking
+
+##END EXTERNAL
+
+##FLOWS
+
+gpp -> mic
+gpp -> nan
+gpp -> pic
+
+mic -> res
+mic -> doc
+mic -> det
+mic -> pro
+mic -> mes
+mic -> los
+
+nan -> res 
+nan -> doc
+nan -> det
+nan -> pro
+nan -> mes
+nan -> los
+
+pic -> res
+pic -> doc
+pic -> pro
+
+pro -> res
+pro -> doc
+pro -> det
+pro -> mes
+
+mes -> res
+mes -> doc
+mes -> det
+mes -> los
+
+bac -> res
+bac -> doc
+bac -> pro
+
+doc -> bac
+doc -> los
+
+det -> doc
+det -> mes
+det -> los
+
+##END FLOWS
+
+##VARIABLES ! you write variables to facilitate the writing of inequalities
+
+NPPmic =  flow(gpp,mic)-flow(mic,res)
+NPPnan =  flow(gpp,nan)-flow(nan,res)
+NPPpic =  flow(gpp,pic)-flow(pic,res)
+RESmic =  flow(mic,res)
+RESnan =  flow(nan,res)
+RESpic =  flow(pic,res) 
+EXUmic =  flow(mic,doc)
+EXUnan =  flow(nan,doc)
+EXUpic =  flow(pic,doc)
+! EXUPHYT = EXUmic+EXUnan+EXUpic
+GRAZmic = flow(mic,pro)+flow(mic,mes)
+GRAZnan = flow(nan,pro)+flow(nan,mes)
+GRAZpic = flow(pic,pro)
+
+
+REALYPTAKEdoc 	= flow(doc,bac) 
+! UPTAKEdoc    	= flow(doc,bac)-flow(bac,doc)
+RESbac      	= flow(bac,res)
+! PB          	= UPTAKEdoc-RESbac
+EXUbac      	= flow(bac,doc)
+GRAZbac         = flow(bac,pro)
+EFFGROWTHbac    = REALYPTAKEdoc-RESbac-EXUbac
+
+CONSOpro = flow(mic,pro)+flow(nan,pro)+flow(pic,pro)+ flow(bac,pro)
+RESpro  = flow(pro,res)
+EXCRETpro  = flow(pro,doc)
+EGESpro = flow(pro,det)
+predpro = flow(pro,mes)
+EFFGROWTHpro = CONSOpro-RESpro-EGESpro-EXCRETpro
+ASSpro  = CONSOpro-EGESpro
+
+CONSOmes = flow(mic,mes)+flow(nan,mes)+flow(pro,mes)+flow(det,mes)
+CONSOnanprodet = flow(nan,mes)+flow(pro,mes)+flow(det,mes)
+CONSOmicprodet = flow(mic,mes)+flow(pro,mes)+flow(det,mes)
+CONSOmicnandet = flow(mic,mes)+flow(nan,mes)+flow(det,mes)
+CONSOmicnanpro = flow(mic,mes)+flow(nan,mes)+flow(pro,mes)
+CONSOPHYTmes = flow(mic,mes)+flow(nan,mes)
+RESmes  = flow(mes,res)
+EXCRETmes  = flow(mes,doc)
+EGESmes = flow(mes,det)
+EFFGROWTHmes = CONSOmes-RESmes-EGESmes-EXCRETmes
+ASSmes  = CONSOmes-EGESmes
+! DEGRAdetdoc = flow(det,doc)
+! GRAZdet = flow(det,mes)
+
+
+
+##END VARIABLES
+
+##EQUALITIES
+
+
+##END EQUALITIES
+
+##INEQUALITIES
+
+flow(gpp,mic) = [54.657,66.803]
+flow(gpp,nan) = [5.925,7.242] flow(gpp,pic) = [2.300,2.812]
+flow(mic,pro) = [27.365,33.447]flow(nan,pro) = [5.069,6.196]flow(pic,pro) = [2.300,2.812]
+! Respiration RESmic		= [0.05,0.3]*flow(gpp,mic)RESnan		= [0.05,0.3]*flow(gpp,nan)RESpic		= [0.05,0.3]*flow(gpp,pic)RESbac          > 0.2*REALYPTAKEdocRESpro          > 0.2*CONSOproRESmes          > 0.2*CONSOmes! PB		< 0.0226*UptakeDOC! Carbone productionEXUmic          = [0.1,0.33]*NPPmicEXUnan          = [0.1,0.33]*NPPnanEXUpic          = [0.1,0.33]*NPPpicEXCRETpro       > 0.1* CONSOproEXCRETpro       < RESproEXCRETmes       > 0.1*CONSOmesEXCRETmes       < RESmesEXUbac          < RESbac! Growth efficiencyEFFGROWTHpro    = [0.25,0.5]*CONSOproEFFGROWTHmes    = [0.25,0.5]*CONSOmesEFFGROWTHbac    = [0.05,0.5]*REALYPTAKEdoc! Detritus production 0.95*EGESpro > 0.05*RESpro0.58*EGESpro < 0.42*RESpro0.95*EGESmes > 0.05*RESmes0.58*EGESmes < 0.42*RESmes! AssimilationASSpro = [0.5,0.9]*CONSOproASSmes = [0.5,0.9]*CONSOmes0.49*flow(mic,mes) < 0.51*CONSOnanprodet0.80*flow(nan,mes) < 0.20*CONSOmicprodet0.69*flow(pro,mes) < 0.31*CONSOmicnandet
+
+##END INEQUALITIES

@@ -1,0 +1,729 @@
+******************************************************************************************
+LIM MCMC Ecosystème Baie de Seine Diet Ecopath
+Zone: Bassin du futur parc éolien de Courseulles sur mer (Baie de Seine) 
+Etat: Before Offshore Wind Farm 2017
+Unités : gC/m2/an
+
+BOWF
+******************************************************************************************
+
+## Parametres
+
+! Biomasses des compartiments [gC/m2]
+
+CETBiomass	= 0.00042868
+PHOBiomass 	= 0.00094070
+OISBiomass	= 0.01703000
+CEPBiomass	= 0.01976500
+FPLBiomass 	= 5.92483930
+FBFBiomass 	= 3.19011310
+FPIBiomass 	= 0.26842720
+FFIBiomass 	= 0.07855932
+IPRBiomass 	= 2.93550000
+IFFBiomass 	= 3.11930300
+BIVBiomass 	= 19.5375000
+KSCBiomass	= 0.77000000
+IDFBiomass 	= 3.57367700
+SUPBiomass 	= 2.00330400
+NEMBiomass 	= 0.97001400
+ZOOBiomass 	= 1.72000000
+BACBiomass 	= 0.75000000
+PHYBiomass	= 3.24000000
+DETBiomass 	= 19.0000000
+
+!  primary production gC/m2/an
+
+minNPP = 103			! Données Napoléon et Claquin 2012
+maxNPP = 172
+
+! Respiration (R/Q)
+
+minZOOres = 0.1
+maxZOOres = 0.3
+
+minPHYres = 0.05
+maxPHYres = 0.3
+
+
+! Coefficient de production P/B
+
+minIPRpb = 1
+maxIPRpb = 5
+
+minIFFpb = 1
+maxIFFpb = 5
+
+minBIVpb = 1
+maxBIVpb = 5
+
+minKSCpb = 1
+maxKSCpb = 5
+
+minIDFpb = 1
+maxIDFpb = 5
+
+minCETpb = 0.04
+maxCETpb = 0.12
+
+minPHOpb = 0.075
+maxPHOpb = 0.225
+
+minOISpb = 0.05
+maxOISpb = 0.15
+
+minCEPpb = 1
+maxCEPpb = 3
+
+minFPLpb = 0.49
+maxFPLpb = 1.46
+
+minFBFpb = 0.54
+maxFBFpb = 2
+
+minFPIpb = 0.45	
+maxFPIpb = 1.35
+
+minFFIpb = 0.38	
+maxFFIpb = 1.13
+
+minSUPpb = 0.4
+maxSUPpb = 15
+
+minNEMpb = 10.10
+maxNEMpb = 35
+
+
+! Growth efficiency P/Q
+
+minOISpq = 0.3
+maxOISpq = 0.8
+
+minCEPpq = 0.1
+maxCEPpq = 0.4
+
+minFPLpq = 0.07
+maxFPLpq = 0.22
+
+minFBFpq = 0.09
+maxFBFpq = 0.27
+
+minFPIpq = 0.11
+maxFPIpq = 0.34
+
+minFFIpq = 0.11	
+maxFFIpq = 0.33
+
+minIDFpq = 0.05
+maxIDFpq = 0.3
+
+minIPRpq = 0.05
+maxIPRpq = 0.3
+
+minIFFpq = 0.05
+maxIFFpq = 0.3
+
+minBIVpq = 0.05
+maxBIVpq = 0.3
+
+minKSCpq = 0.05
+maxKSCpq = 0.3
+
+minSUPpq = 0.1
+maxSUPpq = 0.37
+
+minNEMpq = 0.05
+maxNEMpq = 0.4
+
+minBACpq = 0.11
+maxBACpq = 0.6
+
+minPLKpq = 0.25
+maxPLKpq = 0.5
+
+
+
+! Excretion (U/Q)
+minFISHuq = 0.1
+maxFISHuq = 0.5
+
+minIPRuq = 0.12
+maxIPRuq = 0.28
+
+minIFFuq = 0.18
+maxIFFuq = 0.42
+
+minBIVuq = 0.18
+maxBIVuq = 0.42
+
+minKSCuq = 0.18
+maxKSCuq = 0.42
+
+minIDFuq = 0.18
+maxIDFuq = 0.42
+
+minSUPuq = 0.2
+maxSUPuq = 0.5
+
+minNEMuq = 0.13
+maxNEMuq = 0.3
+
+minZOOuq = 0.1
+maxZOOuq = 0.5
+
+minBACuq = 0.05
+maxBACuq = 0.35
+
+minPHYuq = 0.05
+maxPHYuq = 0.5
+
+## END PARAMETERS
+
+******************************** SYSTEM DECLARATION ******************************
+
+## COMPARTMENTS
+
+ CET 	= CETBiomass 
+ PHO 	= PHOBiomass
+ OIS 	= OISBiomass 
+ CEP 	= CEPBiomass 
+ FPL 	= FPLBiomass 
+ FBF 	= FBFBiomass
+ FPI 	= FPIBiomass 
+ FFI 	= FFIBiomass 
+ IPR 	= IPRBiomass 
+ IFF 	= IFFBiomass
+ BIV 	= BIVBiomass 
+ KSC 	= KSCBiomass 
+ IDF 	= IDFBiomass 
+ SUP 	= SUPBiomass
+ NEM 	= NEMBiomass 
+ ZOO 	= ZOOBiomass
+ BAC 	= BACBiomass
+ PHY 	= PHYBiomass
+ DET 	= DETBiomass
+
+
+## END COMPARTMENTS
+
+## EXTERNALS
+
+ FIX 			
+ RES
+ LOS 			! sinking ou sortie du système
+ IMP			! imports du système migration
+ TRA			! peche, Trawl, Dredge
+ DRE
+
+## END EXTERNALS
+
+## FLOWS 
+ ! Tous les flux sortants de chaque compartiment
+
+ ! Externals
+
+ FIX -> PHY		! Stock de carbone fixable par photosynthèse du phyto
+
+
+ ! From Import
+IMP -> CET
+IMP -> PHO 
+IMP -> OIS
+IMP -> CEP
+IMP -> FBF
+
+
+ ! From Detritus
+ DET -> IPR
+ DET -> IFF
+ DET -> BIV
+ DET -> KSC 
+ DET -> IDF
+ DET -> SUP
+ DET -> NEM
+ DET -> ZOO
+ DET -> BAC
+
+
+ ! From Phyplancton
+ PHY -> RES
+ PHY -> DET
+ PHY -> IFF
+ PHY -> BIV
+ PHY -> KSC 
+ PHY -> FPL
+ PHY -> IDF
+ PHY -> SUP
+ PHY -> NEM
+ PHY -> ZOO
+ PHY -> BAC
+
+ ! From BAC
+ BAC -> RES
+ BAC -> DET
+ BAC -> IFF
+ BAC -> IDF
+ BAC -> SUP
+ BAC -> NEM
+
+ ! From ZOOplankton
+ ZOO -> RES
+ ZOO -> DET
+ ZOO -> PHO 		
+ ZOO -> FPL
+ ZOO -> FPI
+ ZOO -> FFI
+ ZOO -> FBF
+ ZOO -> IPR
+ ZOO -> IFF
+ ZOO -> BIV
+ ZOO -> KSC
+ ZOO -> IDF
+ ZOO -> SUP
+ ZOO -> NEM
+ ZOO -> ZOO
+ 
+
+ ! From NEM
+ NEM -> RES
+ NEM -> DET
+ NEM -> CEP
+ NEM -> FBF
+ NEM -> FFI
+ NEM -> IPR
+ NEM -> IDF
+ NEM -> IFF
+
+ ! From SUP
+SUP -> RES
+SUP -> DET
+SUP -> CEP
+SUP -> FPI
+SUP -> FBF
+SUP -> FFI
+SUP -> IPR
+SUP -> SUP
+
+ ! From IDF
+IDF -> RES
+IDF -> DET
+IDF -> CEP
+IDF -> FBF
+IDF -> FPI
+IDF -> FFI
+IDF -> IPR
+
+ ! From KSC
+KSC -> RES
+KSC -> DET
+KSC -> CEP
+KSC -> IPR
+KSC -> FBF
+KSC -> FFI
+KSC -> DRE
+
+ ! From BIV
+BIV -> RES
+BIV -> DET
+BIV -> CEP
+BIV -> FBF
+BIV -> FFI
+BIV -> IPR
+
+ ! From IFF
+IFF -> RES
+IFF -> DET
+IFF -> CEP
+IFF -> FBF
+IFF -> FPI
+IFF -> FFI
+IFF -> IPR
+
+
+ ! From IPR
+IPR -> RES
+IPR -> DET
+IPR -> OIS
+IPR -> CEP
+IPR -> FBF
+IPR -> FPI
+IPR -> FFI
+
+ ! From FFI
+FFI -> RES 
+FFI -> DET
+FFI -> CEP
+FFI -> FBF
+FFI -> TRA
+
+ ! From Fiscivorous Fish
+FPI -> RES
+FPI -> DET
+FPI -> CET
+FPI -> PHO
+FPI -> CEP 
+FPI -> FPI
+FPI -> FBF
+FPI -> TRA
+
+ ! From FBF
+FBF -> RES 
+FBF -> DET
+FBF -> CET
+FBF -> PHO 
+FBF -> OIS 
+FBF -> CEP 
+FBF -> FBF
+FBF -> FFI
+FBF -> FPI
+FBF -> TRA 
+
+ ! From FPL
+FPL -> RES
+FPL -> DET
+FPL -> CET
+FPL -> PHO
+FPL -> OIS
+FPL -> CEP
+FPL -> FBF
+FPL -> FPI
+FPL -> TRA
+
+ ! From Cephalopods
+CEP -> RES
+CEP -> DET
+CEP -> CET
+CEP -> CEP
+CEP -> FBF
+CEP -> TRA
+
+ ! From OIS 
+OIS -> RES
+OIS -> DET
+OIS -> LOS			
+
+ ! From CET
+CET -> RES
+CET -> DET
+CET -> LOS
+
+ !From PHO
+PHO -> RES
+PHO -> DET
+PHO -> LOS
+
+## End FLOWS
+
+
+## VARIABLES
+ ! Ingestion
+
+ CETIngest 		= flowto(CET) 
+ PHOIngest 		= flowto(PHO) 
+ OISIngest 		= flowto(OIS)  
+ CEPIngest 		= flowto(CEP) 
+ FPLIngest 		= flowto(FPL)  
+ FBFIngest 		= flowto(FBF) 
+ FPIIngest 		= flowto(FPI)  
+ FFIIngest 		= flowto(FFI) 
+ IPRIngest 		= flowto(IPR)  
+ IFFIngest 		= flowto(IFF) 
+ BIVIngest 		= flowto(BIV)  
+ KSCIngest 		= flowto(KSC)  
+ IDFIngest 		= flowto(IDF) 
+ SUPIngest 		= flowto(SUP) 
+ NEMIngest 		= flowto(NEM) 
+ ZOOIngest 		= flowto(ZOO) 
+ BACIngest 		= flowto(BAC) 
+ 
+
+ ! Energy balance: production = Ingestion - RES - excretion
+CETprod	 = CETIngest - CET->RES - CET->DET
+OISprod	 = OISIngest - OIS->RES - OIS->DET
+PHOprod	 = PHOIngest - PHO->RES - PHO->DET
+CEPprod	 = CEPIngest - CEP->RES - CEP->DET
+FPIprod	 = FPIIngest - FPI->RES - FPI->DET
+FBFprod  = FBFIngest - FBF->RES - FBF->DET
+FFIprod	 = FFIIngest - FFI->RES - FFI->DET
+FPLprod  = FPLIngest - FPL->RES - FPL->DET
+IDFprod	 = IDFIngest - IDF->RES - IDF->DET
+IPRprod	 = IPRIngest - IPR->RES - IPR->DET
+SUPprod  = SUPIngest - SUP->RES - SUP->DET
+NEMprod  = NEMIngest - NEM->RES - NEM->DET
+BACprod  = BACIngest - BAC->RES - BAC->DET
+ZOOprod  = ZOOIngest - ZOO->RES - ZOO->DET
+BIVprod  = BIVIngest - BIV->RES - BIV->DET
+KSCprod  = KSCIngest - KSC->RES - KSC->DET
+IFFprod  = IFFIngest - IFF->RES - IFF->DET
+PHYprod  = FIX->PHY - PHY->RES - PHY->DET
+
+
+! Global variables
+
+GPP		 = FIX->PHY
+totRES	 	 = flowto(RES)
+Herbivory	 = PHYprod
+DETritivory	 = flowfrom(DET)
+
+
+## END VARIABLES
+
+*************************** Constraints Declaration *******************************
+
+
+## INEQUALITIES
+ ! Primary production
+
+PHYprod = [minNPP, maxNPP]
+
+
+ ! Respiratory constraints
+
+PHY->RES  = [minPHYres, maxPHYres] * GPP
+ZOO->RES  = [minZOOres, maxZOOres] * ZOOIngest
+FBF->RES  = [1, 10 ] * FBFBiomass
+FPL->RES  = [1, 10 ] * FPLBiomass
+FPI->RES  = [1, 10 ] * FPIBiomass
+FFI->RES  = [1, 10 ] * FFIBiomass
+ 
+
+ ! Excretion
+
+FPL->DET 	= [minFISHuq, maxFISHuq] * FPLIngest
+FBF->DET 	= [minFISHuq, maxFISHuq] * FBFIngest
+FPI->DET 	= [minFISHuq, maxFISHuq] * FPIIngest
+FFI->DET 	= [minFISHuq, maxFISHuq] * FFIIngest
+IPR->DET	= [minIPRuq, maxIPRuq] * IPRIngest
+IFF->DET	= [minIFFuq, maxIFFuq] * IFFIngest
+IDF->DET	= [minIDFuq, maxIDFuq] * IDFIngest
+BIV->DET	= [minBIVuq, maxBIVuq] * BIVIngest
+KSC->DET	= [minKSCuq, maxKSCuq] * KSCIngest
+SUP->DET 	= [minSUPuq, maxSUPuq] * SUPIngest
+NEM->DET 	= [minNEMuq, maxNEMuq] * NEMIngest
+ZOO->DET 	= [minZOOuq, maxZOOuq] * ZOOIngest
+PHY->DET 	= [minPHYuq, maxPHYuq] * GPP
+BAC->DET 	= [minBACuq, maxBACuq] * BACIngest
+
+
+
+ ! Food conversion efficiencies
+
+OISprod 	= [minOISpq, maxOISpq] * OISIngest
+CEPprod 	= [minCEPpq, maxCEPpq] * CEPIngest
+FPLprod 	= [minFPLpq, maxFPLpq] * FPLIngest
+FBFprod 	= [minFBFpq, maxFBFpq] * FBFIngest
+FPIprod 	= [minFPIpq, maxFPIpq] * FPIIngest
+FFIprod 	= [minFFIpq, maxFFIpq] * FFIIngest
+IDFprod 	= [minIDFpq, maxIDFpq] * IDFIngest
+KSCprod 	= [minKSCpq, maxKSCpq] * KSCIngest
+IPRprod 	= [minIPRpq, maxIPRpq] * BIVIngest
+BIVprod 	= [minBIVpq, maxBIVpq] * BIVIngest
+IFFprod 	= [minIFFpq, maxIFFpq] * IFFIngest
+SUPprod 	= [minSUPpq, maxSUPpq] * SUPIngest
+NEMprod 	= [minNEMpq, maxNEMpq] * NEMIngest
+BACprod 	= [minBACpq, maxBACpq] * BACIngest
+ZOOprod 	= [minPLKpq, maxPLKpq] * ZOOIngest
+
+
+
+
+ ! production related to biomass
+
+CETprod 	= [minCETpb, maxCETpb] * CETBiomass
+PHOprod 	= [minPHOpb, maxPHOpb] * PHOBiomass
+OISprod 	= [minOISpb, maxOISpb] * OISBiomass
+CEPprod 	= [minCEPpb, maxCEPpb] * CEPBiomass
+FPLprod 	= [minFPLpb, maxFPLpb] * FPLBiomass
+FBFprod 	= [minFBFpb, maxFBFpb] * FBFBiomass
+FPIprod 	= [minFPIpb, maxFPIpb] * FPIBiomass
+FFIprod 	= [minFFIpb, maxFFIpb] * FFIBiomass
+IDFprod 	= [minIDFpb, maxIDFpb] * IDFBiomass
+KSCprod 	= [minKSCpb, maxKSCpb] * KSCBiomass
+IPRprod 	= [minIPRpb, maxIPRpb] * IPRBiomass
+BIVprod 	= [minBIVpb, maxBIVpb] * BIVBiomass
+IFFprod 	= [minIFFpb, maxIFFpb] * IFFBiomass
+SUPprod 	= [minSUPpb, maxSUPpb] * SUPBiomass
+NEMprod 	= [minNEMpb, maxNEMpb] * NEMBiomass
+
+
+ ! Diet
+
+
+! Cetacean
+
+IMP->CET = [0.05, 0.25] * CETIngest
+CEP->CET = [0.04, 0.24] * CETIngest
+FPL->CET = [0.08, 0.28] * CETIngest
+FBF->CET = [0.25, 0.45] * CETIngest
+FPI->CET = [0.08, 0.28] * CETIngest
+
+
+! Phoques
+
+IMP->PHO = [0.05, 0.25] * PHOIngest
+FPL->PHO < 0.20 * PHOIngest
+FBF->PHO = [0.33, 0.53] * PHOIngest
+FPI->PHO = [0.20, 0.40] * PHOIngest
+ZOO->PHO < 0.12 * PHOIngest
+
+
+! OIS
+
+IMP->OIS <  0.56 * OISIngest
+FPL->OIS = [0.36, 0.96] * OISIngest
+FBF->OIS <  0.36 * OISIngest
+IPR->OIS <  0.32 * OISIngest
+
+
+
+! CEPalopodes
+IMP->CEP < 0.30 * CEPIngest
+CEP->CEP < 0.37 * CEPIngest
+FPL->CEP < 0.56 * CEPIngest
+FPI->CEP < 0.34 * CEPIngest
+FBF->CEP < 0.42 * CEPIngest
+FFI->CEP < 0.35 * CEPIngest
+IPR->CEP < 0.53 * CEPIngest
+IFF->CEP < 0.31 * CEPIngest
+BIV->CEP < 0.30 * CEPIngest
+KSC->CEP < 0.30 * CEPIngest
+IDF->CEP < 0.41 * CEPIngest
+SUP->CEP < 0.33 * CEPIngest
+NEM->CEP < 0.38 * CEPIngest
+
+
+! Fish Benthic feeders
+
+IMP->FBF < 0.30 * FBFIngest
+FPL->FBF < 0.46 * FBFIngest
+FPI->FBF < 0.32 * FBFIngest
+FBF->FBF < 0.36 * FBFIngest
+FFI->FBF < 0.0003 * FBFIngest
+IPR->FBF = [0.03, 0.63] * FBFIngest
+IFF->FBF < 0.34 * FBFIngest
+BIV->FBF < 0.30 * FBFIngest
+KSC->FBF < 0.30 * FBFIngest
+IDF->FBF < 0.50 * FBFIngest
+SUP->FBF < 0.48 * FBFIngest
+NEM->FBF < 0.30 * FBFIngest
+ZOO->FBF < 0.30 * FBFIngest
+
+
+! Fish planctivorous
+
+ZOO->FPL > 0.53 * FPLIngest
+PHY->FPL < 0.46 * FPLIngest
+
+
+! Fish piscivorous
+
+FPL->FPI > 0.53 * FPIIngest
+FPI->FPI < 0.30 * FPIIngest
+FBF->FPI < 0.33 * FPIIngest
+IPR->FPI < 0.38 * FPIIngest
+IFF->FPI < 0.31 * FPIIngest
+IDF->FPI < 0.33 * FPIIngest
+SUP->FPI < 0.31 * FPIIngest
+ZOO->FPI < 0.31 * FPIIngest
+
+
+! Flat Fish
+
+FBF->FFI < 0.31 * FFIIngest
+IPR->FFI < 0.55 * FFIIngest
+IFF->FFI < 0.31 * FFIIngest
+BIV->FFI < 0.44 * FFIIngest
+KSC->FFI < 0.30 * FFIIngest
+IDF->FFI = [0.21, 0.81] * FFIIngest
+SUP->FFI < 0.33 * FFIIngest
+NEM->FFI < 0.35 * FFIIngest
+ZOO->FFI < 0.31 * FFIIngest
+
+
+! Invertebrate predator
+
+IFF->IPR < 0.50 * IPRIngest
+IDF->IPR < 0.39 * IPRIngest
+SUP->IPR < 0.45 * IPRIngest
+NEM->IPR < 0.60 * IPRIngest
+ZOO->IPR < 0.31 * IPRIngest
+DET->IPR < 0.42 * IPRIngest
+BIV->IPR < 0.30 * IPRIngest
+
+
+! Invertebrate filtror
+
+NEM->IFF < 0.15 * IFFIngest
+ZOO->IFF < 0.20 * IFFIngest
+PHY->IFF = [0.6, 0.8] * IFFIngest
+BAC->IFF < 0.15 * IFFIngest
+DET->IFF < 0.20 * IFFIngest
+
+
+! King Scallop
+
+ZOO->KSC < 0.2 * KSCIngest
+PHY->KSC = [0.55, 0.75] * KSCIngest
+DET->KSC = [0.15, 0.35] * KSCIngest
+
+
+
+! Bivalves
+
+ZOO->BIV < 0.2 * BIVIngest
+PHY->BIV = [0.55, 0.75] * BIVIngest
+DET->BIV = [0.15, 0.35] * BIVIngest
+
+
+! Invertebrate deposite feeders
+
+NEM->IDF < 0.35 * IDFIngest
+ZOO->IDF < 0.35 * IDFIngest
+PHY->IDF < 0.45 * IDFIngest
+BAC->IDF < 0.40 * IDFIngest
+DET->IDF = [0.35, 0.95] * IDFIngest
+
+
+! Suprabenthos
+
+SUP->SUP < 0.35 * SUPIngest
+ZOO->SUP = [0.10, 0.70] * SUPIngest
+PHY->SUP = [0.05, 0.65] * SUPIngest
+BAC->SUP < 0.35 * SUPIngest
+DET->SUP < 0.45 * SUPIngest
+
+
+! Nematodes
+
+ZOO->NEM < 0.35 * NEMIngest
+PHY->NEM < 0.45 * NEMIngest
+BAC->NEM < 0.35 * NEMIngest
+DET->NEM > 0.45 * NEMIngest
+
+
+! Zooplankton
+
+ZOO->ZOO < 0.10 * ZOOIngest
+PHY->ZOO > 0.83 * ZOOIngest
+DET->ZOO < 0.17 * ZOOIngest
+
+
+! Bacterie
+
+PHY->BAC < 0.3 * BACIngest
+DET->BAC > 0.7 * BACIngest
+
+
+## End INEQUALITIES
+## EQUALITIES
+
+FPL->TRA = 0.0929
+FPI->TRA = 0.0017
+FBF->TRA = 0.0079
+FFI->TRA = 0.0439
+CEP->TRA = 0.0139
+KSC->DRE = 0.4
+
+## END EQUALITIES
+
+
+

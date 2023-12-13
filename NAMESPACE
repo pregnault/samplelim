@@ -1,0 +1,11 @@
+export(rlim)
+exportClasses(Hpolytope)
+importFrom("methods","new")
+importFrom("stats","cov")
+importFrom("utils","read.csv")
+importFrom(Rcpp,loadModule, sourceCpp, evalCpp)
+importFrom(lsei,lsei)
+importFrom(Rglpk,Rglpk_solve_LP)
+importFrom(MASS,Null)
+useDynLib(samplelim, .registration=TRUE)
+
