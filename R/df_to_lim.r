@@ -1,7 +1,7 @@
 
 #' Imports Declaration File as an lim object
 #'
-#' Blabla
+#' The function \code{df2lim()} turns a declaration file with linear inverse model specifications and creates the corresponding lim object.
 #'
 #' @param filename A character string specifying the path to the declaration file to import.
 #'
