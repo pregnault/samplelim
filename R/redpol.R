@@ -3,7 +3,7 @@
 #' The function \code{lim.redpol()} takes as input a polytope  and returns its projection into the non-empty reduced polytope.
 #' Precisely, taking the polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}} as input, the function returns 
 #' \itemize{
-#' \item the matrix \code{Z}, basis of the right null space of A and \code{x_0} a particular solution of \eqn{P}, used for the reduction;
+#' \item the matrix \code{Z}, basis of the right null space of A and \eqn{x_0} a particular solution of \eqn{P}, used for the reduction;
 #' \item the matrix \eqn{G'=GZ} and the vector \eqn{H'=H-Gx_0} describing the reduced polytope \eqn{\mathcal{P'}= \{ x \in \mathbb{R}^{n-k}: G'x \geq H'\}} with \eqn{k=\mathtt{rank}(A)}.
 #'  }
 #'  
@@ -84,10 +84,9 @@ lim.redpol <-function(lim,test=TRUE){
 
 
 #' @rdname lim.redpol
-#' @param sample  A matrix with \eqn{n-k} columns and each row corresponding to a point inside the reduced polytope.
+#' @param sample  A matrix where each row corresponds to a point inside either the full or the reduced polytope.
 #' @param x0 A numeric vector of size \eqn{n} corresponding to the particular solution used during the reduction.
-#' @param Z A matrix of dimension \eqn{(n-k)\times n} used during the reduction.
-#' @return A matrix where each row is the point in the full polytope corresponding to the point inside the reduced polytope given in input.
+#' @param Z The matrix used during the reduction of the polytope (returned by \code{lim.redpol()}).
 #' @export
 
 red2full<- function(sample,x0,Z){
@@ -98,10 +97,6 @@ red2full<- function(sample,x0,Z){
 }
 
 #' @rdname lim.redpol
-#' @param sample  A matrix with \eqn{n} columns and each row corresponding to a point inside the full polytope.
-#' @param x0 A numeric vector of size \eqn{n} corresponding to the particular solution used during the reduction.
-#' @param Z A matrix of dimension \eqn{(n-k)\times n} used during the reduction.
-#' @return A matrix where each row is the point in the reduced polytope corresponding to the point inside the full polytope given in input.
 #' @export
 
 full2red<- function(sample,x0,Z){

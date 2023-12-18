@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 inner_ball <- function(P) {
-    .Call(`_samplelim_inner_ball`, P)
+    .Call('_samplelim_inner_ball', PACKAGE = 'samplelim', P)
 }
 
 sample_points <- function(P, n, random_walk = NULL) {
-    .Call(`_samplelim_sample_points`, P, n, random_walk)
+    .Call('_samplelim_sample_points', PACKAGE = 'samplelim', P, n, random_walk)
 }
 

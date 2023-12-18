@@ -15,7 +15,7 @@ that characterize the equality and inequality constraints defining the polytope
 associated to the LIM.
 }
 \description{
-Blabla
+The function \code{df2lim()} turns a declaration file with linear inverse model specifications and creates the corresponding lim object.
 }
 \examples{
 # Create a lim object from a Description file

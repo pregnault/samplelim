@@ -10,21 +10,23 @@ pol.ranges(A = NULL, B = NULL, G, H)
 lim.ranges(lim)
 }
 \arguments{
-\item{A}{blabla}
+\item{A}{A matrix corresponding to \code{A} in the description of the polytope \eqn{\mathcal{P}}.}
 
-\item{B}{blabla}
+\item{B}{A numeric vector corresponding to \code{B} in the description of the polytope \eqn{\mathcal{P}}.}
 
-\item{G}{blabla}
+\item{G}{A matrix corresponding to \code{G} in the description of the polytope \eqn{\mathcal{P}}.}
 
-\item{H}{blabla}
+\item{H}{A numeric vector corresponding to \code{H} in the description of the polytope \eqn{\mathcal{P}}.}
 
-\item{lim}{blabla}
+\item{lim}{A list with four components \code{A}, \code{B}, \code{G} and \code{H} representing
+the polytope.}
 }
 \value{
-A length \eqn{n} numeric vector, with \eqn{n} the dimension of the polytope.
+A \eqn{n \times 3} matrix, with \eqn{n} the dimension of the polytope. The three columns of the matrix correspond respectively
+to the minimum, maximum and range along each dimension of the polytope.
 }
 \description{
-Blabla description
+The functions \code{pol.ranges()} and \code{lim.ranges()} compute the theoretical ranges of the polytope along each dimension of a given polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}}.
 }
 \examples{
 # Create a lim object from a Description file
