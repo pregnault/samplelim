@@ -55,14 +55,14 @@ lim.redpol <-function(lim,test=TRUE){
 
 
 red2full<- function(sample,x0,Z){
-  res<-x0+Z%*%t(as.matrix(sample))
+  res<-x0+Z%*%t(sample)
   x<-t(res)
   
   return(x)
 }
 
 full2red<- function(sample,x0,Z){
-  #todo
-  
-  return(NULL)
+  res<-solve(t(Z)%*%Z)%*%t(Z)%*%(t(sample)-x0)
+  return(t(res))
+
 }
