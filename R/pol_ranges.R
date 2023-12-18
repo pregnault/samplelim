@@ -2,17 +2,19 @@
 
 #' Determine ranges of a polytope
 #'
-#' Blabla description
+#' The functions \code{pol.ranges()} and \code{lim.ranges()} compute the theoretical ranges of the polytope along each dimension of a given polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}}.  
 #'
-#' @param A blabla
-#' @param B blabla
-#' @param G blabla
-#' @param H blabla
+#' @param A A matrix corresponding to \code{A} in the description of the polytope \eqn{\mathcal{P}}. 
+#' @param B A numeric vector corresponding to \code{B} in the description of the polytope \eqn{\mathcal{P}}. 
+#' @param G A matrix corresponding to \code{G} in the description of the polytope \eqn{\mathcal{P}}. 
+#' @param H A numeric vector corresponding to \code{H} in the description of the polytope \eqn{\mathcal{P}}. 
 #'
-#' @return A length \eqn{n} numeric vector, with \eqn{n} the dimension of the polytope.
+#' @return A \eqn{n \times 3} matrix, with \eqn{n} the dimension of the polytope. The three columns of the matrix correspond respectively
+#' to the minimum, maximum and range along each dimension of the polytope.
 #' @importFrom Rglpk Rglpk_solve_LP
 #' @export
 #'
+#' @rdname pol.ranges
 #' @examples
 #' # Create a lim object from a Description file
 #' DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
@@ -69,7 +71,8 @@ pol.ranges <- function(A=NULL,B=NULL,G,H)   {
 }
 
 
-#' @param lim blabla
+#' @param lim A list with four components \code{A}, \code{B}, \code{G} and \code{H} representing
+#' the polytope.
 #' @export
 #' @rdname pol.ranges
 lim.ranges<- function(lim){
