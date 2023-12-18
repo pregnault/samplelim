@@ -6,3 +6,5 @@
 .RData
 *.Ruserdata
 .Rproj.user
+*.a
+vignettes/*

@@ -1,8 +1,26 @@
-
+#' Projection of full polytope into the reduced polytope
+#'
+#' Blabla description
+#'
+#' @param lim blabl
+#' @param test pouet pouet
+#'
+#' @return A list with four components; namely:
+#' \itemize{
+#'   \item \code{G}
+#'   \item \code{H}
+#'   \item \code{x0}
+#'   \item \code{Z}
+#' }
 #' @importFrom lsei lsei
 #' @importFrom MASS Null
-
-
+#' @export
+#'
+#' @examples
+#' DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+#' BOWF <- df2lim(DF)
+#' BOWFred <- lim.redpol(BOWF)
+#' str(BOWFred, max.length = 1)
 lim.redpol <-function(lim,test=TRUE){
   A=lim$A
   B=lim$B
@@ -53,7 +71,10 @@ lim.redpol <-function(lim,test=TRUE){
 }
 
 
-
+#' @rdname lim.redpol
+#' @param sample  blabla
+#' @param x0 blabla
+#' @param Z blabla
 red2full<- function(sample,x0,Z){
   res<-x0+Z%*%t(as.matrix(sample))
   x<-t(res)
@@ -61,6 +82,7 @@ red2full<- function(sample,x0,Z){
   return(x)
 }
 
+#' @rdname lim.redpol
 full2red<- function(sample,x0,Z){
   #todo
   
