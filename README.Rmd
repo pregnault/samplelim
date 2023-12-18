@@ -1,10 +1,11 @@
 ---
 title: "samplelim : MCMC sampling algorithms for linear inverse models in R"
 output: github_document
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 ```
 
 ![](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
@@ -36,18 +37,44 @@ The modifications and additions made by `{samplelim}` (compared to  `{volesti}` 
 
 The package `{samplelim}` is not yet available on CRAN mirrors. Its source code is available on GitHub. It can be installed from its repository by executing the following chunk in an R console.
 
-```{r}
+```{r eval = FALSE}
 if (! "remotes" %in% installed.packages()[,"Package"]) {install.packages("remotes")}
 remotes::install_github("https://github.com/GrenteTheo/samplelim")
 ```
 
 
-## Users' guide
+## Typical workflow
 
 
-ADD 2 or 3 EXAMPLES.
+The workflow of `{samplelim}` is greatly inspired by the package `{limsolve}`. The main front-end function of `{samplelim}` is `rlim()`, performing uniform sampling into the polytope associated to a LIM, by means of MCMC algorithm. Its main, mandatory, argument is `lim`, a list or an object of class `lim` (introduced in `{limsolve}`) encompassing the description of the polytope of the sample. This list or lim object can be defined by hand or, more suitably, from a description file, as illustrated in the following chunk.
 
-A complete user guide has been included in the package, in the form of a vignette.
+```{r readdf}
+# Load package
+library("samplelim")
+# Find path to the example of declaration file (DF) included in samplelim
+DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+# Read DF and create a lim object
+BOWF <- df2lim(DF)
+```
+
+Then, sampling is performed by a simple call to `rlim()`, as follows.
+
+```{r}
+sample <- rlim(lim = BOWF, 
+               seed = 123,
+               nsamp = 5000) # Set the seed of PRNG
+# The points are presented in an N*n matrix, where
+# N is the number of sampled points (here, 5000, default = 3000)
+# n is the number of flows (ambiant space of the polytope)
+dim(sample)
+```
+
+Diagnostics on sampling performances can then be performed using packages `{coda}`, e.g., the Raftery and Lewis diagnostics, as illustrated right below.
+
+```{r}
+coda::raftery.diag(data = sample)
+```
+A complete user guide will be included soon in the package, in the form of a vignette.
 
 A comparison study, including computation time and sampling quality, between the implementations of the MiW of `{samplelim}`, the BiW of `{volesti}` (1.1.2-6) and the Coordinate Hit-and-Run with Rounding (CHRR) of the MatLab library `{COBRA}`, has been performed; see Girardin _et al._ (2023).
 

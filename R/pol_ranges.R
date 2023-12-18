@@ -1,6 +1,23 @@
 
-#' @importFrom Rglpk Rglpk_solve_LP
 
+#' Determine ranges of a polytope
+#'
+#' Blabla description
+#'
+#' @param A blabla
+#' @param B blabla
+#' @param G blabla
+#' @param H blabla
+#'
+#' @return A length \eqn{n} numeric vector, with \eqn{n} the dimension of the polytope.
+#' @importFrom Rglpk Rglpk_solve_LP
+#' @export
+#'
+#' @examples
+#' # Create a lim object from a Description file
+#' DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+#' BOWF <- df2lim(DF)
+#' pol.ranges(A = BOWF$A, B = BOWF$B, G = BOWF$G, H = BOWF$H)
 pol.ranges <- function(A=NULL,B=NULL,G,H)   {
 
   if (is.data.frame(A)) A <- as.matrix(A)
@@ -52,6 +69,9 @@ pol.ranges <- function(A=NULL,B=NULL,G,H)   {
 }
 
 
+#' @param lim blabla
+#' @export
+#' @rdname pol.ranges
 lim.ranges<- function(lim){
   return(pol.ranges(A=lim$A,B=lim$B,G=lim$G,H=lim$H))
 }

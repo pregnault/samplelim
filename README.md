@@ -67,12 +67,86 @@ if (! "remotes" %in% installed.packages()[,"Package"]) {install.packages("remote
 remotes::install_github("https://github.com/GrenteTheo/samplelim")
 ```
 
-## Users’ guide
+## Typical workflow
 
-ADD 2 or 3 EXAMPLES.
+The workflow of `{samplelim}` is greatly inspired by the package
+`{limsolve}`. The main front-end function of `{samplelim}` is `rlim()`,
+performing uniform sampling into the polytope associated to a LIM, by
+means of MCMC algorithm. Its main, mandatory, argument is `lim`, a list
+or an object of class `lim` (introduced in `{limsolve}`) encompassing
+the description of the polytope of the sample. This list or lim object
+can be defined by hand or, more suitably, from a description file, as
+illustrated in the following chunk.
 
-A complete user guide has been included in the package, in the form of a
-vignette.
+``` r
+# Load package
+library("samplelim")
+# Find path to the example of declaration file (DF) included in samplelim
+DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+# Read DF and create a lim object
+BOWF <- df2lim(DF)
+```
+
+Then, sampling is performed by a simple call to `rlim()`, as follows.
+
+``` r
+sample <- rlim(lim = BOWF, 
+               seed = 123,
+               nsamp = 5000) # Set the seed of PRNG
+# The points are presented in an N*n matrix, where
+# N is the number of sampled points (here, 5000, default = 3000)
+# n is the number of flows (ambiant space of the polytope)
+dim(sample)
+```
+
+    ## [1] 5000   28
+
+Diagnostics on sampling performances can then be performed using
+packages `{coda}`, e.g., the Raftery and Lewis diagnostics, as
+illustrated right below.
+
+``` r
+coda::raftery.diag(data = sample)
+```
+
+    ## 
+    ## Quantile (q) = 0.025
+    ## Accuracy (r) = +/- 0.005
+    ## Probability (s) = 0.95 
+    ##                                        
+    ##  Burn-in  Total Lower bound  Dependence
+    ##  (M)      (N)   (Nmin)       factor (I)
+    ##  15       19070 3746         5.090     
+    ##  2        3803  3746         1.020     
+    ##  2        3741  3746         0.999     
+    ##  2        3803  3746         1.020     
+    ##  16       18132 3746         4.840     
+    ##  12       13308 3746         3.550     
+    ##  16       17556 3746         4.690     
+    ##  2        3741  3746         0.999     
+    ##  2        3866  3746         1.030     
+    ##  2        3680  3746         0.982     
+    ##  2        3620  3746         0.966     
+    ##  8        9730  3746         2.600     
+    ##  8        10664 3746         2.850     
+    ##  9        12927 3746         3.450     
+    ##  2        3680  3746         0.982     
+    ##  2        3803  3746         1.020     
+    ##  2        3803  3746         1.020     
+    ##  2        3680  3746         0.982     
+    ##  2        3680  3746         0.982     
+    ##  2        3930  3746         1.050     
+    ##  2        3741  3746         0.999     
+    ##  2        3680  3746         0.982     
+    ##  2        3866  3746         1.030     
+    ##  2        3803  3746         1.020     
+    ##  2        3803  3746         1.020     
+    ##  2        3620  3746         0.966     
+    ##  2        3680  3746         0.982     
+    ##  2        3866  3746         1.030
+
+A complete user guide will be included soon in the package, in the form
+of a vignette.
 
 A comparison study, including computation time and sampling quality,
 between the implementations of the MiW of `{samplelim}`, the BiW of

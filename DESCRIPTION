@@ -21,3 +21,7 @@ Imports: Rcpp, lsei, MASS, methods, Rglpk, stats
 LinkingTo: BH, Rcpp, RcppEigen
 URL: https://github.com/GrenteTheo/samplelim.git
 BugReports: https://github.com/GrenteTheo/samplelim/issues
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+RoxygenNote: 7.2.2
