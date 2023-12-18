@@ -20,6 +20,7 @@
 #' @name Hpolytope-class
 #' @rdname Hpolytope-class
 #' @exportClass Hpolytope
+#' @export
 Hpolytope <- setClass (
   # Class name
   "Hpolytope",

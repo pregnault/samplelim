@@ -39,6 +39,12 @@
 #'   if Hpol is NULL;
 #'   \item the dimension of Hpol is Hpol is an object of class Hpolytope.
 #'  }
+#' @importFrom Rcpp sourceCpp
+#' @importFrom Rcpp loadModule
+#' @importFrom Rcpp evalCpp
+#' @importFrom methods new
+#' @importFrom stats cov
+#' @useDynLib samplelim
 #' @export
 #'
 #' @details
