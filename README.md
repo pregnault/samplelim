@@ -15,7 +15,7 @@ efficient implementations (C++ encoded) of Monte Carlo Markov Chains
 is particularly convenient for solving linear inverse models (LIM) in
 metabolic (trophic, biochemical or urban) networks. Particularly, some
 support functions inspired by the package `{limsolve}` are designed to
-ease its use by ecological practitioners.
+ease its use by ecologists practitioners.
 
 ## Objective
 
@@ -74,7 +74,7 @@ The workflow of `{samplelim}` is greatly inspired by the package
 performing uniform sampling into the polytope associated to a LIM, by
 means of MCMC algorithm. Its main, mandatory, argument is `lim`, a list
 or an object of class `lim` (introduced in `{limsolve}`) encompassing
-the description of the polytope of the sample. This list or lim object
+the description of the polytope to be sampled. This list or lim object
 can be defined by hand or, more suitably, from a description file, as
 illustrated in the following chunk.
 
@@ -91,8 +91,8 @@ Then, sampling is performed by a simple call to `rlim()`, as follows.
 
 ``` r
 sample <- rlim(lim = BOWF, 
-               seed = 123,
-               nsamp = 5000) # Set the seed of PRNG
+               seed = 123, # Set the seed of PRNG
+               nsamp = 5000) # Number of points in the returned sample
 # The points are presented in an N*n matrix, where
 # N is the number of sampled points (here, 5000, default = 3000)
 # n is the number of flows (ambiant space of the polytope)
@@ -172,6 +172,11 @@ of the R package `{volesti}` for additional information on the
 development of the core C++ implementation of the BiW (and other
 algorithms implemented in `{volesti}`).
 
+The function `df2lim()` (reading and formatting a declaration file) is a
+wrapped copy of functions `Read()` and `Setup()` from package `{LIM}`,
+developped by Karline SOETAERT. It has been added to the present package
+to limit its dependency tree.
+
 ## Licensing
 
 You may redistribute or modify the software under the [GNU Lesser
@@ -184,13 +189,13 @@ WITHOUT ANY WARRANTY.
 
 V. Girardin, T. Grente, N. Niquil and P. Regnault, *Comparing and
 updating R packages of MCMC Algorithms for Linear Inverse Modeling of
-Metabolic Networks*, hal: (2023)
+Metabolic Networks*, hal: (2023).
 
 Q. Noguès, A. Raoux, E. Araignous, T. Hattab, B. Leroy, F. Ben Rais
 Lasram, F. Le Loc’h, J. Dauvin and N. Niquil, *Cumulative effects of
 marine renewable energy and climate change on ecosystem properties:
 Sensitivity of ecological network analysis*, Ecological Indicators
-**121**, 107128 (2020)
+**121**, 107128 (2020).
 
 L. Cales, A. Chalkis, I.Z. Emiris and V. Fisikopoulos, *Practical volume
 computation of structured convex bodies, and an application to modeling
@@ -199,8 +204,8 @@ Computational Geometry, Budapest, Hungary (2018).
 
 B.T. Polyak and E.N. Gryazina, *Billiard walk - a new sampling algorithm
 for control and optimization*, IFAC Proceedings Volumes, **47(3)**,
-6123-6128 (2014)
+6123-6128 (2014).
 
 D. Van Oevelen, K. Van den Meersche, F. J. R. Meysman, K. Soetaert, J.
 J. Middelburg and A. F. Vézina, *Quantifying Food Web Flows Using Linear
-Inverse Models*, Ecosystems **13**, 32-45 (2010)
+Inverse Models*, Ecosystems **13**, 32-45 (2010).
