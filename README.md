@@ -15,17 +15,17 @@ efficient implementations (C++ encoded) of Monte Carlo Markov Chains
 is particularly convenient for solving linear inverse models (LIM) in
 metabolic (trophic, biochemical or urban) networks. Particularly, some
 support functions inspired by the package `{limsolve}` are designed to
-ease its use by ecologists practitioners.
+facilitate its use by practitioners.
 
 ## Objective
 
 `{samplelim}` aims at providing efficient implementations of two MCMC
-algorithms for sampling high-dimensional polytopes; namely, the Mirror
-Walk (MiW) introduced by Van Oevelen *et al.* (2010) and the Billard
-Walk (BiW) introduced by Polyak and Gryazina (2014). It also provides
-support functions to ease its use by ecologists practitioners interested
-in solving LIM for trophic networks. Hence, `{samplelim}` can be viewed
-as an updated, extended and low-level-encoded version of the R package
+algorithms for sampling high-dimensional polytopes, the Mirror Walk
+(MiW) introduced by Van Oevelen *et al.* (2010) and the Billard Walk
+(BiW) introduced by Polyak and Gryazina (2014). It also provides support
+functions to facilitate its use by practitioners interested in solving
+LIM for networks. In this regard, `{samplelim}` can be viewed as an
+updated, extended and low-level-encoded version of the R package
 [`{limsolve}`](https://cran.r-project.org/web/packages/limSolve/index.html).
 
 `{samplelim}` is built upon the C++ library
@@ -33,22 +33,22 @@ as an updated, extended and low-level-encoded version of the R package
 source code of the R package `{volesti}` 1.1.2-6 has been forked from
 its [GitHub
 repository](https://github.com/GeomScale/volesti/releases/tag/v1.1.2-6)
-and has served as a basis for developing `{samplelim}`.
+as a basis for developing `{samplelim}`.
 
 The C++ library `{volesti}` provides efficient implementations of
-several MCMC algorithms for sampling high-dimensional polytopes and
+different MCMC algorithms for sampling high-dimensional polytopes and
 estimating their volumes. Its R package counterpart includes a subset of
-these algorithms among which, the BiW.
+these algorithms including the BiW.
 
-The modifications and additions made by `{samplelim}` (compared to
-`{volesti}` 1.1.2-6) include:
+The modifications and additions in `{samplelim}` with respect to
+`{volesti}` 1.1.2-6 include:
 
 - the removal of the bound on the number of reflections for the BiW ;
-- the introduction of the MiW. More precisely, its implementation in
-  `{samplelim}` is an optimized, C++ encoded version of the algorithm
-  implemented in pure R programming in `{limsolve}` ;
-- support functions inspired by `{limsolve}` making their users to be
-  able to master `{samplelim}` very easily.
+- the introduction of the MiW. Its implementation in `{samplelim}` is an
+  optimized, C++ encoded version of the algorithm implemented in pure R
+  programming language in `{limsolve}` ;
+- support functions inspired by `{limsolve}` that allow users an easy
+  handling.
 
 `{samplelim}` does not aim at replacing nor competing `{volesti}`, which
 offers high-quality contents that are not covered by `{samplelim}`. We
@@ -60,7 +60,7 @@ high-dimensional polytopes.
 
 The package `{samplelim}` is not yet available on CRAN mirrors. Its
 source code is available on GitHub. It can be installed from its
-repository by executing the following chunk in an R console.
+repository by executing the following chunk in any R console.
 
 ``` r
 if (! "remotes" %in% installed.packages()[,"Package"]) {install.packages("remotes")}
@@ -87,7 +87,8 @@ DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplel
 BOWF <- df2lim(DF)
 ```
 
-Then, sampling is performed by a simple call to `rlim()`, as follows.
+Then, sampling is performed by a simple call to the function `rlim()`,
+as follows.
 
 ``` r
 sample <- rlim(lim = BOWF, 
@@ -103,7 +104,7 @@ dim(sample)
 
 Diagnostics on sampling performances can then be performed using
 packages `{coda}`, e.g., the Raftery and Lewis diagnostics, as
-illustrated right below.
+illustrated below.
 
 ``` r
 coda::raftery.diag(data = sample)
@@ -145,26 +146,25 @@ coda::raftery.diag(data = sample)
     ##  2        3680  3746         0.982     
     ##  2        3866  3746         1.030
 
-A complete user guide will be included soon in the package, in the form
+A complete user guide will soon be included in the package, in the form
 of a vignette.
 
-A comparison study, including computation time and sampling quality,
-between the implementations of the MiW of `{samplelim}`, the BiW of
-`{volesti}` (1.1.2-6) and the Coordinate Hit-and-Run with Rounding
-(CHRR) of the MatLab library `{COBRA}`, has been performed; see Girardin
-*et al.* (2023).
+A comparison study of computation time and sampling quality, between the
+implementations of the MiW of `{samplelim}`, the BiW of `{volesti}`
+(1.1.2-6) and the Coordinate Hit-and-Run with Rounding (CHRR) of the
+MatLab library `{COBRA}` is available in Girardin *et al.* (2023).
 
 ## Credits
 
-The modifications of the core C++ implementation of the BiW, so as the
-C++ implementation of the MiW, have been performed by Matthieu DIEN and
-Théo GRENTE.
+The modifications of the core C++ implementation of the BiW and the C++
+implementation of the MiW, have been performed by Matthieu DIEN and Théo
+GRENTE.
 
 The R packaging has been performed by Théo GRENTE and Philippe REGNAULT.
 
-The Declaration Files in `inst/extdata` have been produced by Quentin
+The Declaration File in `inst/extdata` has been produced by Quentin
 NOGUÈS; see Noguès *at al.* (2020) for details on the ecological network
-they rely on.
+it relies on.
 
 We refer to the [`credits.md`
 file](https://github.com/GeomScale/volesti/blob/v1.1.1/doc/credits.md)
@@ -181,15 +181,15 @@ to limit its dependency tree.
 
 You may redistribute or modify the software under the [GNU Lesser
 General Public License](LICENSE.md) as published by Free Software
-Foundation, either version 3 of the License, or (at your option) any
-later version. It is distributed in the hope that it will be useful, but
+Foundation, either version 3 of the License, or any later version. It is
+distributed in the hope that it may be helpful to the community, but
 WITHOUT ANY WARRANTY.
 
 ## References
 
 V. Girardin, T. Grente, N. Niquil and P. Regnault, *Comparing and
 updating R packages of MCMC Algorithms for Linear Inverse Modeling of
-Metabolic Networks*, hal: (2023).
+Metabolic Networks*, hal: (2024).
 
 Q. Noguès, A. Raoux, E. Araignous, T. Hattab, B. Leroy, F. Ben Rais
 Lasram, F. Le Loc’h, J. Dauvin and N. Niquil, *Cumulative effects of
