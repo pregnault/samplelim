@@ -59,8 +59,10 @@ source code is available on GitHub. It can be installed from its
 repository by executing the following chunk in any R console.
 
 ``` r
+# Install package remotes if not already installed
 if (! "remotes" %in% installed.packages()[,"Package"]) {install.packages("remotes")}
-remotes::install_github("https://github.com/GrenteTheo/samplelim")
+# Install package samplelim from its GitHub repo
+remotes::install_github("https://github.com/pregnault/samplelim")
 ```
 
 ## Typical workflow
@@ -98,9 +100,8 @@ dim(sample)
 
     ## [1] 5000   28
 
-Diagnostics on sampling performances can then be performed using
-packages `{coda}`, e.g., the Raftery and Lewis diagnostics, as
-illustrated below.
+Diagnostics on sampling performances can then be performed using package
+`{coda}`, e.g., the Raftery and Lewis diagnostics, as illustrated below.
 
 ``` r
 coda::raftery.diag(data = sample)
@@ -148,7 +149,7 @@ of a vignette.
 A comparison study of computation time and sampling quality, between the
 implementations of the MiW of `{samplelim}`, the BiW of `{volesti}`
 (1.1.2-6) and the Coordinate Hit-and-Run with Rounding (CHRR) of the
-MatLab library `{COBRA}` is available in Girardin *et al.* (2023).
+MatLab library `{COBRA}` is available in Girardin *et al.* (2024).
 
 ## Credits
 
