@@ -25,13 +25,11 @@ Particularly, some support functions inspired by the package `{limsolve}` are de
 
 The C++ library  `{volesti}` provides efficient implementations of different MCMC algorithms for sampling high-dimensional polytopes and estimating their volumes. Its R package counterpart includes a subset of these algorithms including the BiW.
 
-The modifications and additions in `{samplelim}` with respect to  `{volesti}` 1.1.2-6 include:
+`{samplelim}` aims at combining the performance of `{volesti}` and the convenient features of `{limsolve}`. More precisely :
 
-  * the removal of the bound on the number of reflections for the BiW ;
-  * the introduction of the MiW. Its implementation in `{samplelim}` is an optimized, C++ encoded version of the algorithm implemented in pure R programming language in `{limsolve}` ;
-  * support functions inspired by `{limsolve}` that allow users an easy handling.
-
-`{samplelim}` does not aim at replacing nor competing `{volesti}`, which offers high-quality contents that are not covered by `{samplelim}`. We expect `{samplelim}` to ease the junction between ecologists that are familiar with `{limsolve}` and other communities interested in sampling high-dimensional polytopes.
+  * `{samplelim}` copies and slightly modifies the BiW from `{volesti}` 1.1.2-6 --  the uniform distribution of the path length in `{volesti}` is replaced by the exponential distribution, as originally suggested by Polyak and Gryazina (2014);
+  * the MiW is implemented. It is an optimized, C++ encoded version of the algorithm implemented in pure R programming language in `{limsolve}`;
+  * support functions inspired by `{limsolve}` add included, that allow users an easy handling.
 
 ## Installation
 

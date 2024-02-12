@@ -4,11 +4,14 @@ Title: MCMC sampling algorithms for linear inverse models
 Version: 0.1
 Date: 2023-11-30
 Authors@R: c(
-    person("Théo", "Grente", , "theo.grente@gmail.com", role = c("aut", "cre", "com")),
-    person("Philippe", "Regnault", , "philipperegnault@hotmail.com", role = "aut",
-           comment = c(ORCID = "0000-0002-7086-9030")),
     person("Matthieu", "Dien", , "matthieu.dien@unicaen.fr", role = "aut"),
-    person("Quentin", "Noguès", role = "dtc")
+    person("Valérie", "Girardin", , "valerie.girardin@unicaen.fr", role = "ctb",
+           comment = c(ORCID = "0000-0001-9934-3561")),
+    person("Théo", "Grente", , "theo.grente@gmail.com", role = "aut"),
+    person("Nathalie", "Niquil", , "nathalie.niquil@unicaen.fr", role = "ctb"),
+    person("Quentin", "Noguès", role = "dtc"),
+    person("Philippe", "Regnault", , "philipperegnault@hotmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-7086-9030"))
   )
 Description: The package samplelim provides performant implementations (C++ encoded) of Monte Carlo Markov Chains (MCMC) algorithms for uniformly sampling hig-dimensional polytopes. 
     It is particularly convenient for solving linear inverse models (LIM) in metabolic (trophic, biochemical or urban) networks.
