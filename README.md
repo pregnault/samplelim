@@ -186,7 +186,8 @@ WITHOUT ANY WARRANTY.
 
 V. Girardin, T. Grente, N. Niquil and P. Regnault, *Comparing and
 updating R packages using MCMC Algorithms for Linear Inverse Modeling of
-Metabolic Networks*, hal-04455831 (2024).
+Metabolic Networks*, [hal-04455831](https://hal.science/hal-04455831)
+(2024).
 
 Q. Noguès, A. Raoux, E. Araignous, T. Hattab, B. Leroy, F. Ben Rais
 Lasram, F. Le Loc’h, J. Dauvin and N. Niquil, *Cumulative effects of
