@@ -98,9 +98,9 @@ You may redistribute or modify the software under the [GNU Lesser General Public
 ## References
 
 V. Girardin, T. Grente, N. Niquil and P. Regnault,
-_Comparing and updating R packages of MCMC Algorithms
+_Comparing and updating R packages using MCMC Algorithms
 for Linear Inverse Modeling of Metabolic Networks_,
-hal: 
+[hal-04455831](https://hal.science/hal-04455831)
 (2024).
 
 
