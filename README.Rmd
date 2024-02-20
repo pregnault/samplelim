@@ -14,22 +14,23 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/regexplain)](https://cran.r-project.org/package=samplelim)
 
 The package `{samplelim}` for the R statistical software provides efficient implementations (C++ encoded) of Monte Carlo Markov Chains (MCMC) algorithms for uniformly sampling high-dimensional polytopes. 
-It is particularly convenient for solving linear inverse models (LIM) in metabolic (trophic, biochemical or urban) networks. 
-Particularly, some support functions inspired by the package `{limsolve}` are designed to facilitate its use by practitioners.
+It is particularly aimed at handling linear inverse models (LIM) in metabolic (trophic, biochemical or urban) networks. 
+Some support functions are also included to facilitate its use by practitioners.
 
 ## Objective
 
-`{samplelim}` aims at providing efficient implementations of two MCMC algorithms for sampling high-dimensional polytopes, the Mirror Walk (MiW) introduced by Van Oevelen _et al._ (2010) and the Billard Walk (BiW) introduced by Polyak and Gryazina (2014). It also provides support functions to facilitate its use by practitioners interested in solving LIM for networks. In this regard, `{samplelim}` can be viewed as an updated, extended and low-level-encoded version of the R package [`{limsolve}`](https://cran.r-project.org/web/packages/limSolve/index.html).
+`{samplelim}` provides efficient implementations of two MCMC algorithms for sampling high-dimensional polytopes, the Mirror Walk (MiW) introduced by Van Oevelen _et al._ (2010) and the Billard Walk (BiW) introduced by Polyak and Gryazina (2014). 
+Thanks to the inclusion of easy to use support functions for linear inverse modeling of metabolic networks, `{samplelim}` can be viewed as an updated, extended and low-level-encoded version of the R package [`{limsolve}`](https://cran.r-project.org/web/packages/limSolve/index.html).
 
-`{samplelim}` is built upon the C++ library [`{volesti}`](https://github.com/GeomScale/volesti). Precisely, the source code of the R package `{volesti}` 1.1.2-6 has been forked from its [GitHub repository](https://github.com/GeomScale/volesti/releases/tag/v1.1.2-6) as a basis for developing `{samplelim}`.
+`{samplelim}` is built upon the C++ library [`{volesti}`](https://github.com/GeomScale/volesti): the source code of the R package `{volesti}` 1.1.2-6 has been forked from its [GitHub repository](https://github.com/GeomScale/volesti/releases/tag/v1.1.2-6) as a basis for developing `{samplelim}`.
 
-The C++ library  `{volesti}` provides efficient implementations of different MCMC algorithms for sampling high-dimensional polytopes and estimating their volumes. Its R package counterpart includes a subset of these algorithms including the BiW.
+The C++ library  `{volesti}` provides efficient implementations of different MCMC algorithms for sampling high-dimensional polytopes and estimating their volumes. Its R package counterpart proposes a subset of these algorithms among which the BiW.
 
-`{samplelim}` aims at combining the performance of `{volesti}` and the convenient features of `{limsolve}`. More precisely :
+`{samplelim}` aims at combining the performance of `{volesti}` and the convenient features of `{limsolve}`. Precisely :
 
-  * `{samplelim}` copies and slightly modifies the BiW from `{volesti}` 1.1.2-6 --  the uniform distribution of the path length in `{volesti}` is replaced by the exponential distribution, as originally suggested by Polyak and Gryazina (2014);
-  * the MiW is implemented. It is an optimized, C++ encoded version of the algorithm implemented in pure R programming language in `{limsolve}`;
-  * support functions inspired by `{limsolve}` add included, that allow users an easy handling.
+  * the MiW is implemented. It is an optimized, C++ encoded version of the algorithm coded in pure R programming language in `{limsolve}`;
+  * `{samplelim}` includes and slightly modifies the BiW from `{volesti}` 1.1.2-6 --  the uniform distribution of the path length in `{volesti}` is replaced by the exponential distribution, as originally suggested by Polyak and Gryazina (2014);
+  * support functions allowing an easy handling by users are included. These functions are updated/modified versions of the ones present in `{limsolve}`.
 
 ## Installation
 
@@ -46,7 +47,7 @@ remotes::install_github("https://github.com/pregnault/samplelim")
 ## Typical workflow
 
 
-The workflow of `{samplelim}` is greatly inspired by the package `{limsolve}`. The main front-end function of `{samplelim}` is `rlim()`, performing uniform sampling into the polytope associated to a LIM, by means of MCMC algorithm. Its main, mandatory, argument is `lim`, a list or an object of class `lim` (introduced in `{limsolve}`) encompassing the description of the polytope to be sampled. This list or lim object can be defined by hand or, more suitably, from a description file, as illustrated in the following chunk.
+The workflow of `{samplelim}` is greatly inspired by the one of `{limsolve}`. The main front-end function of `{samplelim}` is `rlim()`, performing uniform sampling in the polytope associated to LIM, by means of MCMC algorithm. Its main, mandatory, argument is `lim`, a list or an object of class `lim` (introduced in `{limsolve}`) encompassing the description of the polytope to be sampled. This list or lim object can be defined manually or, more suitably, from a description file, as illustrated in the following chunk.
 
 ```{r readdf}
 # Load package
