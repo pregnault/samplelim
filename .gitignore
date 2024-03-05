@@ -7,5 +7,4 @@
 *.Ruserdata
 .Rproj.user
 *.a
-vignettes/*
 samplelim.Rproj
