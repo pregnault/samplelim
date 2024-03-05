@@ -24,7 +24,7 @@
 #' }
 #' 
 #' @rdname lim.redpol
-#' @importFrom lsei lsei
+#' @importFrom limSolve lsei
 #' @importFrom MASS Null
 #' @export
 #'
@@ -59,13 +59,8 @@ lim.redpol <-function(lim,test=TRUE){
   
   
   ## find a particular solution x0
-  D<-matrix(data=0, nrow=1,ncol=NUnknowns)
-  d<-0
-  dvec  <- crossprod(D, d)
-  Dmat<-crossprod(D,D)
-  diag(Dmat)<-diag(Dmat)+1e-11
-  sol <- lsei(a=Dmat,b=dvec,c=A, d=B,e=G,f=H)
-  x0<-round(sol,digits=8)
+  sol <- lsei(A=NULL,B=NULL,E=A,F=B,G=G,H=H)
+  x0<-sol[["X"]]
   
   Z <- Null(t(A)); Z[abs(Z)<tol] <- 0  #x=x0+Zq ; AZ=0
   

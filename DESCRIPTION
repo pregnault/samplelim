@@ -20,11 +20,11 @@ License: LGPL (>= 3)
 Copyright: file inst/COPYRIGHTS
 Encoding: UTF-8
 NeedsCompilation: yes
-Imports: Rcpp, lsei, MASS, methods, Rglpk, stats
+Imports: Rcpp, limSolve, MASS, methods, Rglpk, stats
 LinkingTo: BH, Rcpp, RcppEigen
-URL: https://github.com/GrenteTheo/samplelim.git
-BugReports: https://github.com/GrenteTheo/samplelim/issues
+URL: https://github.com/pregnault/samplelim.git
+BugReports: https://github.com/pregnault/samplelim/issues
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
