@@ -78,7 +78,7 @@ pol.ranges <- function(A=NULL,B=NULL,G,H)   {
 lim.ranges<- function(lim){
   ranges<-pol.ranges(A=lim$A,B=lim$B,G=lim$G,H=lim$H)
   if(!is.null(lim$Unknowns)&&length(lim$Unknowns)==nrow(ranges)){
-    rownames(x)<-lim$Unknowns
+    rownames(ranges)<-lim$Unknowns
   }
   return(ranges)
 }
