@@ -252,10 +252,14 @@ rlim<- function(lim, Hpol = NULL,
     
     xnames <- colnames(A)
     if (is.null(xnames)) xnames <- colnames(G)
-    colnames (x) <- xnames
+    colnames(x) <- xnames
   }
   if (!is.null(Hpol) && inherits(Hpol, "Hpolytope")) {
     x <- t(res_redspace)
+  }
+  
+  if(!is.null(lim$Unknowns)&&length(lim$Unknowns)==ncol(x)){
+    colnames(x)<-lim$Unknowns
   }
   return(x)
   
