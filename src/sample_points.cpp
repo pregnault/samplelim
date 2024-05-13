@@ -132,7 +132,7 @@ Rcpp::NumericMatrix sample_points(Rcpp::Reference P,
 
     numpoints = n;
     if (numpoints <= 0)
-        throw Rcpp::exception("The number of samples has to be a positice integer!");
+        throw Rcpp::exception("The number of samples has to be a positive integer!");
 
 
 // Point de départ de la marche 
