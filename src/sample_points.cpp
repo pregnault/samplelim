@@ -135,7 +135,7 @@ Rcpp::NumericMatrix sample_points(Rcpp::Reference P,
         throw Rcpp::exception("The number of samples has to be a positive integer!");
 
 
-// Point de départ de la marche 
+// Starting point of the walk
 
     Point StartingPoint;
     if (Rcpp::as<Rcpp::List>(random_walk).containsElementNamed("starting_point"))
