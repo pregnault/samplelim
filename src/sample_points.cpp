@@ -2,7 +2,7 @@
 
 // VolEsti (volume computation and sampling library)
 
-// Copyright (c) 20012-2020 Vissarion Fisikopoulos
+// Copyright (c) 2012-2020 Vissarion Fisikopoulos
 // Copyright (c) 2018-2020 Apostolos Chalkis
 
 // Contributed and/or modified by Apostolos Chalkis, as part of Google Summer of Code 2018 and 2019 program.
@@ -132,10 +132,10 @@ Rcpp::NumericMatrix sample_points(Rcpp::Reference P,
 
     numpoints = n;
     if (numpoints <= 0)
-        throw Rcpp::exception("The number of samples has to be a positice integer!");
+        throw Rcpp::exception("The number of samples has to be a positive integer!");
 
 
-// Point de départ de la marche 
+// Starting point of the walk
 
     Point StartingPoint;
     if (Rcpp::as<Rcpp::List>(random_walk).containsElementNamed("starting_point"))

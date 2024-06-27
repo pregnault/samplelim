@@ -66,7 +66,7 @@ lim.redpol <-function(lim,test=TRUE){
   
   k <- ncol(Z)
   
-  #Projection de G et H sur l'espace réduit
+  ## projection of G and H onto reduced space
   g <- G%*%Z
   h <- H-G%*%x0                                            
   g[abs(g)<tol] <- 0
