@@ -19,7 +19,7 @@ Inequality constraints, represented by the matrix $G$, involved in linear invers
 
 The main argument `lim` of `rlim()` is a list with (at least) four components named `A`, `B`, `G` and `H`, the matrices and vectors defining the polytope to be sampled. Right below is a minimal example.
 
-```{r minimalexample}
+```{r minimalexample, eval = FALSE}}
 library("samplelim")
 # Define equality and inequality constraints through matrices A, B, G, H
 A <- matrix(rep(1, 3L), nrow = 1, ncol = 3)
