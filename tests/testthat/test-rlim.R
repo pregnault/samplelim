@@ -42,18 +42,18 @@ test_that("rlim() works as expected for LIM object", {
 
   # Check if all type of walk work
   # Billard Walk
-  samp_BiW <- rlim(lim = BOWF, type = "MiW", nsamp = nsamp, seed = 123)
+  samp_BiW <- rlim(lim = BOWF, type = "BiW", nsamp = nsamp, seed = 123)
   expect_equal(dim(samp_BiW), c(nsamp,ncol(BOWF$A)))
   expect_type(samp_BiW, "double")
   
   # Mirror Walk
-  samp_MiW <- rlim(lim = BOWF, type = "BiW", nsamp = nsamp, seed = 123)
+  samp_MiW <- rlim(lim = BOWF, type = "MiW", nsamp = nsamp, seed = 123)
   expect_equal(dim(samp_MiW), c(nsamp,ncol(BOWF$A)))
   expect_type(samp_MiW, "double")
   
   # Nothing specified (expect to be equal to Mirror Walk)
-  # samp_None <- rlim(lim = BOWF, nsamp = nsamp, seed = 123)
-  # expect_equal(samp_None, samp_MiW)
+  samp_None <- rlim(lim = BOWF, nsamp = nsamp, seed = 123)
+  expect_equal(samp_None, samp_MiW)
 
   # Non-existing walk
   expect_error(rlim(lim = BOWF, type = "This_walk_type_does_not_exist", nsamp = nsamp, seed = 123), "walk type")
