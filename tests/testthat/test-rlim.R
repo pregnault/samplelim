@@ -14,9 +14,9 @@ test_that("rlim() works as expected for LIM object", {
   # Create a LIM object from a Declaration File
   DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
   BOWF <- df2lim(DF)
-  nsamp = 20
-  burn = 0
-  thin = 1
+  nsamp <- 20
+  burn <- 0
+  thin <- 1
   samp <- rlim(lim = BOWF, nsamp = nsamp, burn = burn, thin = thin,
                seed = 456)
   # Check dimensions of sample are correct
@@ -63,7 +63,7 @@ test_that("rlim() works as expected for LIM object", {
   no_thin <- rlim(lim = BOWF, nsamp = nsamp, thin=1, seed = 123)
   with_thin <-  rlim(lim = BOWF, nsamp = nsamp, thin = 2, seed = 123)
     
-  keeped_rows=seq(2,dim(no_thin)[1]/2,2)
+  keeped_rows <- seq(2,dim(no_thin)[1]/2,2)
   expect_equal(with_thin[1:length(keeped_rows),],no_thin[keeped_rows,])
   
 })
