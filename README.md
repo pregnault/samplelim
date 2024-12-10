@@ -110,37 +110,37 @@ coda::raftery.diag(data = sample)
     ## Quantile (q) = 0.025
     ## Accuracy (r) = +/- 0.005
     ## Probability (s) = 0.95 
-    ##                                        
-    ##  Burn-in  Total Lower bound  Dependence
-    ##  (M)      (N)   (Nmin)       factor (I)
-    ##  15       19070 3746         5.090     
-    ##  2        3803  3746         1.020     
-    ##  2        3741  3746         0.999     
-    ##  2        3803  3746         1.020     
-    ##  16       18132 3746         4.840     
-    ##  12       13308 3746         3.550     
-    ##  16       17556 3746         4.690     
-    ##  2        3741  3746         0.999     
-    ##  2        3866  3746         1.030     
-    ##  2        3680  3746         0.982     
-    ##  2        3620  3746         0.966     
-    ##  8        9730  3746         2.600     
-    ##  8        10664 3746         2.850     
-    ##  9        12927 3746         3.450     
-    ##  2        3680  3746         0.982     
-    ##  2        3803  3746         1.020     
-    ##  2        3803  3746         1.020     
-    ##  2        3680  3746         0.982     
-    ##  2        3680  3746         0.982     
-    ##  2        3930  3746         1.050     
-    ##  2        3741  3746         0.999     
-    ##  2        3680  3746         0.982     
-    ##  2        3866  3746         1.030     
-    ##  2        3803  3746         1.020     
-    ##  2        3803  3746         1.020     
-    ##  2        3620  3746         0.966     
-    ##  2        3680  3746         0.982     
-    ##  2        3866  3746         1.030
+    ##                                                 
+    ##           Burn-in  Total Lower bound  Dependence
+    ##           (M)      (N)   (Nmin)       factor (I)
+    ##  FIX->PHY 18       19902 3746         5.310     
+    ##  IMP->FBF 2        3680  3746         0.982     
+    ##  DET->BIV 2        3803  3746         1.020     
+    ##  DET->ZOO 2        3803  3746         1.020     
+    ##  DET->BAC 18       20799 3746         5.550     
+    ##  PHY->RES 12       14451 3746         3.860     
+    ##  PHY->DET 15       17676 3746         4.720     
+    ##  PHY->BIV 2        3680  3746         0.982     
+    ##  PHY->ZOO 2        3930  3746         1.050     
+    ##  PHY->BAC 2        3741  3746         0.999     
+    ##  PHY->LOS 2        3803  3746         1.020     
+    ##  BAC->RES 8        10712 3746         2.860     
+    ##  BAC->DET 4        5211  3746         1.390     
+    ##  BAC->LOS 8        11704 3746         3.120     
+    ##  ZOO->RES 3        4062  3746         1.080     
+    ##  ZOO->DET 2        3803  3746         1.020     
+    ##  ZOO->FBF 2        3741  3746         0.999     
+    ##  ZOO->BIV 2        3680  3746         0.982     
+    ##  ZOO->ZOO 2        3930  3746         1.050     
+    ##  ZOO->LOS 2        3803  3746         1.020     
+    ##  BIV->RES 2        3803  3746         1.020     
+    ##  BIV->DET 2        3620  3746         0.966     
+    ##  BIV->FBF 2        3741  3746         0.999     
+    ##  BIV->LOS 2        3741  3746         0.999     
+    ##  FBF->RES 2        3803  3746         1.020     
+    ##  FBF->DET 2        3741  3746         0.999     
+    ##  FBF->FBF 2        3680  3746         0.982     
+    ##  FBF->LOS 2        3620  3746         0.966
 
 A complete user guide will soon be included in the package, in the form
 of a vignette.
@@ -156,7 +156,8 @@ The modifications of the core C++ implementation of the BiW and the C++
 implementation of the MiW, have been performed by Matthieu DIEN and Théo
 GRENTE.
 
-The R packaging has been performed by Théo GRENTE and Philippe REGNAULT.
+The R packaging has been performed by Jacques BRÉHÉLIN, Théo GRENTE and
+Philippe REGNAULT.
 
 The Declaration File in `inst/extdata` has been produced by Quentin
 NOGUÈS; see Noguès *at al.* (2020) for details on the ecological network

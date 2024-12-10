@@ -83,7 +83,7 @@ A comparison study of computation time and sampling quality, between the impleme
 
 The modifications of the core C++ implementation of the BiW and the C++ implementation of the MiW, have been performed by Matthieu DIEN and Théo GRENTE. 
 
-The R packaging has been performed by Théo GRENTE and Philippe REGNAULT.
+The R packaging has been performed by Jacques BRÉHÉLIN, Théo GRENTE and Philippe REGNAULT.
 
 The Declaration File in `inst/extdata` has been produced by Quentin NOGUÈS; see Noguès _at al._ (2020) for details on the ecological network it relies on.
 
