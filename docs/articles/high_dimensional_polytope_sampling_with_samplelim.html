@@ -705,34 +705,34 @@ matrix <span class="math inline">\(Z\)</span> have to be given.</p>
 <code class="sourceCode R"><span><span class="co"># Sampling the reduced polytope</span></span>
 <span><span class="va">sample_reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rlim.html">rlim</a></span><span class="op">(</span><span class="va">reduced</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sample_reduced</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##          [,1]     [,2]      [,3]     [,4]      [,5]       [,6]     [,7]</span></span>
-<span><span class="co">## [1,] 39.90266 88.34073  15.00790 20.62387 -21.23670  0.2066327 18.59739</span></span>
-<span><span class="co">## [2,] 66.88819 98.76143  38.84621 30.80311 -32.69496 -0.9726963 18.81761</span></span>
-<span><span class="co">## [3,] 83.58661 75.98770  38.65725 39.19362  15.19842 47.2509147 29.03527</span></span>
-<span><span class="co">## [4,] 33.44664 54.87282  47.48531 23.25045 -10.13626  3.3701082 20.82970</span></span>
-<span><span class="co">## [5,] 69.42430 66.83558  56.75187 59.19687 -12.89157 54.5154771 20.92172</span></span>
-<span><span class="co">## [6,] 52.76150 36.13268 100.17881 23.71602 -17.44190 17.0799533 13.13614</span></span>
-<span><span class="co">##           [,8]      [,9]    [,10]     [,11]     [,12]    [,13]      [,14]</span></span>
-<span><span class="co">## [1,] -2.838574 -3.385498 38.37060 -25.36092  7.406561 2.370892  1.3875548</span></span>
-<span><span class="co">## [2,] -5.030159 -1.626131 57.39278 -51.30205 32.486298 0.341214  1.0781474</span></span>
-<span><span class="co">## [3,] 16.973344  5.477194 31.07982 -18.32858  1.194270 2.412193  1.1465363</span></span>
-<span><span class="co">## [4,] 18.504705 14.930625 41.32947 -11.57752 10.057409 1.057643  6.3676292</span></span>
-<span><span class="co">## [5,] 22.846266  7.928461 40.03462 -26.99793  2.071926 3.582704  0.6873301</span></span>
-<span><span class="co">## [6,] 24.847234 15.814981 47.75740 -28.72153  2.319717 8.520808 33.0723527</span></span>
-<span><span class="co">##           [,15]    [,16]     [,17]       [,18]    [,19]     [,20]     [,21]</span></span>
-<span><span class="co">## [1,]  19.192828 38.80550 -40.81239  -2.3279778 35.71659  64.91484 1.9355223</span></span>
-<span><span class="co">## [2,]  40.307870 27.04648 -79.59070 -21.2855864 66.12388 101.99826 3.4593117</span></span>
-<span><span class="co">## [3,]   8.489069 24.06737 -28.54879  -0.0213823 31.15064  53.24092 3.1350886</span></span>
-<span><span class="co">## [4,]   3.454073 44.86389 -23.90912  -3.3234921 33.38729  37.48681 3.0055889</span></span>
-<span><span class="co">## [5,]  -6.315563 25.36858 -36.27497  -8.2393631 36.23780  51.15268 3.3770833</span></span>
-<span><span class="co">## [6,] -15.975727 11.46614 -38.32015 -14.9287566 34.27759  50.82723 0.8160201</span></span>
+<pre><code><span><span class="co">##           [,1]     [,2]      [,3]     [,4]      [,5]     [,6]     [,7]</span></span>
+<span><span class="co">## [1,]  74.83223 43.13515  41.59024 28.49893 10.329634 34.89799 18.39237</span></span>
+<span><span class="co">## [2,]  84.78960 58.64567  60.09307 27.65637 16.962835 31.76416 15.99816</span></span>
+<span><span class="co">## [3,]  59.04672 67.51550  22.28097 38.07940  1.629436 26.12109 37.11897</span></span>
+<span><span class="co">## [4,] 100.85553 57.84883 104.06348 45.11101 27.580583 60.73539 68.45584</span></span>
+<span><span class="co">## [5,]  95.62668 77.17322  69.96362 46.41447 27.955809 60.22458 54.22486</span></span>
+<span><span class="co">## [6,] 119.67894 48.76823  46.95739 56.01541 47.899503 79.03990 40.05395</span></span>
+<span><span class="co">##           [,8]       [,9]    [,10]     [,11]      [,12]    [,13]     [,14]</span></span>
+<span><span class="co">## [1,]  7.837591  -3.690632 35.36470 -37.49394 12.0562498 1.577896 -3.535907</span></span>
+<span><span class="co">## [2,] 18.430146  14.481379 30.82407 -40.69700 25.2339152 2.390334 15.437025</span></span>
+<span><span class="co">## [3,] -9.347489 -14.486050 27.97505 -36.57888 -2.2503842 1.796701 -7.303899</span></span>
+<span><span class="co">## [4,] 14.279603   5.107705 57.17872 -14.96610  0.4293629 6.355259  4.524261</span></span>
+<span><span class="co">## [5,]  7.279720   6.791954 46.19881 -21.78204 16.6952150 3.189978  1.930370</span></span>
+<span><span class="co">## [6,]  1.190374  -6.695064 32.42994 -41.25052 10.0768679 1.722250 -5.028717</span></span>
+<span><span class="co">##           [,15]    [,16]     [,17]      [,18]    [,19]    [,20]    [,21]</span></span>
+<span><span class="co">## [1,] -14.782424 15.87965 -47.70550 -16.498226 39.92648 62.57160 1.524565</span></span>
+<span><span class="co">## [2,]   0.194600 10.89087 -59.63070 -15.769408 48.93137 61.62917 1.430687</span></span>
+<span><span class="co">## [3,]   4.163762 21.04047 -43.21725 -21.422267 35.55963 73.11584 3.242878</span></span>
+<span><span class="co">## [4,]  -9.836142 36.51153 -16.04820  -8.912600 26.32741 49.94306 3.337437</span></span>
+<span><span class="co">## [5,]   1.590903 42.40694 -31.98019   1.117422 29.55629 54.53992 2.262555</span></span>
+<span><span class="co">## [6,] -18.387164 10.00307 -53.69917 -19.320047 42.59050 69.24565 3.240836</span></span>
 <span><span class="co">##         [,22]</span></span>
-<span><span class="co">## [1,] 31.81566</span></span>
-<span><span class="co">## [2,] 56.41949</span></span>
-<span><span class="co">## [3,] 26.01260</span></span>
-<span><span class="co">## [4,] 20.43611</span></span>
-<span><span class="co">## [5,] 29.27737</span></span>
-<span><span class="co">## [6,] 31.66623</span></span></code></pre>
+<span><span class="co">## [1,] 34.60742</span></span>
+<span><span class="co">## [2,] 43.99625</span></span>
+<span><span class="co">## [3,] 31.55693</span></span>
+<span><span class="co">## [4,] 17.49126</span></span>
+<span><span class="co">## [5,] 27.42026</span></span>
+<span><span class="co">## [6,] 38.59601</span></span></code></pre>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Turn sampled points of the reduced polytope into sampled points of the full polytope</span></span>
 <span><span class="va">sample_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lim.redpol.html">red2full</a></span><span class="op">(</span><span class="va">sample_reduced</span>, <span class="va">reduced</span><span class="op">$</span><span class="va">x0</span>, <span class="va">reduced</span><span class="op">$</span><span class="va">Z</span><span class="op">)</span></span></code></pre></div>
@@ -760,7 +760,7 @@ points).</p>
 <span><span class="va">time1</span> <span class="op">&lt;-</span> <span class="va">end_time1</span> <span class="op">-</span> <span class="va">start_time1</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Time for xsample():"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">time1</span>,<span class="fl">3</span><span class="op">)</span>, <span class="st">"seconds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "Time for xsample(): 1.995 seconds"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "Time for xsample(): 1.981 seconds"</span></span></code></pre>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Execution time for rlim (samplelim)</span></span>
 <span><span class="va">start_time2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -769,7 +769,7 @@ points).</p>
 <span><span class="va">time2</span> <span class="op">&lt;-</span> <span class="va">end_time2</span> <span class="op">-</span> <span class="va">start_time2</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Time for rlim():"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">time2</span>,<span class="fl">3</span><span class="op">)</span>, <span class="st">"seconds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "Time for rlim(): 0.299 seconds"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "Time for rlim(): 0.284 seconds"</span></span></code></pre>
 <p>Even with a small sample size, <code><a href="../reference/rlim.html">rlim()</a></code> outperforms
 <code><a href="https://rdrr.io/pkg/limSolve/man/xsample.html" class="external-link">xsample()</a></code>. This performance advantage increases with the
 sample size.</p>
