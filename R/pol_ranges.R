@@ -24,8 +24,8 @@ pol.ranges <- function(A=NULL,B=NULL,G,H)   {
 
   if (is.data.frame(A)) A <- as.matrix(A)
   if (is.data.frame(G)) G <- as.matrix(G)
-  if (is.vector(B)) B <- t(B)
-  if (is.vector(H)) H <- t(H)
+  if (is.vector(A)) A <- t(A)
+  if (is.vector(G)) G <- t(G)
   
   if (is.null(G)){
     stop("G is NULL, the polytope has 0 dimensions.")
