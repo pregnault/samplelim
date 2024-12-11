@@ -8,3 +8,4 @@
 .Rproj.user
 *.a
 samplelim.Rproj
+docs/*
