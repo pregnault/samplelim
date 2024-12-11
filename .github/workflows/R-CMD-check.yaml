@@ -45,17 +45,18 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
           
-      - name: Build
-        run: |
-             R CMD build .
+      #- name: Build
+      #  run: |
+      #      R CMD build .
 
       - uses: r-lib/actions/check-r-package@v2
         with:
+          upload-results: true
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
           
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-test-failures
-          path: samplelim*.tar.gz
+      # - name: Upload test results
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: samplelim_${{ matrix.config.os }}
+      #     path: samplelim*.tar.gz
