@@ -2,8 +2,9 @@ Type: Package
 Package: samplelim
 Title: MCMC sampling algorithms for linear inverse models
 Version: 0.1
-Date: 2023-11-30
+Date: 2024-12-11
 Authors@R: c(
+    person("Jacques", "Bréhélin", , "breheli241@unicaen.fr", role = "aut"),
     person("Matthieu", "Dien", , "matthieu.dien@unicaen.fr", role = "aut"),
     person("Valérie", "Girardin", , "valerie.girardin@unicaen.fr", role = "ctb",
            comment = c(ORCID = "0000-0001-9934-3561")),
@@ -26,9 +27,11 @@ URL: https://github.com/pregnault/samplelim.git
 BugReports: https://github.com/pregnault/samplelim/issues
 Suggests: 
     knitr,
-    quarto,
+    rmarkdown,
     coda,
+    GGally,
+    igraph,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3
-VignetteBuilder: quarto
+VignetteBuilder: knitr
