@@ -1,18 +1,13 @@
 ---
 title: "High dimensional polytope sampling with samplelim"
-author: "Jacques Bréhélin, Philippe Regnault"
-format: pdf
-#format: html
-#keep-tex: true
-toc: true
-
-header-includes:
-   \pagenumbering{arabic}
+author: "Jacques Bréhélin, Matthieu Dien, Valérie Girardin, Théo Grente, Nathalie Niquil, Quentin Noguès, Philippe Regnault"
+output: rmarkdown::html_vignette
 vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{High dimensional polytope sampling with samplelim}
-  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
+
 
 The package `{samplelim}` for the R statistical software provides an efficient implementations (C++ encoded) of Markov Chain Monte Carlo  (MCMC) algorithms for uniformly sampling high-dimensional polytopes.
 It aims particularly  at handling linear inverse models (LIM) in metabolic (trophic, biochemical or urban) networks.
