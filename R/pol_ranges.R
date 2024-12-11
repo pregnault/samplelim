@@ -35,8 +35,6 @@ pol.ranges <- function(A=NULL,B=NULL,G,H)   {
     stop("G and H have incompatible dimensions.")
   }
   
-  
-  
   Nconstr<-nrow(G)
   if (is.null(A)){
     Neq=0
@@ -52,6 +50,11 @@ pol.ranges <- function(A=NULL,B=NULL,G,H)   {
     stop("A and B have incompatible dimensions.")
   }
   
+  if(!is.null(A) && ncol(A)!=ncol(G)){
+  #if(!is.null(A) && Neq !=0 && ncol(A)!=ncol(G)){
+    stop("A and G have incompatible dimensions.")
+  }
+    
   d<-ncol(G)
   ranges<-matrix(nrow=d,ncol=3)
   colnames(ranges)<-c("min","max","range")
@@ -60,12 +63,20 @@ pol.ranges <- function(A=NULL,B=NULL,G,H)   {
   constraints_direction<-c(rep(">=",Nconstr),rep("==",Neq))
   bounds <- list(lower = list(ind = c(1:d), val = rep(-Inf,d)),
                  upper = list(ind = c(1:d), val = rep(Inf ,d)))
+  warn <- FALSE
   for (i in 1:d){
     obj<-rep(0,d)
     obj[i]=1
     ranges[i,1]=Rglpk_solve_LP(obj=obj,mat=constraints,dir=constraints_direction,rhs=rhs_vec,bounds=bounds,max=FALSE)$optimum
     ranges[i,2]=Rglpk_solve_LP(obj=obj,mat=constraints,dir=constraints_direction,rhs=rhs_vec,bounds=bounds,max=TRUE)$optimum
     ranges[i,3]=ranges[i,2]-ranges[i,1]
+    #A range may be equal to 0 when the variable has an empty or an infinite domain  
+    if (ranges[i,3] == 0){
+      warn <- TRUE
+    }
+  }
+  if (warn){
+    warning("At least one variable may have an empty or a non-finite domain, please check variable with domain with a range equal to 0.")
   }
   return(round(ranges,digits=8))
 }
