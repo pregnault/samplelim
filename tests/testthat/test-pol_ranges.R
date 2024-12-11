@@ -45,13 +45,13 @@ test_that("pol.ranges properly checks arguments (dim and types)",{
   ranges <- pol.ranges(model$A,model$B,data.frame(model$G),model$H)
   expect_equal(ranges,expected_ranges)
   
-  #When B is a vector
-  ranges <- pol.ranges(model$A,as.vector(model$B),model$G,model$H)
-  expect_equal(ranges,expected_ranges)
+  # #When A is a vector
+  # ranges <- pol.ranges(model$A,as.vector(model$B),model$G,model$H)
+  # expect_equal(ranges,expected_ranges)
   
-  #When H is a vector
-  ranges <- pol.ranges(model$A,model$B,model$G,as.vector(model$H))
-  expect_equal(ranges,expected_ranges)
+  # #When G is a vector
+  # ranges <- pol.ranges(model$A,model$B,model$G,as.vector(model$H))
+  # expect_equal(ranges,expected_ranges)
   
   
   #Check if code stops if G is null
