@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 ![](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![R-CMD-check](https://github.com/pregnault/samplelim/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pregnault/samplelim/actions/workflows/R-CMD-check.yaml)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/regexplain)](https://cran.r-project.org/package=samplelim)
 
 The package `{samplelim}` for the R statistical software provides efficient implementations (C++ encoded) of Monte Carlo Markov Chains (MCMC) algorithms for uniformly sampling high-dimensional polytopes. 
