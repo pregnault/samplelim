@@ -42,6 +42,6 @@ plot.lim <- function(lim, seed=NULL, ...) {
 
   adjacency_matrix <- as.matrix(lim$Flowmatrix > 0)
   model_graph <- graph_from_adjacency_matrix(adjacency_matrix)
-  plot.igraph(model_graph, ... )
+  plot.igraph(model_graph, ...)
 
 }
