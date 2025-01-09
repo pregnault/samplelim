@@ -21,7 +21,7 @@ License: LGPL (>= 3)
 Copyright: file inst/COPYRIGHTS
 Encoding: UTF-8
 NeedsCompilation: yes
-Imports: Rcpp, limSolve, MASS, methods, Rglpk, stats
+Imports: Rcpp, limSolve, MASS, methods, Rglpk, stats, igraph
 LinkingTo: BH, Rcpp, RcppEigen
 URL: https://github.com/pregnault/samplelim.git
 BugReports: https://github.com/pregnault/samplelim/issues
@@ -30,7 +30,6 @@ Suggests:
     rmarkdown,
     coda,
     GGally,
-    igraph,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3
