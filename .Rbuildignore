@@ -4,4 +4,5 @@
 ^README.Rmd$
 ^docs/.*$
 ^.*\.o$
+^.*\.a$
 ^\.github$
