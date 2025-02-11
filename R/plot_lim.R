@@ -1,3 +1,18 @@
+#' Plot a metabolic network
+#'
+#' @param lim A list of class `lim` containing a component `Flowmatrix`.
+#' @param seed The seed for the PRNG of the R session
+#' @param ... Additionnal arguments to be passed to the function `plot.igraph()` from the package `{igraph}`. 
+#'
+#' @return Returns NULL, invisibly.
+#' @importFrom igraph graph_from_adjacency_matrix
+#' @importFrom igraph plot.igraph
+#' @export
+#'
+#' @examples
+#' DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+#' BOWF <- df2lim(DF)
+#' plot(BOWF)
 plot.lim <- function(lim, seed=NULL, ...) {
   # Check if 'Flowmatrix' exists in the object 'lim'
   if (!exists("Flowmatrix", where = lim)) {
