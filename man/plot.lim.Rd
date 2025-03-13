@@ -4,14 +4,14 @@
 \alias{plot.lim}
 \title{Plot a metabolic network}
 \usage{
-\method{plot}{lim}(lim, seed = NULL, ...)
+\method{plot}{lim}(x, seed = NULL, ...)
 }
 \arguments{
-\item{lim}{A list of class `lim` containing a component `Flowmatrix`.}
+\item{x}{A list of class `lim` containing a component `Flowmatrix`.}
 
 \item{seed}{The seed for the PRNG of the R session}
 
-\item{...}{Additionnal arguments to be passed to the function `plot.igraph()` from the package `{igraph}`.}
+\item{...}{Additionnal arguments to be passed to the function \code{plot.igraph()} from the package \code{\\{igraph\\}}.}
 }
 \value{
 Returns NULL, invisibly.
