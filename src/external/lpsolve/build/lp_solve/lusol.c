@@ -63,6 +63,17 @@ void *clean_realloc(void *oldptr, int width, int newsize, int oldsize)
 {
   newsize *= width;
   oldsize *= width;
+  /* this works around valgrind reporting a realloc(3) call with size = 0.
+     According to https://linux.die.net/man/3/realloc glibc frees the
+     memory in this case, and (maybe?) returns NULL:
+     > if size is equal to zero, and ptr is not NULL, then the call
+     > is equivalent to free(ptr). */
+#ifdef __linux__
+  if (oldptr != NULL && newsize == 0) {
+    free(oldptr);
+    return NULL;
+  }
+#endif
   oldptr = LUSOL_REALLOC(oldptr, newsize);
   if(newsize > oldsize)
 /*    MEMCLEAR(oldptr+oldsize, newsize-oldsize); */
@@ -254,7 +265,7 @@ LUSOLrec *LUSOL_create(FILE *outstream, int msgfil, int pivotmodel, int updateli
     return( newLU );
 
   newLU->luparm[LUSOL_IP_SCALAR_NZA]       = LUSOL_MULT_nz_a;
-  newLU->outstream = outstream;
+  //newLU->outstream = outstream;
   newLU->luparm[LUSOL_IP_PRINTUNIT]        = msgfil;
   newLU->luparm[LUSOL_IP_PRINTLEVEL]       = LUSOL_MSG_SINGULARITY;
 
@@ -629,7 +640,7 @@ void LUSOL_report(LUSOLrec *LUSOL, int msglevel, char *format, ...)
 
   if(LUSOL == NULL) {
     va_start(ap, format);
-    vfprintf(stderr, format, ap);
+    //vfprintf(stderr, format, ap);
     va_end(ap);
   }
   else if(msglevel >= 0  /*LUSOL->luparm[2]*/) {
@@ -637,15 +648,15 @@ void LUSOL_report(LUSOLrec *LUSOL, int msglevel, char *format, ...)
       char buff[255];
 
       va_start(ap, format);
-      vsprintf(buff, format, ap);
+      //vsprintf(buff, format, ap);
       va_end(ap);
-      LUSOL->writelog(LUSOL, LUSOL->loghandle, buff);
+      //LUSOL->writelog(LUSOL, LUSOL->loghandle, buff);
     }
     if(LUSOL->outstream != NULL) {
       va_start(ap, format);
-      vfprintf(LUSOL->outstream, format, ap);
+      //vfprintf(LUSOL->outstream, format, ap);
       va_end(ap);
-      fflush(LUSOL->outstream);
+      //fflush(LUSOL->outstream);
     }
   }
 }
