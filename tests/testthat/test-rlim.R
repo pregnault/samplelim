@@ -25,6 +25,20 @@ test_that("rlim() works as expected for LIM object", {
   # Check type is correct
   expect_type(samp, "double")
   
+  # Check if every point lies within the polytope i.e satistifies both equalities and inequalities
+  
+  ## Check if every point satisfies all the equalities
+  eq_lin_combs <- BOWF$A %*% t(samp)
+  apply(eq_lin_combs, 2, function(col) {
+    expect_equal(col, BOWF$B)
+  })
+  
+  ## Check if every point satisfies all the inequalities
+  ineq_lin_combs <- BOWF$G %*% t(samp)
+  apply(ineq_lin_combs, 2, function(col) {
+    expect_true(all(col >= BOWF$H))
+  })
+  
   # Check if every points are within the ranges
   ranges <- lim.ranges(BOWF)
   result <- apply(samp, 1, is_within_range, ranges=ranges)
