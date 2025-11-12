@@ -71,12 +71,12 @@ For the mere aim of illustration, we will consider in the following the minimal 
 
 $$\begin{cases}
   1x_1 + 1x_2 + 1x_3 = 1 \\
-  0x_1 + 0x_2 + 1x_3 \geq 0.7 \\
-  0x_1 + 0x_2 - 1x_3 \geq 0 \\
-  0x_1 + 1x_2 + 0x_3 \geq 0.8 \\
-  0x_1 - 1x_2 + 0x_3 \geq 0 \\
-  1x_1 + 0x_2 + 0x_3 \geq 0.8 \\
-  -1x_1 + 0x_2 + 0x_3 \geq 0 \\
+  0x_1 + 0x_2 - 1x_3 \geq -0.7 \\
+  0x_1 + 0x_2 + 1x_3 \geq 0 \\
+  0x_1 - 1x_2 + 0x_3 \geq -0.8 \\
+  0x_1 + 1x_2 + 0x_3 \geq 0 \\
+  - 1x_1 + 0x_2 + 0x_3 \geq -0.8 \\
+  1x_1 + 0x_2 + 0x_3 \geq 0 \\
 \end{cases}$$
 
 with associated matrices $$
@@ -87,19 +87,19 @@ with associated matrices $$
 1
 \end{pmatrix}, \quad
 \mathbf{G} = \begin{pmatrix}
-  0 & 0 & 1 \\
   0 & 0 & -1 \\
-  0 & 1 & 0 \\
+  0 & 0 & 1 \\
   0 & -1 & 0 \\
-  1 & 0 & 0 \\
-  -1 & 0 &0
+  0 & 1 & 0 \\
+  -1 & 0 & 0 \\
+  1 & 0 &0
 \end{pmatrix},\quad
 \mathbf{H} = \begin{pmatrix}
-0.7 \\
+-0.7 \\
 0 \\
-0.8 \\
+-0.8 \\
 0 \\
-0.8 \\
+-0.8 \\
 0
 \end{pmatrix}$$.
 
@@ -110,15 +110,15 @@ library("samplelim")
 # Define equality and inequality constraints through matrices A, B, G, H
 A <- matrix(c(1, 1, 1), nrow = 1, ncol = 3)
 B <- 1
-G <- -matrix(c(0, 0, 1,
-              0, 0, -1,
-              0, 1, 0, 
-              0, -1, 0,
-              1, 0, 0, 
-              -1, 0, 0),
+G <- matrix(c(0, 0, -1,
+              0, 0, 1,
+              0, -1, 0, 
+              0, 1, 0,
+              -1, 0, 0, 
+              1, 0, 0),
             byrow = TRUE,
             nrow = 6, ncol = 3)
-H <- -matrix(c(0.7, 0, 0.8, 0, 0.8, 0), nrow = 6)
+H <- matrix(c(-0.7, 0, -0.8, 0, -0.8, 0), nrow = 6)
 # Store into a list
 lim_exm <- list(A = A, B = B,G = G,H = H)
 # Sampling into the polytope defined by these constraints
