@@ -173,6 +173,12 @@ wrapped copy of functions `Read()` and `Setup()` from package `{LIM}`,
 developped by Karline SOETAERT. It has been added to the present package
 to limit its dependency tree.
 
+This work is part of the NESTORE project partially supported by 
+France Energies Marines and the ANR (Agence National de
+la Recherche) under the program ‘France 2030’ (ANR-10-
+IEED-0006-34).
+
+
 ## Licensing
 
 You may redistribute or modify the software under the [GNU Lesser
