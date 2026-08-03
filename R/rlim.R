@@ -230,6 +230,9 @@ rlim<- function(lim, Hpol = NULL,
     random_walk<-c(random_walk,list("nburns"=burn))
   }
   if (!is.null(starting_point)){
+    if (is.null(Hpol)) {
+      starting_point <- as.numeric(MASS::ginv(Z) %*% (as.numeric(starting_point) - x0))
+    }
     random_walk<-c(random_walk,list("starting_point"=starting_point))
   }
   if (!is.null(seed)){
