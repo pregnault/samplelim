@@ -7,5 +7,8 @@
 *.Ruserdata
 .Rproj.user
 *.a
-samplelim.Rproj
+*.Rproj
 docs/*
+.DS_Store
+tests/testthat/_problems/
+tests/testthat/testthat-problems.rds
