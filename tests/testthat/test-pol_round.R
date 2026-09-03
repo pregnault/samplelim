@@ -9,7 +9,7 @@
 
 .inside <- function(G, H, X) all(G %*% t(as.matrix(X)) >= H - 1e-9)
 
-test_that("rounding brings the Dikin ellipsoid back to a ball", {
+test_that("pol.round brings the Dikin ellipsoid back to a ball", {
   sl <- .sliver()
   rnd <- pol.round(sl$G, sl$H)
   expect_gt(rnd$axis.ratio, 30)                        # the body IS anisotropic
@@ -18,7 +18,7 @@ test_that("rounding brings the Dikin ellipsoid back to a ball", {
   expect_equal(rnd2$axis.ratio, 1, tolerance = 1e-6)
 })
 
-test_that("forth and back are inverse of one another", {
+test_that("pol.round returns forth and back inverse of one another", {
   sl <- .sliver()
   rnd <- pol.round(sl$G, sl$H)
   set.seed(1)
@@ -28,7 +28,7 @@ test_that("forth and back are inverse of one another", {
   expect_lt(max(abs(rnd$back(X[1, ]) - as.numeric(rnd$back(X[1, , drop = FALSE])))), 1e-12)
 })
 
-test_that("points brought back land inside the original polytope", {
+test_that("pol.round returns points that land inside the original polytope", {
   sl <- .sliver()
   rnd <- pol.round(sl$G, sl$H)
   set.seed(2)
@@ -38,10 +38,10 @@ test_that("points brought back land inside the original polytope", {
   expect_true(.inside(sl$G, sl$H, rnd$back(X)))
 })
 
-test_that("the affine map preserves the uniform distribution", {
+test_that("pol.round preserves the uniform distribution", {
   sl <- .sliver()
   rnd <- pol.round(sl$G, sl$H)
-  tir <- function(G, H, lo, hi, n) {
+  rej <- function(G, H, lo, hi, n) {
     out <- matrix(0, 0, 2)
     while (nrow(out) < n) {
       Z <- cbind(runif(6 * n, lo[1], hi[1]), runif(6 * n, lo[2], hi[2]))
@@ -50,15 +50,15 @@ test_that("the affine map preserves the uniform distribution", {
     out[seq_len(n), , drop = FALSE]
   }
   set.seed(3)
-  direct <- tir(sl$G, sl$H, c(-40, -40), c(40, 40), 8000)
-  via    <- rnd$back(tir(rnd$G, rnd$H, c(-2, -2), c(2, 2), 8000))
+  direct <- rej(sl$G, sl$H, c(-40, -40), c(40, 40), 8000)
+  via    <- rnd$back(rej(rnd$G, rnd$H, c(-2, -2), c(2, 2), 8000))
   # the Jacobian being constant, both samples follow the same law
-  ecart <- abs(colMeans(direct) - colMeans(via)) / apply(direct, 2, stats::sd)
-  expect_lt(max(ecart), 0.08)
+  gap <- abs(colMeans(direct) - colMeans(via)) / apply(direct, 2, stats::sd)
+  expect_lt(max(gap), 0.08)
 })
 
-test_that("the analytic centre rounds better than the Chebyshev centre", {
-  # an asymmetric triangle, where the two centres differ markedly
+test_that("pol.round rounds better at the analytic center than at the Chebyshev center", {
+  # an asymmetric triangle, where the two centers differ markedly
   G <- rbind(c(1, 0), c(0, 1), c(-1 / 40, -1 / 2)); H <- c(0, 0, -1)
   ra <- pol.round(G, H, center = "analytic")
   rt <- pol.round(G, H, center = "chebyshev")
@@ -68,7 +68,7 @@ test_that("the analytic centre rounds better than the Chebyshev centre", {
   expect_gt(ra$log.volume, rt$log.volume)
 })
 
-test_that("rounding BOWF-short collapses the anisotropy", {
+test_that("pol.round collapses the anisotropy of BOWF-short", {
   DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
   exf <- lim.exfoliate(lim.redpol(df2lim(DF)))
   rnd <- pol.round(G = exf$G, H = exf$H)

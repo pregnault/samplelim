@@ -1,60 +1,72 @@
-
-
-#' Remove redundant inequality constraints of a polytope
+#' Removing the redundant inequality constraints of a polytope
 #'
 #' The functions \code{pol.exfoliate()} and \code{lim.exfoliate()} remove the redundant
-#' inequality constraints of a polytope
+#' inequality constraints of a given polytope
 #' \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Gx \geq H \}}.
 #'
-#' An inequality constraint is \emph{redundant} when it is implied by the others:
-#' removing it leaves the polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}}
-#' unchanged. The function \code{pol.exfoliate()} detects and removes all of them,
-#' yielding a description from which no further constraint can be dropped.
+#' An inequality constraint is said to be \emph{redundant} when it is implied by the
+#' others, that is, when removing it leaves \eqn{\mathcal{P}} unchanged. The function
+#' \code{pol.exfoliate()} detects and removes all of them, yielding a description from
+#' which no further constraint can be dropped.
 #'
 #' Constraint \eqn{i} is redundant if and only if
 #' \eqn{\min \{ \langle g_i, x \rangle : \langle g_j, x \rangle \geq H_j, j \neq i \} \geq H_i},
-#' which is one linear program per constraint.
+#' which amounts to one linear program per constraint.
 #'
-#' The sweep is \strong{sequential}: each constraint is tested against the constraints
-#' still retained, not against the full set. This matters. Two identical constraints are
-#' each redundant \emph{in the presence of the other}; testing both against the full set
-#' would drop both, and change the polytope. The price is that the outcome depends on the
-#' sweep order, so the minimal description is not unique in general. The polytope is.
+#' The sweep is sequential: each constraint is tested against the constraints still
+#' retained, and not against the whole set. Two identical constraints are indeed each
+#' redundant \emph{in the presence of the other}, so that testing both against the whole
+#' set would drop both, and modify the polytope. The price to pay is that the outcome
+#' depends on the order of the sweep, hence the minimal description is not unique in
+#' general, although the polytope it describes is.
 #'
-#' Removing redundant constraints leaves the polytope unchanged but modifies everything
+#' Removing redundant constraints leaves the polytope unchanged, but modifies everything
 #' that depends on its \emph{description} rather than on its geometry, in particular the
-#' analytic centre and the Dikin ellipsoid, which are defined by sums over the constraints.
-#' It should therefore be applied \strong{before} \code{pol.center()} and
-#' \code{pol.round()}. On the BOWF-short model, 28 of the 72 inequality constraints of the
-#' reduced polytope are redundant.
+#' analytic center and the Dikin ellipsoid, both defined as sums over the constraints.
+#' Exfoliation should therefore be applied \strong{before} \code{\link{pol.center}()} and
+#' \code{\link{pol.round}()}. On the BOWF-short model, 28 of the 72 inequality
+#' constraints of the reduced polytope are redundant.
 #'
 #' @param G A matrix corresponding to \code{G} in the description of the polytope
 #'   \eqn{\mathcal{P}}.
 #' @param H A numeric vector corresponding to \code{H} in the description of the polytope
 #'   \eqn{\mathcal{P}}.
-#' @param tol A positive tolerance. Constraint \eqn{i} is declared redundant when the
-#'   attained minimum is at least \eqn{H_i - tol}. Rows are normalised internally, so that
-#'   \code{tol} is comparable across constraints.
+#' @param tol A positive numeric value specifying the tolerance for numeric computations.
+#'   Constraint \eqn{i} is declared redundant when the attained minimum is at least
+#'   \eqn{H_i - tol}. Rows are normalised internally, so that \env{tol} is comparable
+#'   across constraints.
 #'
-#' @return For \code{pol.exfoliate()}, a list with three components:
-#'   \item{G}{the matrix \code{G} deprived of its redundant rows;}
-#'   \item{H}{the corresponding right-hand side;}
-#'   \item{redundant}{a logical vector of length \code{nrow(G)}, \code{TRUE} for the rows
-#'     that were removed.}
-#'   For \code{lim.exfoliate()}, the input list with \code{G} and \code{H} replaced by
-#'   their exfoliated counterparts, every other component left untouched.
+#' @return For \code{pol.exfoliate()}, a list with three components; namely:
+#' \itemize{
+#'   \item \code{G}, the matrix \code{G} deprived of its redundant rows;
+#'   \item \code{H}, the corresponding right-hand side;
+#'   \item \code{redundant}, a logical vector of length \code{nrow(G)}, \code{TRUE} for
+#'   the rows that have been removed.
+#' }
+#' For \code{lim.exfoliate()}, the input list with \code{G} and \code{H} replaced by
+#' their exfoliated counterparts, every other component being left untouched.
 #'
 #' @importFrom Rglpk Rglpk_solve_LP
 #' @export
 #'
 #' @rdname pol.exfoliate
 #' @examples
+#' # Create a lim object from a Description file
 #' DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
 #' BOWF <- df2lim(DF)
+#' # These functions operate on the reduced polytope
 #' red <- lim.redpol(BOWF)
 #' exf <- pol.exfoliate(G = red$G, H = red$H)
 #' # 28 of the 72 inequality constraints are redundant
 #' sum(exf$redundant)
+#' @seealso \code{\link{lim.redpol}()} for reducing a polytope,
+#' \code{\link{pol.center}()} for its centers, \code{\link{pol.round}()} for rounding it.
+#' @references {
+#' J. Telgen,
+#' \emph{Identifying redundant constraints and implicit equalities in systems of linear
+#' constraints},
+#' Management Science \strong{29(10)}, 1209-1222 (1983).
+#' }
 pol.exfoliate <- function(G, H, tol = 1e-9) {
   if (is.data.frame(G)) G <- as.matrix(G)
   if (is.vector(G)) G <- t(G)
@@ -96,10 +108,9 @@ pol.exfoliate <- function(G, H, tol = 1e-9) {
 }
 
 
-#' @param lim A list describing the \strong{reduced} polytope, with at least the
-#'   components \code{G} and \code{H}, as returned by \code{\link{lim.redpol}}. An
-#'   object still carrying equality constraints in \code{lim$A} is rejected: see
-#'   \sQuote{Details}.
+#' @param lim A list with at least two components \code{G} and \code{H} representing
+#'   the \strong{reduced} polytope, as returned by \code{\link{lim.redpol}()}. A list
+#'   still carrying equality constraints in its component \code{A} is rejected.
 #' @export
 #' @rdname pol.exfoliate
 lim.exfoliate <- function(lim, tol = 1e-9) {

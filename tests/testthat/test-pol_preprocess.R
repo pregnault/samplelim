@@ -34,9 +34,9 @@ test_that("pol.exfoliate removes an implied constraint and keeps the polytope", 
 
   set.seed(1)
   U <- matrix(rnorm(50 * 2), ncol = 2); U <- U / sqrt(rowSums(U^2))
-  ecart <- vapply(seq_len(nrow(U)), function(i)
+  gap <- vapply(seq_len(nrow(U)), function(i)
     abs(.support(G, H, U[i, ]) - .support(exf$G, exf$H, U[i, ])), numeric(1))
-  expect_lt(max(ecart), 1e-9)
+  expect_lt(max(gap), 1e-9)
 })
 
 test_that("pol.exfoliate leaves a minimal description untouched", {
@@ -59,9 +59,9 @@ test_that("pol.exfoliate finds the 28 redundant constraints of BOWF-short", {
   set.seed(2)
   U <- matrix(rnorm(30 * ncol(red$G)), ncol = ncol(red$G))
   U <- U / sqrt(rowSums(U^2))
-  ecart <- vapply(seq_len(nrow(U)), function(i)
+  gap <- vapply(seq_len(nrow(U)), function(i)
     abs(.support(red$G, red$H, U[i, ]) - .support(exf$G, exf$H, U[i, ])), numeric(1))
-  expect_lt(max(ecart), 1e-6)
+  expect_lt(max(gap), 1e-6)
 })
 
 test_that("pol.exfoliate rejects malformed input", {
@@ -70,6 +70,8 @@ test_that("pol.exfoliate rejects malformed input", {
   expect_error(pol.exfoliate(NULL, sq$H), "0 dimensions")
   expect_error(pol.exfoliate(rbind(sq$G, c(0, 0)), c(sq$H, 0)), "Degenerate")
 })
+
+# Tests on the behaviour of the lim.exfoliate function ----
 
 test_that("lim.exfoliate keeps the lim structure", {
   DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
@@ -85,7 +87,7 @@ test_that("lim.exfoliate keeps the lim structure", {
   expect_identical(out$Z, red$Z)
 })
 
-test_that("the lim.* variants refuse a polytope that is not reduced", {
+test_that("lim.exfoliate, lim.center and lim.round refuse a polytope that is not reduced", {
   DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
   full <- df2lim(DF)                       # still carries the equalities A x = B
   expect_false(is.null(full$A))

@@ -3,7 +3,7 @@
 \name{pol.round}
 \alias{pol.round}
 \alias{lim.round}
-\title{Round a polytope using the Dikin ellipsoid}
+\title{Rounding a polytope by means of the Dikin ellipsoid}
 \usage{
 pol.round(G, H, center = c("analytic", "chebyshev"), x0 = NULL)
 
@@ -11,93 +11,126 @@ lim.round(lim, center = c("analytic", "chebyshev"), x0 = NULL)
 }
 \arguments{
 \item{G}{A matrix corresponding to \code{G} in the description of the polytope
-\eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Gx \geq H \}}. Exfoliate first.}
+\eqn{\mathcal{P}}. Redundant constraints should be removed beforehand.}
 
-\item{H}{A numeric vector corresponding to \code{H}.}
+\item{H}{A numeric vector corresponding to \code{H} in the description of the polytope
+\eqn{\mathcal{P}}.}
 
-\item{center}{Either \code{"analytic"} (the default, strongly recommended) or
-\code{"chebyshev"}. The latter exists only so that the comparison above can be
-reproduced; it should not be used in production.}
+\item{center}{A character string specifying the center at which the Dikin ellipsoid is
+taken, whether \code{"analytic"} (the default) or \code{"chebyshev"}. The latter is
+provided so that the comparison reported in the section \emph{Details} above can be
+reproduced, and is not recommended for actual sampling.}
 
-\item{x0}{A strictly interior starting point, passed to \code{\link{pol.center}}.}
+\item{x0}{A numeric vector giving the coordinates of a strictly interior point, passed
+to \code{\link{pol.center}()}.}
 
-\item{lim}{A list describing the \strong{reduced} polytope, with at least the
-components \code{G} and \code{H}, as returned by \code{\link{lim.redpol}}. An
-object still carrying equality constraints in \code{lim$A} is rejected.}
+\item{lim}{A list with at least two components \code{G} and \code{H} representing
+the \strong{reduced} polytope, as returned by \code{\link{lim.redpol}()}. A list
+still carrying equality constraints in its component \code{A} is rejected.}
 }
 \value{
-A list with components:
-  \item{G, H}{the rounded polytope \eqn{\{x' : G' x' \geq H'\}}, with
-    \eqn{G' = G T} and \eqn{H' = H - G c}. Rows are \strong{not} normalised;}
-  \item{center}{the centre used, in the original coordinates;}
-  \item{T, Tinv}{the transformation and its inverse, \eqn{x = center + T x'};}
-  \item{forth}{a function mapping original coordinates to rounded ones;}
-  \item{back}{a function mapping rounded coordinates back to the original space.
-    \strong{This is the one to apply to a sample.} It accepts a vector or a matrix with
-    one point per row, that is, the output of \code{rlim()} as is;}
-  \item{axis.ratio}{the ratio of the semi-axes of the Dikin ellipsoid. Descriptive
-    only: it measures the \emph{shape of the ellipsoid}, not the quality of the
-    rounding. Judge the latter with \code{pol.ranges()} on the rounded polytope;}
-  \item{log.volume}{the log-volume of the ellipsoid, up to an additive constant. This
-    one does measure quality: the larger, the better the ellipsoid hugs the body.}
+A list with nine components; namely:
+\itemize{
+  \item \code{G} and \code{H}, describing the rounded polytope
+  \eqn{\{x' : G' x' \geq H'\}}, with \eqn{G' = G T} and \eqn{H' = H - G c}. Their
+  rows are \strong{not} normalised;
+  \item \code{center}, the center used, in the original coordinates;
+  \item \code{T} and \code{Tinv}, the transformation and its inverse, so that
+  \eqn{x = center + T x'};
+  \item \code{forth}, a function mapping original coordinates to rounded ones;
+  \item \code{back}, a function mapping rounded coordinates back to the original
+  space. This is the one to be applied to a sample. It accepts a numeric vector or a
+  matrix with one point per row, that is, the output of \code{\link{rlim}()} as is;
+  \item \code{axis.ratio}, the ratio of the semi-axes of the Dikin ellipsoid. It is
+  descriptive only, as it measures the shape of the ellipsoid and not the quality of
+  the rounding; the latter is best assessed with \code{\link{pol.ranges}()} on the
+  rounded polytope;
+  \item \code{log.volume}, the log-volume of the ellipsoid, up to an additive
+  constant. This one does measure quality: the larger, the more closely the ellipsoid
+  fits the polytope;
+  \item \code{center.type}, the value of the argument \env{center}.
+}
 }
 \description{
-A very elongated polytope is disastrous for a random walk: a billiard trajectory
-bounces without advancing, and an isotropic Gaussian jump is accepted along the short
-directions and rejected along the long ones. \emph{Rounding} changes coordinates so
-that the body becomes as isotropic as possible.
+The functions \code{pol.round()} and \code{lim.round()} round a given polytope
+\eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Gx \geq H \}}, that is, apply to it an affine
+change of coordinates making it as isotropic as possible.
 }
 \details{
+A strongly elongated polytope is difficult to explore for a random walk: a billiard
+trajectory reflects without progressing, and an isotropic Gaussian jump is accepted
+along the short directions and rejected along the long ones. Rounding removes this
+anisotropy.
+
 The Dikin ellipsoid at an interior point \eqn{c} is
-\eqn{E(c) = \{x : (x-c)^\top \mathcal{H}(c) (x-c) \leq 1\}} with
+\eqn{E(c) = \{x : (x-c)^\top \mathcal{H}(c) (x-c) \leq 1\}}, with
 \eqn{\mathcal{H}(c) = \sum_i g_i g_i^\top / d_i(c)^2} and
-\eqn{d_i(c) = \langle g_i, c \rangle - H_i}. It is inscribed in the polytope for
-\emph{any} interior \eqn{c}. Applying \eqn{x = c + T x'} with
-\eqn{T = \mathcal{H}(c)^{-1/2}} maps it onto the unit ball, which rounds the body.
+\eqn{d_i(c) = \langle g_i, c \rangle - H_i}. It is inscribed in \eqn{\mathcal{P}} for
+\emph{any} interior point \eqn{c}. Applying \eqn{x = c + T x'} with
+\eqn{T = \mathcal{H}(c)^{-1/2}} maps it onto the unit ball, hence rounds the polytope.
 
-\strong{Why this is legitimate.} The map is affine, so its Jacobian \eqn{|\det T|} is
-constant. The image of the uniform distribution on the rounded polytope is therefore
-exactly the uniform distribution on the original one: sample in the rounded space, then
-apply \code{back}, and no correction or reweighting is needed. This would be false for
-a non-uniform target, where the density itself would have to be transported.
+This transformation is affine, so that its Jacobian \eqn{|\det T|} is constant. The
+image of the uniform distribution on the rounded polytope is therefore exactly the
+uniform distribution on the original one: it suffices to sample in the rounded space
+and to apply \code{back}, with no correction nor reweighting. This would not hold for
+a non-uniform target distribution, whose density would have to be transported as well.
 
-\strong{Where to take the centre matters far more than one would think.} Since
-\eqn{E(c)} is inscribed for any interior \eqn{c}, one could round from the Chebyshev
-centre, which is readily available. Measured on the exfoliated BOWF-short model, in
-minimum effective sample size per second:
+The choice of the center is of practical importance. Since \eqn{E(c)} is inscribed for
+any interior \eqn{c}, one may round from the Chebyshev center, which is readily
+available; see \code{\link{pol.center}()}. Measured on the exfoliated BOWF-short
+model, in minimum effective sample size per second:
 
 \tabular{lrrr}{
   \tab BiW \tab MiW \tab BPS \cr
   no rounding \tab 51 \tab 77 \tab 44 \cr
-  rounded at the Chebyshev centre \tab 74 \tab 125 \tab 107 \cr
-  rounded at the analytic centre \tab 14353 \tab 12262 \tab 19272
+  rounded at the Chebyshev center \tab 74 \tab 125 \tab 107 \cr
+  rounded at the analytic center \tab 14353 \tab 12262 \tab 19272
 }
 
-Rounding from the Chebyshev centre buys a factor of 1.5 to 2.4; from the analytic
-centre, a factor of 160 to 440. The reason is geometric: the Chebyshev centre only sees
-the nearest faces, and the ellipsoid taken there is small and nearly round, so it hugs
-nothing. The ellipsoid at the analytic centre is elongated \emph{like the body}, which
-is precisely what lets it straighten it out.
+Rounding from the Chebyshev center yields a factor 1.5 to 2.4, and from the analytic
+center a factor 160 to 440. The reason is geometric: the Chebyshev center involves the
+nearest faces only, so that the ellipsoid taken there is small and nearly spherical,
+and fits the polytope loosely. The ellipsoid at the analytic center is elongated in
+the same way as the polytope, which is what allows it to straighten it.
 
-Apply \code{\link{pol.exfoliate}} first: \eqn{\mathcal{H}} is a sum over the
-constraints, so a redundant one adds a term that pulls the ellipsoid for no geometric
-reason. On BOWF-short, exfoliating first gains a factor of 55 in ellipsoid volume.
+The function \code{\link{pol.exfoliate}()} should be applied first, since
+\eqn{\mathcal{H}} is a sum over the inequality constraints: a redundant constraint
+adds a term that distorts the ellipsoid for no geometric reason. On the BOWF-short
+model, exfoliating first yields a factor 55 in ellipsoid volume.
 }
 \examples{
+# Create a lim object from a Description file
 DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
 BOWF <- df2lim(DF)
+# These functions operate on the reduced polytope, exfoliated beforehand
 red <- lim.redpol(BOWF)
 exf <- pol.exfoliate(G = red$G, H = red$H)
 rnd <- pol.round(G = exf$G, H = exf$H)
 
-# anisotropy, before and after
+# Anisotropy, before and after rounding
 rg0 <- pol.ranges(G = exf$G, H = exf$H)[, 3]
 rg1 <- pol.ranges(G = rnd$G, H = rnd$H)[, 3]
 c(before = max(rg0) / min(rg0), after = max(rg1) / min(rg1))
 
 # Sample in the rounded space, then come back. Note that Hpolytope uses the
-# convention Ax <= b, hence the change of sign, and that rlim() requires `lim`
-# to be passed explicitly even when a Hpolytope is supplied.
+# convention Ax <= b, hence the change of sign, and that rlim() requires lim
+# to be passed explicitly even when a Hpolytope object is supplied.
 smp <- rlim(lim = NULL, Hpol = Hpolytope(A = -rnd$G, b = -rnd$H), nsamp = 100)
 pts <- rnd$back(smp)
+}
+\references{
+{
+I. I. Dikin,
+\emph{Iterative solution of problems of linear and quadratic programming},
+Soviet Mathematics Doklady \strong{8}, 674-675 (1967).
+
+S. Boyd and L. Vandenberghe,
+\emph{Convex Optimization},
+Cambridge University Press (2004).
+}
+}
+\seealso{
+\code{\link{lim.redpol}()} for reducing a polytope,
+\code{\link{pol.exfoliate}()} for removing its redundant constraints,
+\code{\link{pol.center}()} for its centers, \code{\link{rlim}()} for sampling it.
 }
