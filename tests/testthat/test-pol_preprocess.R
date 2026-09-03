@@ -77,8 +77,23 @@ test_that("lim.exfoliate keeps the lim structure", {
   out <- lim.exfoliate(red)
   expect_equal(nrow(out$G), 44)
   expect_equal(length(out$H), 44)
-  # only G and H change; every other component of the lim object is untouched
-  expect_true(identical(out$A, red$A))
-  expect_true(identical(out$B, red$B))
-  expect_equal(out$NConstraints, 44)
+  # Only G and H change; every other component is untouched. lim.redpol() returns
+  # G, H, x0 and Z, so those are the ones worth checking -- comparing out$A to
+  # red$A would be a vacuous assertion, both being NULL.
+  expect_named(out, names(red), ignore.order = TRUE)
+  expect_identical(out$x0, red$x0)
+  expect_identical(out$Z, red$Z)
+})
+
+test_that("the lim.* variants refuse a polytope that is not reduced", {
+  DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+  full <- df2lim(DF)                       # still carries the equalities A x = B
+  expect_false(is.null(full$A))
+  # Fed a full lim, these functions would silently ignore Ax = B and return a point
+  # far outside the model. They must refuse instead.
+  expect_error(lim.exfoliate(full), "REDUCED polytope")
+  expect_error(lim.center(full), "REDUCED polytope")
+  expect_error(lim.round(full), "REDUCED polytope")
+  # and a list without G / H is refused too
+  expect_error(lim.center(list(x0 = 1)), "components G and H")
 })

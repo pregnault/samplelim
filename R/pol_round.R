@@ -136,10 +136,12 @@ pol.round <- function(G, H, center = c("analytic", "chebyshev"), x0 = NULL) {
 }
 
 
-#' @param lim A list with four components \code{A}, \code{B}, \code{G} and \code{H}
-#'   representing the polytope, already reduced by \code{lim.redpol()}.
+#' @param lim A list describing the \strong{reduced} polytope, with at least the
+#'   components \code{G} and \code{H}, as returned by \code{\link{lim.redpol}}. An
+#'   object still carrying equality constraints in \code{lim$A} is rejected.
 #' @export
 #' @rdname pol.round
 lim.round <- function(lim, center = c("analytic", "chebyshev"), x0 = NULL) {
+  .lim_check_reduced(lim)
   pol.round(G = lim$G, H = lim$H, center = center, x0 = x0)
 }

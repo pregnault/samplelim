@@ -74,6 +74,10 @@ pol.center <- function(G, H, type = c("analytic", "chebyshev"),
   if (is.null(G)) stop("G is NULL, the polytope has 0 dimensions.")
   H <- as.numeric(H)
   if (nrow(G) != length(H)) stop("G and H have incompatible dimensions.")
+  # Same guards as pol.exfoliate() and pol.round(): without them a NA would surface
+  # as an opaque "no interior point found" from the linear program.
+  if (any(!is.finite(G)) || any(!is.finite(H))) stop("G and H must be finite.")
+  if (any(sqrt(rowSums(G^2)) <= 0)) stop("Degenerate constraint: some row of G is zero.")
 
   # Gx >= H is rewritten as (-G) x <= (-H) for the internal computation.
   A <- -G; b <- -H
@@ -116,12 +120,14 @@ pol.center <- function(G, H, type = c("analytic", "chebyshev"),
 }
 
 
-#' @param lim A list with four components \code{A}, \code{B}, \code{G} and \code{H}
-#'   representing the polytope.
+#' @param lim A list describing the \strong{reduced} polytope, with at least the
+#'   components \code{G} and \code{H}, as returned by \code{\link{lim.redpol}}. An
+#'   object still carrying equality constraints in \code{lim$A} is rejected.
 #' @export
 #' @rdname pol.center
 lim.center <- function(lim, type = c("analytic", "chebyshev"), x0 = NULL,
                        max_iter = 200L, tol = 1e-10) {
+  .lim_check_reduced(lim)
   pol.center(G = lim$G, H = lim$H, type = type, x0 = x0,
              max_iter = max_iter, tol = tol)
 }

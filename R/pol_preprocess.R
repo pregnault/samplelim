@@ -2,6 +2,10 @@
 
 #' Remove redundant inequality constraints of a polytope
 #'
+#' The functions \code{pol.exfoliate()} and \code{lim.exfoliate()} remove the redundant
+#' inequality constraints of a polytope
+#' \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Gx \geq H \}}.
+#'
 #' An inequality constraint is \emph{redundant} when it is implied by the others:
 #' removing it leaves the polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}}
 #' unchanged. The function \code{pol.exfoliate()} detects and removes all of them,
@@ -32,11 +36,13 @@
 #'   attained minimum is at least \eqn{H_i - tol}. Rows are normalised internally, so that
 #'   \code{tol} is comparable across constraints.
 #'
-#' @return A list with three components:
+#' @return For \code{pol.exfoliate()}, a list with three components:
 #'   \item{G}{the matrix \code{G} deprived of its redundant rows;}
 #'   \item{H}{the corresponding right-hand side;}
 #'   \item{redundant}{a logical vector of length \code{nrow(G)}, \code{TRUE} for the rows
 #'     that were removed.}
+#'   For \code{lim.exfoliate()}, the input list with \code{G} and \code{H} replaced by
+#'   their exfoliated counterparts, every other component left untouched.
 #'
 #' @importFrom Rglpk Rglpk_solve_LP
 #' @export
@@ -90,14 +96,31 @@ pol.exfoliate <- function(G, H, tol = 1e-9) {
 }
 
 
-#' @param lim A list with four components \code{A}, \code{B}, \code{G} and \code{H}
-#'   representing the polytope, as returned by \code{df2lim()} or \code{lim.redpol()}.
+#' @param lim A list describing the \strong{reduced} polytope, with at least the
+#'   components \code{G} and \code{H}, as returned by \code{\link{lim.redpol}}. An
+#'   object still carrying equality constraints in \code{lim$A} is rejected: see
+#'   \sQuote{Details}.
 #' @export
 #' @rdname pol.exfoliate
 lim.exfoliate <- function(lim, tol = 1e-9) {
+  .lim_check_reduced(lim)
   exf <- pol.exfoliate(G = lim$G, H = lim$H, tol = tol)
   lim$G <- exf$G
   lim$H <- exf$H
-  lim$NConstraints <- nrow(exf$G)
   lim
+}
+
+
+# The three pre-processing steps only make sense on the REDUCED polytope, the one
+# lim.redpol() returns, whose description is purely {x : Gx >= H}. Fed a full lim
+# object, they would silently ignore the equality constraints Ax = B and return a
+# point outside the model -- observed at 1e8 away on BOWF-short. Hence this guard:
+# better a clear refusal than a wrong answer.
+.lim_check_reduced <- function(lim) {
+  if (!is.list(lim) || is.null(lim$G) || is.null(lim$H))
+    stop("`lim` must be a list with components G and H.", call. = FALSE)
+  if (!is.null(lim$A) && length(lim$A) > 0L)
+    stop("Equality constraints found in `lim$A`. These functions operate on the ",
+         "REDUCED polytope {x : Gx >= H}: apply lim.redpol() first.", call. = FALSE)
+  invisible(TRUE)
 }
