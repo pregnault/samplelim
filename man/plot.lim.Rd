@@ -7,7 +7,7 @@
 \method{plot}{lim}(x, seed = NULL, ...)
 }
 \arguments{
-\item{x}{A list of class `lim` containing a component `Flowmatrix`.}
+\item{x}{An object of class `lim` containing a component `Flowmatrix`.}
 
 \item{seed}{The seed for the PRNG of the R session}
 
