@@ -17,12 +17,12 @@ export(red2full)
 export(rlim)
 exportClasses(Hpolytope)
 importFrom(MASS,Null)
-importFrom(Rcpp,evalCpp)
-importFrom(Rcpp,loadModule)
-importFrom(Rcpp,sourceCpp)
+importFrom(Rcpp,
+  evalCpp,
+  loadModule,
+  sourceCpp
+)
 importFrom(Rglpk,Rglpk_solve_LP)
-importFrom(igraph,graph_from_adjacency_matrix)
-importFrom(igraph,plot.igraph)
 importFrom(limSolve,lsei)
 importFrom(methods,new)
 importFrom(stats,cov)
