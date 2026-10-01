@@ -390,7 +390,7 @@ dim(reduced$G)
 k <- qr(full$A)$rank
 # Get the Z matrix
 reduced$Z
-# Get the particular solution x0
+# Get the reference point x0, a Chebyshev center of the full polytope
 reduced$x0
 # Get the matrix G'
 reduced$G

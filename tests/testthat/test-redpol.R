@@ -42,22 +42,69 @@ test_that("lim.redpol returns expected projection",{
   expect_equal(red$H,as.numeric(model$H-model$G %*% red$x0))
 })
 
-# test_that("lim.redpol can find inequalities when specified",{
-#   
-#   A <- matrix(c(1,1), nrow = 1, ncol = 2)
-#   B <- 1
-#   G <- -matrix(c(1, 0,
-#                  0, 1,
-#                  -1, 0),
-#                byrow = TRUE,
-#                nrow = 3, ncol = 2)
-#   H <- -matrix(c(2, 12, -2), nrow = 3)
-# 
-#   lim_exm <- list(A = A, B = B,G = G,H = H)
-#   lim.redpol(lim_exm)
-# 
-# 
-# })
+test_that("lim.redpol reduces around a strictly interior Chebyshev center",{
+  DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+  model <- df2lim(DF)
+  red <- lim.redpol(model)
+
+  # x0 satisfies the equalities and strictly the inequalities
+  expect_lt(max(abs(model$A %*% red$x0 - model$B)), 1e-8)
+  expect_gt(min(model$G %*% red$x0 - model$H), 0)
+  # Z is orthonormal, so that the reduction preserves distances
+  expect_equal(crossprod(red$Z), diag(ncol(red$Z)))
+  # The origin is a Chebyshev center of the reduced polytope: its distance to the
+  # nearest face is the Chebyshev radius
+  ctr <- pol.center(red$G, red$H, type = "chebyshev")
+  expect_equal(min(-red$H / sqrt(rowSums(red$G^2))), ctr$radius, tolerance = 1e-8)
+  expect_equal(ctr$radius, 0.867843, tolerance = 1e-6)
+  # nothing to drop on BOWF-short
+  expect_false(any(red$dropped))
+})
+
+# x1 + x2 + x3 + x4 = 2, x1 + x2 >= 1, x3 + x4 >= 1, 0 <= x <= 1. The inequalities
+# force x1 + x2 = 1 and x3 + x4 = 1, a hidden equality that fixes no unknown: the
+# polytope has dimension 2, not 3.
+.hidden_combination <- function() {
+  list(A = matrix(1, 1, 4), B = 2,
+       G = rbind(c(1, 1, 0, 0), c(0, 0, 1, 1), diag(4), -diag(4)),
+       H = c(1, 1, rep(0, 4), rep(-1, 4)))
+}
+
+test_that("lim.redpol detects a hidden equality on a combination of unknowns",{
+  lim_exm <- .hidden_combination()
+  red <- lim.redpol(lim_exm)
+  expect_equal(ncol(red$Z), 2)
+  # the two inequalities that hold as equalities become constant, and are dropped
+  expect_equal(which(red$dropped), c(1, 2))
+  expect_equal(nrow(red$G), 8)
+  expect_gt(pol.center(red$G, red$H, type = "chebyshev")$radius, 0)
+  # Without the test, a clear error rather than a wrong reduced polytope
+  expect_error(lim.redpol(lim_exm, test = FALSE), "hold as equalities")
+})
+
+test_that("rlim samples inside the polytope despite a hidden equality",{
+  # Before, the hidden equality went unnoticed and every sampled point violated it.
+  lim_exm <- .hidden_combination()
+  samp <- rlim(lim_exm, nsamp = 200, seed = 1)
+  expect_lt(max(abs(lim_exm$A %*% t(samp) - lim_exm$B)), 1e-8)
+  expect_gt(min(lim_exm$G %*% t(samp) - lim_exm$H), -1e-8)
+})
+
+test_that("lim.redpol drops the inequalities constant on the affine space",{
+  # x1 + x2 = 1 and x1 - x2 = 1 fix x1 = 1 and x2 = 0: x1 >= 0 and x2 >= 0 are
+  # constant on {Ax = B}, the latter being tight. Only x3, in [0, 2], is free.
+  lim_exm <- list(A = rbind(c(1, 1, 0), c(1, -1, 0)), B = c(1, 1),
+                  G = rbind(diag(3), c(0, 0, -1)), H = c(0, 0, 0, -2))
+  red <- lim.redpol(lim_exm)
+  expect_equal(red$dropped, c(TRUE, TRUE, FALSE, FALSE))
+  expect_equal(abs(as.numeric(red$G)), c(1, 1))
+  expect_equal(red$x0, c(1, 0, 1), tolerance = 1e-8)
+})
+
+test_that("lim.redpol stops on an empty polytope",{
+  lim_exm <- list(A = matrix(1, 1, 2), B = 1, G = diag(2), H = c(1, 1))
+  expect_error(lim.redpol(lim_exm), "empty or unbounded")
+})
 
 # Tests on the behaviour of the red2full function ----
 

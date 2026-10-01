@@ -16,30 +16,45 @@ full2red(sample, x0, Z)
 \item{lim}{A list with four components \code{A}, \code{B}, \code{G} and \code{H} representing
 the polytope to be reduced.}
 
-\item{test}{A boolean if equal \code{TRUE} checks for additional equalities hidden in inequalities.}
+\item{test}{A boolean. If \code{TRUE} (the default), implicit equalities hidden in the
+inequalities are detected and added to the equalities; if \code{FALSE}, they raise an error.}
 
 \item{sample}{A matrix where each row corresponds to a point inside either the full or the reduced polytope.}
 
-\item{x0}{A numeric vector of size \eqn{n} corresponding to the particular solution used during the reduction.}
+\item{x0}{A numeric vector of size \eqn{n}, the reference point used during the reduction (returned by \code{lim.redpol()}).}
 
 \item{Z}{The matrix used during the reduction of the polytope (returned by \code{lim.redpol()}).}
 }
 \value{
-A list with four components; namely:
+A list with five components; namely:
 \itemize{
   \item \code{G}
   \item \code{H}
   \item \code{x0}
   \item \code{Z}
+  \item \code{dropped}, a logical vector flagging the inequalities of \code{lim}
+    removed because constant on the affine hull of \eqn{\mathcal{P}}.
 }
 }
 \description{
 The function \code{lim.redpol()} takes as input a polytope  and returns its projection into the non-empty reduced polytope.
 Precisely, taking the polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}} as input, the function returns 
 \itemize{
-\item the matrix \code{Z}, basis of the right null space of A and \eqn{x_0} a particular solution of \eqn{P}, used for the reduction;
+\item the matrix \code{Z}, orthonormal basis of the right null space of A, and \eqn{x_0} a point of \eqn{\mathcal{P}}, used for the reduction;
 \item the matrix \eqn{G'=GZ} and the vector \eqn{H'=H-Gx_0} describing the reduced polytope \eqn{\mathcal{P'}= \{ x \in \mathbb{R}^{n-k}: G'x \geq H'\}} with \eqn{k=\mathtt{rank}(A)}.
  }
+}
+\details{
+The point \eqn{x_0} is a Chebyshev center of \eqn{\mathcal{P}}: the center of a largest
+ball contained in \eqn{\mathcal{P}} within the affine space \eqn{\{Ax = B\}}, obtained
+by a single linear program. It is strictly interior, so that the origin is a Chebyshev
+center of \eqn{\mathcal{P'}}. It need not be unique.
+
+A ball of radius zero means that some inequalities hold as equalities on the whole
+polytope. With \code{test = TRUE}, these implicit equalities are detected, by one linear
+program per inequality, and added to the equalities. The inequalities that are then
+constant on the affine hull of \eqn{\mathcal{P}} give zero rows in \eqn{G'}; they are
+removed, and flagged by the component \code{dropped}.
  
  The function \code{full2red()} (resp. \code{red2full()}) turns a sample of points inside the full polytope \eqn{\mathcal{P}} (resp. inside the reduced polytope \eqn{\mathcal{P'}})
  into the sample of corresponding points inside the reduced polytope \eqn{\mathcal{P'}} (resp. the full polytope \eqn{\mathcal{P}}).
