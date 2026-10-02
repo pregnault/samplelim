@@ -41,7 +41,7 @@ The function \code{lim.redpol()} takes as input a polytope  and returns its proj
 Precisely, taking the polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}} as input, the function returns 
 \itemize{
 \item the matrix \code{Z}, orthonormal basis of the right null space of A, and \eqn{x_0} a point of \eqn{\mathcal{P}}, used for the reduction;
-\item the matrix \eqn{G'=GZ} and the vector \eqn{H'=H-Gx_0} describing the reduced polytope \eqn{\mathcal{P'}= \{ x \in \mathbb{R}^{n-k}: G'x \geq H'\}} with \eqn{k=\mathtt{rank}(A)}.
+\item the matrix \eqn{G'=GZ} and the vector \eqn{H'=H-Gx_0} describing the reduced polytope \eqn{\mathcal{P'}= \{ x \in \mathbb{R}^{n-k}: G'x \geq H'\}} with \eqn{k=\mathtt{rank}(A)}, the rows flagged by \code{dropped} being removed.
  }
 }
 \details{
@@ -52,7 +52,8 @@ center of \eqn{\mathcal{P'}}. It need not be unique.
 
 A ball of radius zero means that some inequalities hold as equalities on the whole
 polytope. With \code{test = TRUE}, these implicit equalities are detected, by one linear
-program per inequality, and added to the equalities. The inequalities that are then
+program per inequality, and added to the equalities, whose rank \eqn{k} increases
+accordingly. The inequalities that are then
 constant on the affine hull of \eqn{\mathcal{P}} give zero rows in \eqn{G'}; they are
 removed, and flagged by the component \code{dropped}.
  

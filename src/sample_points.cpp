@@ -177,11 +177,20 @@ Rcpp::NumericMatrix sample_points(Rcpp::Reference P,
         HP.init(dim, Rcpp::as<MT>(P.slot("A")),
                 Rcpp::as<VT>(P.slot("b")));
 
-        if (!set_starting_point)
+        // The Chebyshev ball gives the default starting point and, through
+        // compute_diameter(), the default length L of the walks. lp_solve may fail to
+        // compute it: it then returns a radius -1 and a point of dimension 1, from
+        // which no chain should start.
+        bool L_given = random_walk.isNotNull() &&
+            Rcpp::as<Rcpp::List>(random_walk).containsElementNamed("L");
+        if (!set_starting_point || !L_given)
         {
             InnerBall = HP.ComputeInnerBall();
-            StartingPoint = InnerBall.first;
-
+            if (InnerBall.second < 0.0)
+            {
+                throw Rcpp::exception("The Chebyshev ball of the polytope could not be computed!");
+            }
+            if (!set_starting_point) StartingPoint = InnerBall.first;
         }
         if (HP.is_in(StartingPoint) == 0)
         {

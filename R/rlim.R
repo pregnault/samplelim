@@ -27,7 +27,8 @@
 # 'whether \code{"MiW"} for the Mirror Walk or \code{"BiW"} for the Billard Walk. 
 #' See \emph{Details} Section below.
 #' @param starting_point A numeric vector giving the coordinates of a point inside the polytope, 
-#' used as starting point in the MCMC algorithm.
+#' used as starting point in the MCMC algorithm, in the coordinates of the reduced polytope.
+#' If \code{NULL} (the default), a Chebyshev center of the reduced polytope is used.
 #' @param tol A numeric value specifying the tolerance for numeric computations.
 #' @param seed An integer used to set the seed of the PRNG.
 #'
@@ -100,7 +101,8 @@
 #'  It is equal to the ranges of the reduced polytope divided by \env{scale} 
 #'  (default for \env{scale} is 10);
 #'  \item if \env{type} is \code{"BiW"}, the \env{jmp} is a single value 
-#'  equal to the radius of the largest ball included in the reduced polytope.
+#'  equal to \eqn{4 \sqrt{d}} times the radius of the largest ball included in the
+#'  reduced polytope, \eqn{d} being its dimension.
 #' }
 #' 
 #' @examples
@@ -223,6 +225,15 @@ rlim<- function(lim, Hpol = NULL,
     stop("The walk type is not valid")
     
   }
+  # Chebyshev ball of the polytope sampled, computed here with Rglpk. volesti would
+  # compute it with lp_solve, which may fail without notice (radius -1) and then start
+  # the chain from a meaningless point. Its center is the default starting point, and
+  # 4 sqrt(d) times its radius the default length L of the walks, as in volesti.
+  ball <- pol.center(g, h, type = "chebyshev")
+  if (is.null(random_walk[["L"]])) {
+    random_walk <- c(random_walk, list("L" = 4 * sqrt(ncol(g)) * ball$radius))
+  }
+  if (is.null(starting_point)) starting_point <- ball$center
   if (!is.null(thin)){
     random_walk<-c(random_walk,list("walk_length"=thin))
   }

@@ -51,7 +51,8 @@ If not \code{NULL} (the default value), then \env{nsamp} is set to \code{(nsim-b
 See \emph{Details} Section below.}
 
 \item{starting_point}{A numeric vector giving the coordinates of a point inside the polytope, 
-used as starting point in the MCMC algorithm.}
+used as starting point in the MCMC algorithm, in the coordinates of the reduced polytope.
+If \code{NULL} (the default), a Chebyshev center of the reduced polytope is used.}
 
 \item{tol}{A numeric value specifying the tolerance for numeric computations.}
 
@@ -125,7 +126,8 @@ depending the \env{type} (MiW or BiW). Precisely,
  It is equal to the ranges of the reduced polytope divided by \env{scale} 
  (default for \env{scale} is 10);
  \item if \env{type} is \code{"BiW"}, the \env{jmp} is a single value 
- equal to the radius of the largest ball included in the reduced polytope.
+ equal to \eqn{4 \sqrt{d}} times the radius of the largest ball included in the
+ reduced polytope, \eqn{d} being its dimension.
 }
 }
 \examples{

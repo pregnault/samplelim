@@ -418,7 +418,7 @@ sample_reduced2 <- full2red(sample_full, reduced$x0, reduced$Z)
 
 This section compare the execution time of the `xsample()`function from `{limSolve}` and the `rlim()` function from `{samplelim}`. Both functions use here the same MiW algorithm and the same sample size (1000 points).
 
-```{r comparison, message = FALSE, warning = FALSE}
+```{r comparison, message = FALSE, warning = FALSE, eval = requireNamespace("limSolve", quietly = TRUE)}
 library("limSolve")
 
 # Execution time for xsample (limSolve)

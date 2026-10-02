@@ -4,7 +4,7 @@
 #' Precisely, taking the polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}} as input, the function returns 
 #' \itemize{
 #' \item the matrix \code{Z}, orthonormal basis of the right null space of A, and \eqn{x_0} a point of \eqn{\mathcal{P}}, used for the reduction;
-#' \item the matrix \eqn{G'=GZ} and the vector \eqn{H'=H-Gx_0} describing the reduced polytope \eqn{\mathcal{P'}= \{ x \in \mathbb{R}^{n-k}: G'x \geq H'\}} with \eqn{k=\mathtt{rank}(A)}.
+#' \item the matrix \eqn{G'=GZ} and the vector \eqn{H'=H-Gx_0} describing the reduced polytope \eqn{\mathcal{P'}= \{ x \in \mathbb{R}^{n-k}: G'x \geq H'\}} with \eqn{k=\mathtt{rank}(A)}, the rows flagged by \code{dropped} being removed.
 #'  }
 #'
 #' The point \eqn{x_0} is a Chebyshev center of \eqn{\mathcal{P}}: the center of a largest
@@ -14,7 +14,8 @@
 #'
 #' A ball of radius zero means that some inequalities hold as equalities on the whole
 #' polytope. With \code{test = TRUE}, these implicit equalities are detected, by one linear
-#' program per inequality, and added to the equalities. The inequalities that are then
+#' program per inequality, and added to the equalities, whose rank \eqn{k} increases
+#' accordingly. The inequalities that are then
 #' constant on the affine hull of \eqn{\mathcal{P}} give zero rows in \eqn{G'}; they are
 #' removed, and flagged by the component \code{dropped}.
 #'  
@@ -55,42 +56,29 @@ lim.redpol <- function(lim, test = TRUE) {
   tol <- sqrt(.Machine$double.eps) #the smallest positive floating-point number x such that 1 + x != 1 on the current machine
   ## 0. Setup problem
 
-  if (is.null(A)) {
+  if (is.null(A) || length(A) == 0L) {
     stop("no equalities found")
   }
-  if (is.null(G)) {
+  if (is.null(G) || length(G) == 0L) {
     stop("no inequalities found")
   }
+  if (is.vector(A)) A <- t(A)
+  if (is.vector(G)) G <- t(G)
   A <- as.matrix(A); G <- as.matrix(G)
   B <- as.numeric(B); H <- as.numeric(H)
 
-  ## 1. Reference point: a Chebyshev center, strictly interior to the polytope
-  ctr <- .redpol_chebyshev(A, B, G, H, tol)
-
-  ## A radius zero reveals equalities hidden in the inequalities: detect them, add
-  ## them to the equalities and start again.
-  if (ctr$radius <= tol) {
-    if (!test) {
-      stop("Some inequalities hold as equalities on the whole polytope. ",
-           "Use test = TRUE to detect them.")
-    }
-    implicit <- .redpol_implicit(A, B, G, H, ctr$s, tol)
-    A <- rbind(A, G[implicit, , drop = FALSE])
-    B <- c(B, H[implicit])
-    ctr <- .redpol_chebyshev(A, B, G, H, tol)
-    if (ctr$radius <= tol) {
-      stop("The polytope has an empty interior, even after adding the equalities ",
-           "hidden in the inequalities.")
-    }
-  }
+  ## 1. Reference point: a Chebyshev center, strictly interior to the polytope. The
+  ## equalities hidden in the inequalities, if any, are detected on the way.
+  ctr <- .chebyshev_hull(A, B, G, H, tol, test)
   x0 <- ctr$center
   Z <- ctr$Z
 
   ## 2. Projection of G and H onto reduced space
   g <- G %*% Z
   h <- H - G %*% x0
-  g[abs(g) < tol] <- 0
-  h[abs(h) < tol] <- 0
+  g[abs(g) < tol * sqrt(rowSums(G^2))] <- 0          # relative to the norm of row i
+  sc <- max(abs(c(B, H))); if (!is.finite(sc) || sc == 0) sc <- 1
+  h[abs(h) < tol * sc] <- 0                           # relative to the scale of the flows
   h <- as.numeric(h)
 
   ## 3. An inequality constant on the affine hull gives a zero row. It holds at x0,
@@ -102,6 +90,37 @@ lim.redpol <- function(lim, test = TRUE) {
 }
 
 
+# Chebyshev center of {x : Ax = B, Gx >= H} within its affine hull. A radius zero in
+# {Ax = B} reveals implicit equalities: they are detected, added to the equalities,
+# and the center is computed again. Used by lim.redpol() and pol.center().
+.chebyshev_hull <- function(A, B, G, H, tol, test = TRUE) {
+  # The polytope is divided by the largest |B_i| or |H_i|: the tolerance on the radius
+  # becomes relative, and GLPK works at unit scale whatever the unit of the flows.
+  sc <- max(abs(c(B, H)))
+  if (!is.finite(sc) || sc == 0) sc <- 1
+  B <- B / sc
+  H <- H / sc
+  ctr <- .chebyshev_affine(A, B, G, H, tol)
+  if (ctr$radius <= tol) {
+    if (!test) {
+      stop("Some inequalities hold as equalities on the whole polytope. ",
+           "Use test = TRUE to detect them.")
+    }
+    implicit <- .implicit_equalities(A, B, G, H, ctr$s, tol)
+    A <- rbind(A, G[implicit, , drop = FALSE])
+    B <- c(B, H[implicit])
+    ctr <- .chebyshev_affine(A, B, G, H, tol)
+    if (ctr$radius <= tol) {
+      stop("The polytope has an empty interior, even after adding the equalities ",
+           "hidden in the inequalities.")
+    }
+  }
+  ctr$center <- ctr$center * sc
+  ctr$radius <- ctr$radius * sc
+  ctr
+}
+
+
 # Chebyshev center of {x : Ax = B, Gx >= H}, within the affine space {Ax = B}, by one
 # linear program:
 #   maximise r subject to  Ax = B  and  g_i . x - s_i r >= H_i,
@@ -110,7 +129,7 @@ lim.redpol <- function(lim, test = TRUE) {
 # space then lies in half-space i. An inequality constant on the affine space gets
 # s_i = 0. The full norm ||g_i|| would give a smaller ball, and r = 0 as soon as such a
 # constant inequality is tight.
-.redpol_chebyshev <- function(A, B, G, H, tol) {
+.chebyshev_affine <- function(A, B, G, H, tol) {
   Z <- Null(t(A)); Z[abs(Z) < tol] <- 0 #x=x0+Zq ; AZ=0
   if (ncol(Z) == 0L) stop("The equalities fix all the unknowns: the polytope is a point.")
   s <- sqrt(rowSums((G %*% Z)^2))
@@ -132,7 +151,7 @@ lim.redpol <- function(lim, test = TRUE) {
 # g_i . x = H_i on the whole polytope, i.e. whose largest margin over the polytope is
 # zero. One linear program per inequality that is not constant on {Ax = B}; the margin
 # is divided by s_i, so that it is a distance within the affine space.
-.redpol_implicit <- function(A, B, G, H, s, tol) {
+.implicit_equalities <- function(A, B, G, H, s, tol) {
   n <- ncol(A)
   mat <- rbind(A, G)
   dir <- c(rep("==", nrow(A)), rep(">=", nrow(G)))
