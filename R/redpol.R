@@ -77,8 +77,8 @@ lim.redpol <- function(lim, test = TRUE) {
   g <- G %*% Z
   h <- H - G %*% x0
   g[abs(g) < tol * sqrt(rowSums(G^2))] <- 0          # relative to the norm of row i
-  sc <- max(abs(c(B, H))); if (!is.finite(sc) || sc == 0) sc <- 1
-  h[abs(h) < tol * sc] <- 0                           # relative to the scale of the flows
+  # No threshold on h: x0 being interior, its margins are genuine, and zeroing the
+  # smallest would put the origin on the boundary of a thin polytope.
   h <- as.numeric(h)
 
   ## 3. An inequality constant on the affine hull gives a zero row. It holds at x0,
@@ -94,10 +94,13 @@ lim.redpol <- function(lim, test = TRUE) {
 # {Ax = B} reveals implicit equalities: they are detected, added to the equalities,
 # and the center is computed again. Used by lim.redpol() and pol.center().
 .chebyshev_hull <- function(A, B, G, H, tol, test = TRUE) {
-  # The polytope is divided by the largest |B_i| or |H_i|: the tolerance on the radius
-  # becomes relative, and GLPK works at unit scale whatever the unit of the flows.
+  # A polytope smaller than 1 is scaled up to unit size, so that the tolerances keep a
+  # meaning. A larger one is left as it is: GLPK's feasibility tolerance, about 1e-7
+  # relative to 1 + |bound|, would grow if it were scaled down, and the center of a
+  # thin polytope (radius 7e-6 on the REEF models) would no longer be interior.
   sc <- max(abs(c(B, H)))
   if (!is.finite(sc) || sc == 0) sc <- 1
+  sc <- min(1, sc)
   B <- B / sc
   H <- H / sc
   ctr <- .chebyshev_affine(A, B, G, H, tol)

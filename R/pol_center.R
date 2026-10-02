@@ -205,8 +205,10 @@ lim.center <- function(lim, type = c("analytic", "chebyshev"), x0 = NULL,
 # which states that the ball of center x and radius r fits in half-space i.
 .pol_chebyshev <- function(A, b) {
   s <- sqrt(rowSums(A^2)); d <- ncol(A)
-  # Solved for the polytope divided by max |b_i|, so that GLPK works at unit scale.
+  # A polytope smaller than 1 is scaled up to unit size; a larger one is left as it is,
+  # see .chebyshev_hull() in redpol.R.
   sc <- max(abs(b)); if (!is.finite(sc) || sc == 0) sc <- 1
+  sc <- min(1, sc)
   sol <- Rglpk_solve_LP(
     obj = c(numeric(d), 1), mat = cbind(A, s),
     dir = rep("<=", nrow(A)), rhs = b / sc,

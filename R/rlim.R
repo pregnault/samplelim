@@ -225,15 +225,22 @@ rlim<- function(lim, Hpol = NULL,
     stop("The walk type is not valid")
     
   }
-  # Chebyshev ball of the polytope sampled, computed here with Rglpk. volesti would
-  # compute it with lp_solve, which may fail without notice (radius -1) and then start
-  # the chain from a meaningless point. Its center is the default starting point, and
-  # 4 sqrt(d) times its radius the default length L of the walks, as in volesti.
-  ball <- pol.center(g, h, type = "chebyshev")
-  if (is.null(random_walk[["L"]])) {
+  # Starting point and length of the walks. volesti computes a Chebyshev ball with
+  # lp_solve, which may fail (radius -1): it now stops in that case. To spare it, the
+  # starting point is chosen here, among the origin (a Chebyshev center of the reduced
+  # polytope returned by lim.redpol()) and the Chebyshev center returned by Rglpk. A
+  # candidate is kept only if strictly inside: solvers work up to a tolerance, and the
+  # center of a very thin polytope may touch its boundary. The default length L is
+  # 4 sqrt(d) times the Chebyshev radius, as in volesti.
+  ball <- tryCatch(pol.center(g, h, type = "chebyshev"), error = function(e) NULL)
+  if (is.null(starting_point)) {
+    for (z in list(numeric(ncol(g)), ball$center)) {
+      if (!is.null(z) && all(as.numeric(g %*% z) - h > 0)) { starting_point <- z; break }
+    }
+  }
+  if (!is.null(starting_point) && !is.null(ball) && is.null(random_walk[["L"]])) {
     random_walk <- c(random_walk, list("L" = 4 * sqrt(ncol(g)) * ball$radius))
   }
-  if (is.null(starting_point)) starting_point <- ball$center
   if (!is.null(thin)){
     random_walk<-c(random_walk,list("walk_length"=thin))
   }
