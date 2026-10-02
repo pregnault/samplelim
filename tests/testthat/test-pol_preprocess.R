@@ -87,15 +87,16 @@ test_that("lim.exfoliate keeps the lim structure", {
   expect_identical(out$Z, red$Z)
 })
 
-test_that("lim.exfoliate, lim.center and lim.round refuse a polytope that is not reduced", {
+test_that("lim.exfoliate and lim.round refuse a polytope that is not reduced", {
   DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
   full <- df2lim(DF)                       # still carries the equalities A x = B
   expect_false(is.null(full$A))
   # Fed a full lim, these functions would silently ignore Ax = B and return a point
   # far outside the model. They must refuse instead.
   expect_error(lim.exfoliate(full), "REDUCED polytope")
-  expect_error(lim.center(full), "REDUCED polytope")
   expect_error(lim.round(full), "REDUCED polytope")
+  # lim.center() takes the equalities into account instead (see test-pol_center.R)
+  expect_lt(max(abs(full$A %*% lim.center(full, type = "chebyshev")$center - full$B)), 1e-8)
   # and a list without G / H is refused too
   expect_error(lim.center(list(x0 = 1)), "components G and H")
 })

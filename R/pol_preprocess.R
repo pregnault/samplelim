@@ -122,11 +122,11 @@ lim.exfoliate <- function(lim, tol = 1e-9) {
 }
 
 
-# The three pre-processing steps only make sense on the REDUCED polytope, the one
+# Exfoliation and rounding only make sense on the REDUCED polytope, the one
 # lim.redpol() returns, whose description is purely {x : Gx >= H}. Fed a full lim
 # object, they would silently ignore the equality constraints Ax = B and return a
 # point outside the model -- observed at 1e8 away on BOWF-short. Hence this guard:
-# better a clear refusal than a wrong answer.
+# better a clear refusal than a wrong answer. lim.center() handles both cases.
 .lim_check_reduced <- function(lim) {
   if (!is.list(lim) || is.null(lim$G) || is.null(lim$H))
     stop("`lim` must be a list with components G and H.", call. = FALSE)

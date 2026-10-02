@@ -1,31 +1,37 @@
 #' Centers of a polytope
 #'
 #' The functions \code{pol.center()} and \code{lim.center()} compute a center of a given
-#' polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Gx \geq H \}}. Two notions of center
-#' are available; they do not coincide and do not share the same properties.
+#' polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}}, the equality
+#' constraints being optional. Two notions of center are available; they do not coincide
+#' and do not share the same properties.
 #'
 #' Writing \eqn{d_i(x) = \langle g_i, x \rangle - H_i \geq 0} for the margin of
 #' inequality constraint \eqn{i}, the two centers are the following.
 #' \describe{
-#'   \item{\code{"chebyshev"}}{the center of the largest ball inscribed in
-#'     \eqn{\mathcal{P}}, obtained by a single linear program. It involves only the
-#'     \emph{nearest} faces and ignores all the others; on an elongated polytope, it may
-#'     lie anywhere along the long axis, and it need not be unique, since a rectangle
-#'     admits a whole segment of Chebyshev centers.}
+#'   \item{\code{"chebyshev"}}{the center of a largest ball inscribed in
+#'     \eqn{\mathcal{P}}, the ball being drawn in the affine space \eqn{\{Ax = B\}};
+#'     obtained by a single linear program. It involves only the \emph{nearest} faces.
+#'     The radius is unique, the center is not in general: the set of centers may be
+#'     large, and the point returned depends on the solver and on the formulation. This
+#'     set depends on the polytope only, not on its description.}
 #'   \item{\code{"analytic"}}{the minimiser of the logarithmic barrier
-#'     \eqn{F(x) = - \sum_i \log d_i(x)}, equivalently the point maximising the product
-#'     of the margins. It involves \emph{all} the faces, and it is unique.}
+#'     \eqn{F(x) = - \sum_i \log d_i(x)} on the affine space, equivalently the point
+#'     maximising the product of the margins. It involves \emph{all} the faces. It is
+#'     unique for a given description of \eqn{\mathcal{P}}, but depends on this
+#'     description: a redundant constraint moves it, and a duplicated one counts twice.
+#'     The function \code{\link{pol.exfoliate}()} should be applied first.}
 #' }
 #'
-#' The two centers may lie far apart. On the BOWF-short model, the distance between them
-#' is 1024, for a Chebyshev radius of 0.868. Rounding at the Chebyshev center instead of
-#' the analytic one costs a factor 100 to 200 in effective sample size per second;
-#' see \code{\link{pol.round}()}.
+#' With equality constraints, the analytic center is computed on the reduced polytope
+#' returned by \code{\link{lim.redpol}()}, then brought back: the barrier being invariant
+#' under affine changes of coordinates, it is the same point. The inequalities that are
+#' constant on the affine hull of \eqn{\mathcal{P}} are left out of the barrier.
 #'
-#' The analytic center is defined by a sum over the inequality constraints. It therefore
-#' depends on the \emph{description} of the polytope, and not on its geometry only:
-#' adding a redundant constraint moves it. The function \code{\link{pol.exfoliate}()}
-#' should be applied first.
+#' The two centers may lie far apart. On the BOWF-short model, reduced and exfoliated,
+#' the distance between them is of the order of a thousand (874 for the Chebyshev
+#' center returned by the linear program), for a Chebyshev radius of 0.868. Rounding at
+#' the Chebyshev center instead of the analytic one costs a factor 100 to 200 in
+#' effective sample size per second; see \code{\link{pol.round}()}.
 #'
 #' The analytic center is computed by damped Newton iterations. The step is bounded to
 #' 95\% of the distance to the boundary, so that the iterate remains strictly interior,
@@ -33,12 +39,9 @@
 #' relies on the Newton decrement
 #' \eqn{\lambda^2 = \nabla F^\top (\nabla^2 F)^{-1} \nabla F}, half of which bounds
 #' \eqn{F(x) - F(c)} and which is invariant under affine changes of coordinates, unlike
-#' the norm of the gradient.
-#'
-#' This criterion bounds the gap on the \emph{objective}, not on the \emph{position}. On
-#' an ill-conditioned polytope, the barrier is very flat along the long directions, so
-#' that two correct implementations may return noticeably different points while both
-#' having a small gradient. Convergence should not be assessed on the position.
+#' the norm of the gradient. It bounds the gap on the \emph{objective}, not on the
+#' \emph{position}: on an ill-conditioned polytope, two correct implementations may
+#' return noticeably different points.
 #'
 #' @param G A matrix corresponding to \code{G} in the description of the polytope
 #'   \eqn{\mathcal{P}}.
@@ -48,14 +51,17 @@
 #'   \code{"analytic"} (the default) or \code{"chebyshev"}; see the section
 #'   \emph{Details} above.
 #' @param x0 A numeric vector giving the coordinates of a strictly interior point, used
-#'   as starting point for the Newton iterations. If \code{NULL} (the default), the
-#'   Chebyshev center is used.
+#'   as starting point for the Newton iterations; with equality constraints, it must
+#'   satisfy them. If \code{NULL} (the default), a Chebyshev center is used.
 #' @param max_iter An integer giving the maximum number of Newton iterations. It is a
 #'   safeguard, never reached in practice.
 #' @param tol A numeric value specifying the threshold on half the Newton decrement.
+#' @param A,B Optional matrix and numeric vector corresponding to \code{A} and \code{B}
+#'   in the description of the polytope \eqn{\mathcal{P}}. If \code{NULL} (the default),
+#'   the polytope is \eqn{\{ x : Gx \geq H \}}.
 #'
-#' @return For \code{type = "analytic"}, a numeric vector of length \eqn{n}, the
-#' dimension of the polytope. For \code{type = "chebyshev"}, a list with two components;
+#' @return For \code{type = "analytic"}, a numeric vector of length \eqn{n}, the number
+#' of columns of \code{G}. For \code{type = "chebyshev"}, a list with two components;
 #' namely:
 #' \itemize{
 #'   \item \code{center}
@@ -70,7 +76,10 @@
 #' # Create a lim object from a Description file
 #' DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
 #' BOWF <- df2lim(DF)
-#' # These functions operate on the reduced polytope, exfoliated beforehand
+#' # A Chebyshev center of the full polytope, in the space of the flows
+#' ctr <- lim.center(BOWF, type = "chebyshev")
+#' ctr$radius
+#' # The analytic center is better computed once the redundant constraints are removed
 #' red <- lim.redpol(BOWF)
 #' exf <- pol.exfoliate(G = red$G, H = red$H)
 #' ctr <- pol.center(G = exf$G, H = exf$H, type = "analytic")
@@ -89,7 +98,7 @@
 #' SIAM (1994).
 #' }
 pol.center <- function(G, H, type = c("analytic", "chebyshev"),
-                       x0 = NULL, max_iter = 200L, tol = 1e-10) {
+                       x0 = NULL, max_iter = 200L, tol = 1e-10, A = NULL, B = NULL) {
   type <- match.arg(type)
   if (is.data.frame(G)) G <- as.matrix(G)
   if (is.vector(G)) G <- t(G)
@@ -100,6 +109,7 @@ pol.center <- function(G, H, type = c("analytic", "chebyshev"),
   # as an opaque "no interior point found" from the linear program.
   if (any(!is.finite(G)) || any(!is.finite(H))) stop("G and H must be finite.")
   if (any(sqrt(rowSums(G^2)) <= 0)) stop("Degenerate constraint: some row of G is zero.")
+  if (!is.null(A)) return(.pol_center_full(A, B, G, H, type, x0, max_iter, tol))
 
   # Gx >= H is rewritten as (-G) x <= (-H) for the internal computation.
   A <- -G; b <- -H
@@ -142,16 +152,51 @@ pol.center <- function(G, H, type = c("analytic", "chebyshev"),
 }
 
 
-#' @param lim A list with at least two components \code{G} and \code{H} representing
-#'   the \strong{reduced} polytope, as returned by \code{\link{lim.redpol}()}. A list
-#'   still carrying equality constraints in its component \code{A} is rejected.
+#' @param lim A list with at least two components \code{G} and \code{H}, and possibly
+#'   \code{A} and \code{B}: either a full \code{lim} object, as returned by
+#'   \code{\link{df2lim}()}, or a reduced polytope, as returned by
+#'   \code{\link{lim.redpol}()}. The center is given in the coordinates of \code{lim}.
 #' @export
 #' @rdname pol.center
 lim.center <- function(lim, type = c("analytic", "chebyshev"), x0 = NULL,
                        max_iter = 200L, tol = 1e-10) {
-  .lim_check_reduced(lim)
-  pol.center(G = lim$G, H = lim$H, type = type, x0 = x0,
-             max_iter = max_iter, tol = tol)
+  if (!is.list(lim) || is.null(lim$G) || is.null(lim$H))
+    stop("`lim` must be a list with components G and H.", call. = FALSE)
+  full <- !is.null(lim$A) && length(lim$A) > 0L
+  pol.center(G = lim$G, H = lim$H, type = type, x0 = x0, max_iter = max_iter,
+             tol = tol, A = if (full) lim$A, B = if (full) lim$B)
+}
+
+
+# Center of {x : Ax = B, Gx >= H}. Chebyshev: one linear program in the full space, the
+# ball being drawn in the affine hull of the polytope (see .chebyshev_hull() in
+# redpol.R). Analytic: on the affine space, the barrier is that of the reduced
+# polytope, so the center is computed there, from the origin (a Chebyshev center of the
+# reduced polytope), and brought back.
+.pol_center_full <- function(A, B, G, H, type, x0, max_iter, tol) {
+  if (is.data.frame(A)) A <- as.matrix(A)
+  if (is.vector(A)) A <- t(A)
+  B <- as.numeric(B)
+  if (ncol(A) != ncol(G) || nrow(A) != length(B))
+    stop("A, B and G have incompatible dimensions.")
+  if (any(!is.finite(A)) || any(!is.finite(B))) stop("A and B must be finite.")
+  eps <- sqrt(.Machine$double.eps)
+
+  if (identical(type, "chebyshev")) {
+    ctr <- .chebyshev_hull(A, B, G, H, eps)
+    return(list(center = ctr$center, radius = ctr$radius))
+  }
+  red <- lim.redpol(list(A = A, B = B, G = G, H = H))
+  z0 <- numeric(ncol(red$Z))
+  if (!is.null(x0)) {
+    x0 <- as.numeric(x0)
+    if (max(abs(A %*% x0 - B)) > eps * max(1, abs(B)))
+      stop("x0 must satisfy the equality constraints (Ax = B).")
+    z0 <- as.numeric(crossprod(red$Z, x0 - red$x0))
+  }
+  z <- pol.center(red$G, red$H, type = "analytic", x0 = z0, max_iter = max_iter,
+                  tol = tol)
+  as.numeric(red$x0 + red$Z %*% z)
 }
 
 
@@ -160,12 +205,14 @@ lim.center <- function(lim, type = c("analytic", "chebyshev"), x0 = NULL,
 # which states that the ball of center x and radius r fits in half-space i.
 .pol_chebyshev <- function(A, b) {
   s <- sqrt(rowSums(A^2)); d <- ncol(A)
+  # Solved for the polytope divided by max |b_i|, so that GLPK works at unit scale.
+  sc <- max(abs(b)); if (!is.finite(sc) || sc == 0) sc <- 1
   sol <- Rglpk_solve_LP(
     obj = c(numeric(d), 1), mat = cbind(A, s),
-    dir = rep("<=", nrow(A)), rhs = b,
+    dir = rep("<=", nrow(A)), rhs = b / sc,
     bounds = list(lower = list(ind = seq_len(d + 1L), val = c(rep(-Inf, d), 0))),
     max = TRUE)
   if (sol$status != 0L || sol$solution[d + 1L] <= 0)
     stop("No interior point found: is the polytope empty or unbounded?")
-  list(center = sol$solution[seq_len(d)], radius = sol$solution[d + 1L])
+  list(center = sol$solution[seq_len(d)] * sc, radius = sol$solution[d + 1L] * sc)
 }
