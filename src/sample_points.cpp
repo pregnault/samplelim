@@ -177,10 +177,8 @@ Rcpp::NumericMatrix sample_points(Rcpp::Reference P,
         HP.init(dim, Rcpp::as<MT>(P.slot("A")),
                 Rcpp::as<VT>(P.slot("b")));
 
-        // The Chebyshev ball gives the default starting point and, through
-        // compute_diameter(), the default length L of the walks. lp_solve may fail to
-        // compute it: it then returns a radius -1 and a point of dimension 1, from
-        // which no chain should start.
+        // Chebyshev ball: default starting point and, via compute_diameter(), default L.
+        // lp_solve may fail (radius -1, point of dimension 1): stop rather than start there.
         bool L_given = random_walk.isNotNull() &&
             Rcpp::as<Rcpp::List>(random_walk).containsElementNamed("L");
         if (!set_starting_point || !L_given)

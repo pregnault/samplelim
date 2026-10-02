@@ -33,11 +33,12 @@ lim.center(
 
 \item{type}{A character string specifying the notion of center to be computed, whether
 \code{"analytic"} (the default) or \code{"chebyshev"}; see the section
-\emph{Details} above.}
+\emph{Details} below.}
 
 \item{x0}{A numeric vector giving the coordinates of a strictly interior point, used
 as starting point for the Newton iterations; with equality constraints, it must
-satisfy them. If \code{NULL} (the default), a Chebyshev center is used.}
+satisfy them. If \code{NULL} (the default), a Chebyshev center is used. It is
+unrelated to the component \code{x0} returned by \code{\link{lim.redpol}()}.}
 
 \item{max_iter}{An integer giving the maximum number of Newton iterations. It is a
 safeguard, never reached in practice.}
@@ -69,8 +70,9 @@ constraints being optional. Two notions of center are available; they do not coi
 and do not share the same properties.
 }
 \details{
-Writing \eqn{d_i(x) = \langle g_i, x \rangle - H_i \geq 0} for the margin of
-inequality constraint \eqn{i}, the two centers are the following.
+Writing \eqn{g_i} for the \eqn{i}-th row of \code{G} and
+\eqn{d_i(x) = \langle g_i, x \rangle - H_i \geq 0} for the margin of inequality
+constraint \eqn{i}, the two centers are the following.
 \describe{
   \item{\code{"chebyshev"}}{the center of a largest ball inscribed in
     \eqn{\mathcal{P}}, the ball being drawn in the affine space \eqn{\{Ax = B\}};

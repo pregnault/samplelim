@@ -67,8 +67,7 @@ lim.redpol <- function(lim, test = TRUE) {
   A <- as.matrix(A); G <- as.matrix(G)
   B <- as.numeric(B); H <- as.numeric(H)
 
-  ## 1. Reference point: a Chebyshev center, strictly interior to the polytope. The
-  ## equalities hidden in the inequalities, if any, are detected on the way.
+  ## 1. Reference point x0: a Chebyshev center; implicit equalities detected on the way
   ctr <- .chebyshev_hull(A, B, G, H, tol, test)
   x0 <- ctr$center
   Z <- ctr$Z
@@ -77,12 +76,10 @@ lim.redpol <- function(lim, test = TRUE) {
   g <- G %*% Z
   h <- H - G %*% x0
   g[abs(g) < tol * sqrt(rowSums(G^2))] <- 0          # relative to the norm of row i
-  # No threshold on h: x0 being interior, its margins are genuine, and zeroing the
-  # smallest would put the origin on the boundary of a thin polytope.
+  # h is not thresholded: zeroing a small margin would put the origin on the boundary.
   h <- as.numeric(h)
 
-  ## 3. An inequality constant on the affine hull gives a zero row. It holds at x0,
-  ## hence everywhere: it is removed.
+  ## 3. Drop the inequalities constant on the affine hull (zero rows of g)
   dropped <- rowSums(g != 0) == 0
 
   return(list("G" = g[!dropped, , drop = FALSE], "H" = h[!dropped], "x0" = x0, "Z" = Z,
@@ -90,14 +87,12 @@ lim.redpol <- function(lim, test = TRUE) {
 }
 
 
-# Chebyshev center of {x : Ax = B, Gx >= H} within its affine hull. A radius zero in
-# {Ax = B} reveals implicit equalities: they are detected, added to the equalities,
-# and the center is computed again. Used by lim.redpol() and pol.center().
+# Chebyshev center of {x : Ax = B, Gx >= H} within its affine hull: a radius zero in
+# {Ax = B} reveals implicit equalities, added to A before a second linear program.
 .chebyshev_hull <- function(A, B, G, H, tol, test = TRUE) {
-  # A polytope smaller than 1 is scaled up to unit size, so that the tolerances keep a
-  # meaning. A larger one is left as it is: GLPK's feasibility tolerance, about 1e-7
-  # relative to 1 + |bound|, would grow if it were scaled down, and the center of a
-  # thin polytope (radius 7e-6 on the REEF models) would no longer be interior.
+  # Only a polytope smaller than 1 is scaled up: scaling a larger one down would
+  # inflate GLPK's feasibility tolerance (1e-7 relative to 1 + |bound|), and the
+  # center of a thin polytope would no longer be strictly interior.
   sc <- max(abs(c(B, H)))
   if (!is.finite(sc) || sc == 0) sc <- 1
   sc <- min(1, sc)
@@ -124,14 +119,10 @@ lim.redpol <- function(lim, test = TRUE) {
 }
 
 
-# Chebyshev center of {x : Ax = B, Gx >= H}, within the affine space {Ax = B}, by one
-# linear program:
+# Chebyshev center of {x : Ax = B, Gx >= H} within {Ax = B}, by one linear program:
 #   maximise r subject to  Ax = B  and  g_i . x - s_i r >= H_i,
-# where s_i = ||Z^T g_i|| is the norm of g_i projected onto ker(A), Z being an
-# orthonormal basis of ker(A). The ball of center x and radius r drawn in the affine
-# space then lies in half-space i. An inequality constant on the affine space gets
-# s_i = 0. The full norm ||g_i|| would give a smaller ball, and r = 0 as soon as such a
-# constant inequality is tight.
+# with s_i = ||Z^T g_i||, Z an orthonormal basis of ker(A): the norm of g_i within
+# the affine space (s_i = 0 for an inequality constant on it).
 .chebyshev_affine <- function(A, B, G, H, tol) {
   Z <- Null(t(A)); Z[abs(Z) < tol] <- 0 #x=x0+Zq ; AZ=0
   if (ncol(Z) == 0L) stop("The equalities fix all the unknowns: the polytope is a point.")
@@ -150,10 +141,9 @@ lim.redpol <- function(lim, test = TRUE) {
 }
 
 
-# Implicit equalities of {x : Ax = B, Gx >= H}: the inequalities i such that
-# g_i . x = H_i on the whole polytope, i.e. whose largest margin over the polytope is
-# zero. One linear program per inequality that is not constant on {Ax = B}; the margin
-# is divided by s_i, so that it is a distance within the affine space.
+# Implicit equalities of {x : Ax = B, Gx >= H}: the inequalities whose largest margin
+# over the polytope is zero, by one linear program each (inequalities constant on
+# {Ax = B} excepted); the margin is divided by s_i, a distance in the affine space.
 .implicit_equalities <- function(A, B, G, H, s, tol) {
   n <- ncol(A)
   mat <- rbind(A, G)

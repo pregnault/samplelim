@@ -5,8 +5,9 @@
 #' constraints being optional. Two notions of center are available; they do not coincide
 #' and do not share the same properties.
 #'
-#' Writing \eqn{d_i(x) = \langle g_i, x \rangle - H_i \geq 0} for the margin of
-#' inequality constraint \eqn{i}, the two centers are the following.
+#' Writing \eqn{g_i} for the \eqn{i}-th row of \code{G} and
+#' \eqn{d_i(x) = \langle g_i, x \rangle - H_i \geq 0} for the margin of inequality
+#' constraint \eqn{i}, the two centers are the following.
 #' \describe{
 #'   \item{\code{"chebyshev"}}{the center of a largest ball inscribed in
 #'     \eqn{\mathcal{P}}, the ball being drawn in the affine space \eqn{\{Ax = B\}};
@@ -49,10 +50,11 @@
 #'   \eqn{\mathcal{P}}.
 #' @param type A character string specifying the notion of center to be computed, whether
 #'   \code{"analytic"} (the default) or \code{"chebyshev"}; see the section
-#'   \emph{Details} above.
+#'   \emph{Details} below.
 #' @param x0 A numeric vector giving the coordinates of a strictly interior point, used
 #'   as starting point for the Newton iterations; with equality constraints, it must
-#'   satisfy them. If \code{NULL} (the default), a Chebyshev center is used.
+#'   satisfy them. If \code{NULL} (the default), a Chebyshev center is used. It is
+#'   unrelated to the component \code{x0} returned by \code{\link{lim.redpol}()}.
 #' @param max_iter An integer giving the maximum number of Newton iterations. It is a
 #'   safeguard, never reached in practice.
 #' @param tol A numeric value specifying the threshold on half the Newton decrement.
@@ -105,8 +107,6 @@ pol.center <- function(G, H, type = c("analytic", "chebyshev"),
   if (is.null(G)) stop("G is NULL, the polytope has 0 dimensions.")
   H <- as.numeric(H)
   if (nrow(G) != length(H)) stop("G and H have incompatible dimensions.")
-  # Same guards as pol.exfoliate() and pol.round(): without them a NA would surface
-  # as an opaque "no interior point found" from the linear program.
   if (any(!is.finite(G)) || any(!is.finite(H))) stop("G and H must be finite.")
   if (any(sqrt(rowSums(G^2)) <= 0)) stop("Degenerate constraint: some row of G is zero.")
   if (!is.null(A)) return(.pol_center_full(A, B, G, H, type, x0, max_iter, tol))
@@ -168,11 +168,8 @@ lim.center <- function(lim, type = c("analytic", "chebyshev"), x0 = NULL,
 }
 
 
-# Center of {x : Ax = B, Gx >= H}. Chebyshev: one linear program in the full space, the
-# ball being drawn in the affine hull of the polytope (see .chebyshev_hull() in
-# redpol.R). Analytic: on the affine space, the barrier is that of the reduced
-# polytope, so the center is computed there, from the origin (a Chebyshev center of the
-# reduced polytope), and brought back.
+# pol.center() with equalities. Chebyshev: .chebyshev_hull() (redpol.R). Analytic: on
+# the reduced polytope of lim.redpol(), from its origin, then mapped back by x0 + Z z.
 .pol_center_full <- function(A, B, G, H, type, x0, max_iter, tol) {
   if (is.data.frame(A)) A <- as.matrix(A)
   if (is.vector(A)) A <- t(A)

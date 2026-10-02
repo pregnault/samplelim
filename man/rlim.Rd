@@ -52,7 +52,8 @@ See \emph{Details} Section below.}
 
 \item{starting_point}{A numeric vector giving the coordinates of a point inside the polytope, 
 used as starting point in the MCMC algorithm, in the coordinates of the reduced polytope.
-If \code{NULL} (the default), a Chebyshev center of the reduced polytope is used.}
+If \code{NULL} (the default), a strictly interior point is chosen automatically, in
+general a Chebyshev center of the reduced polytope.}
 
 \item{tol}{A numeric value specifying the tolerance for numeric computations.}
 

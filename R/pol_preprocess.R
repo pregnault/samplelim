@@ -23,7 +23,7 @@
 #' Removing redundant constraints leaves the polytope unchanged, but modifies everything
 #' that depends on its \emph{description} rather than on its geometry, in particular the
 #' analytic center and the Dikin ellipsoid, both defined as sums over the constraints.
-#' Exfoliation should therefore be applied \strong{before} \code{\link{pol.center}()} and
+#' Exfoliation should therefore be applied \emph{before} \code{\link{pol.center}()} and
 #' \code{\link{pol.round}()}. On the BOWF-short model, 28 of the 72 inequality
 #' constraints of the reduced polytope are redundant.
 #'
@@ -75,8 +75,7 @@ pol.exfoliate <- function(G, H, tol = 1e-9) {
   if (nrow(G) != length(H)) stop("G and H have incompatible dimensions.")
   if (any(!is.finite(G)) || any(!is.finite(H))) stop("G and H must be finite.")
 
-  # Internally we work with Gx >= H rewritten as (-G) x <= (-H), rows normalised so
-  # that `tol` means the same thing for every constraint.
+  # Gx >= H as (-G) x <= (-H), rows normalised so that `tol` is the same for all rows.
   A <- -G; b <- -H
   s <- sqrt(rowSums(A^2))
   if (any(s <= 0)) stop("Degenerate constraint: some row of G is zero.")
@@ -84,8 +83,7 @@ pol.exfoliate <- function(G, H, tol = 1e-9) {
   m <- nrow(A); d <- ncol(A)
 
   keep <- rep(TRUE, m)
-  # Variables are free: without this, Rglpk would silently impose x >= 0 and the
-  # redundancy test would be run on the wrong domain.
+  # Free variables: Rglpk would impose x >= 0 by default.
   bnd <- list(lower = list(ind = seq_len(d), val = rep(-Inf, d)))
 
   for (i in seq_len(m)) {
@@ -95,10 +93,8 @@ pol.exfoliate <- function(G, H, tol = 1e-9) {
                                    dir = rep("<=", length(idx)), rhs = b[idx],
                                    bounds = bnd, max = TRUE),
                     error = function(e) NULL)
-    # A non-zero status means unbounded or failed. Unbounded means that, without
-    # constraint i, direction g_i is no longer bounded: i is therefore supporting.
-    # On failure we also keep it: keeping one constraint too many is harmless,
-    # removing one too many changes the polytope.
+    # Non-zero status (unbounded: i is supporting; or failure): i is kept. Keeping one
+    # constraint too many is harmless, dropping one too many changes the polytope.
     if (!is.null(sol) && identical(as.integer(sol$status), 0L) &&
         sol$optimum <= b[i] + tol) {
       keep[i] <- FALSE
@@ -109,7 +105,7 @@ pol.exfoliate <- function(G, H, tol = 1e-9) {
 
 
 #' @param lim A list with at least two components \code{G} and \code{H} representing
-#'   the \strong{reduced} polytope, as returned by \code{\link{lim.redpol}()}. A list
+#'   the \emph{reduced} polytope, as returned by \code{\link{lim.redpol}()}. A list
 #'   still carrying equality constraints in its component \code{A} is rejected.
 #' @export
 #' @rdname pol.exfoliate
@@ -122,11 +118,8 @@ lim.exfoliate <- function(lim, tol = 1e-9) {
 }
 
 
-# Exfoliation and rounding only make sense on the REDUCED polytope, the one
-# lim.redpol() returns, whose description is purely {x : Gx >= H}. Fed a full lim
-# object, they would silently ignore the equality constraints Ax = B and return a
-# point outside the model -- observed at 1e8 away on BOWF-short. Hence this guard:
-# better a clear refusal than a wrong answer. lim.center() handles both cases.
+# Exfoliation and rounding expect the reduced polytope {x : Gx >= H}: a list still
+# carrying equalities (A) is refused rather than silently ignored. See lim.center().
 .lim_check_reduced <- function(lim) {
   if (!is.list(lim) || is.null(lim$G) || is.null(lim$H))
     stop("`lim` must be a list with components G and H.", call. = FALSE)

@@ -28,7 +28,8 @@
 #' See \emph{Details} Section below.
 #' @param starting_point A numeric vector giving the coordinates of a point inside the polytope, 
 #' used as starting point in the MCMC algorithm, in the coordinates of the reduced polytope.
-#' If \code{NULL} (the default), a Chebyshev center of the reduced polytope is used.
+#' If \code{NULL} (the default), a strictly interior point is chosen automatically, in
+#' general a Chebyshev center of the reduced polytope.
 #' @param tol A numeric value specifying the tolerance for numeric computations.
 #' @param seed An integer used to set the seed of the PRNG.
 #'
@@ -225,13 +226,9 @@ rlim<- function(lim, Hpol = NULL,
     stop("The walk type is not valid")
     
   }
-  # Starting point and length of the walks. volesti computes a Chebyshev ball with
-  # lp_solve, which may fail (radius -1): it now stops in that case. To spare it, the
-  # starting point is chosen here, among the origin (a Chebyshev center of the reduced
-  # polytope returned by lim.redpol()) and the Chebyshev center returned by Rglpk. A
-  # candidate is kept only if strictly inside: solvers work up to a tolerance, and the
-  # center of a very thin polytope may touch its boundary. The default length L is
-  # 4 sqrt(d) times the Chebyshev radius, as in volesti.
+  # Default starting point: the origin (a Chebyshev center when the polytope comes from
+  # lim.redpol()), else the Rglpk Chebyshev center, kept only if strictly interior.
+  # Default L: 4 sqrt(d) times the Chebyshev radius, as in volesti.
   ball <- tryCatch(pol.center(g, h, type = "chebyshev"), error = function(e) NULL)
   if (is.null(starting_point)) {
     for (z in list(numeric(ncol(g)), ball$center)) {
