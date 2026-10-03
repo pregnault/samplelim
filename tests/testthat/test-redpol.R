@@ -42,22 +42,28 @@ test_that("lim.redpol returns expected projection",{
   expect_equal(red$H,as.numeric(model$H-model$G %*% red$x0))
 })
 
-# test_that("lim.redpol can find inequalities when specified",{
-#   
-#   A <- matrix(c(1,1), nrow = 1, ncol = 2)
-#   B <- 1
-#   G <- -matrix(c(1, 0,
-#                  0, 1,
-#                  -1, 0),
-#                byrow = TRUE,
-#                nrow = 3, ncol = 2)
-#   H <- -matrix(c(2, 12, -2), nrow = 3)
-# 
-#   lim_exm <- list(A = A, B = B,G = G,H = H)
-#   lim.redpol(lim_exm)
-# 
-# 
-# })
+test_that("lim.redpol reduces around a strictly interior Chebyshev center",{
+  DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+  model <- df2lim(DF)
+  red <- lim.redpol(model)
+  # x0 satisfies the equalities and strictly the inequalities
+  expect_lt(max(abs(model$A %*% red$x0 - model$B)), 1e-8)
+  expect_gt(min(model$G %*% red$x0 - model$H), 0)
+  # the origin is a Chebyshev center of the reduced polytope
+  ctr <- pol.center(red$G, red$H, type = "chebyshev")
+  expect_equal(min(-red$H / sqrt(rowSums(red$G^2))), ctr$radius, tolerance = 1e-8)
+})
+
+test_that("lim.redpol stops on a hidden equality that fixes no unknown",{
+  # x1 + x2 + x3 + x4 = 2, x1 + x2 >= 1, x3 + x4 >= 1, 0 <= x <= 1 force x1 + x2 = 1,
+  # which the ranges of the unknowns do not reveal. The polytope then has no interior
+  # point in {Ax = B}: a clear error, rather than a reduced polytope of the wrong
+  # dimension.
+  lim_exm <- list(A = matrix(1, 1, 4), B = 2,
+                  G = rbind(c(1, 1, 0, 0), c(0, 0, 1, 1), diag(4), -diag(4)),
+                  H = c(1, 1, rep(0, 4), rep(-1, 4)))
+  expect_error(lim.redpol(lim_exm), "No interior point")
+})
 
 # Tests on the behaviour of the red2full function ----
 
