@@ -66,3 +66,51 @@ test_that("pol.center returns two distant centers on BOWF-short", {
   # the two centers are separated by far more than the inscribed radius
   expect_gt(sqrt(sum((ch$center - an)^2)), 100 * ch$radius)
 })
+
+# Tests on the full polytope {Ax = B, Gx >= H} ----
+
+# The square of side 2 in the plane x3 = 1/2 of R^3, with 0 <= x3 <= 1: the bounds on x3
+# are constant on {Ax = B}, and must be ignored by the radius.
+.square3 <- function() list(A = matrix(c(0, 0, 1), 1), B = 0.5,
+                            G = rbind(cbind(.square()$G, 0), c(0, 0, 1), c(0, 0, -1)),
+                            H = c(.square()$H, 0, -1))
+
+test_that("pol.center computes the Chebyshev center within the affine space", {
+  sq <- .square3()
+  ch <- pol.center(sq$G, sq$H, type = "chebyshev", A = sq$A, B = sq$B)
+  expect_equal(ch$radius, 1, tolerance = 1e-8)
+  expect_equal(ch$center, c(0, 0, 0.5), tolerance = 1e-8)
+})
+
+test_that("pol.center computes the analytic center within the affine space", {
+  sq <- .square3()
+  an <- pol.center(sq$G, sq$H, type = "analytic", A = sq$A, B = sq$B)
+  expect_equal(an, c(0, 0, 0.5), tolerance = 1e-6)
+})
+
+test_that("lim.center gives on the full polytope the centers of the reduced one", {
+  DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+  BOWF <- df2lim(DF)
+  red <- lim.redpol(BOWF)
+  # Chebyshev: same radius, from a point satisfying the equalities, at distance at
+  # least the radius from every face
+  ch <- lim.center(BOWF, type = "chebyshev")
+  expect_equal(ch$radius, pol.center(red$G, red$H, type = "chebyshev")$radius,
+               tolerance = 1e-8)
+  expect_lt(max(abs(BOWF$A %*% ch$center - BOWF$B)), 1e-8)
+  s <- sqrt(rowSums((BOWF$G %*% red$Z)^2))
+  expect_gt(min((BOWF$G %*% ch$center - BOWF$H) / s), ch$radius * (1 - 1e-8))
+  # Analytic: the gradient of the barrier is orthogonal to the affine space
+  an <- lim.center(BOWF)
+  expect_lt(max(abs(BOWF$A %*% an - BOWF$B)), 1e-8)
+  d <- as.numeric(BOWF$G %*% an - BOWF$H)
+  expect_lt(max(abs(crossprod(red$Z, crossprod(BOWF$G, 1 / d)))), 1e-5)
+  expect_equal(an, as.numeric(red2full(matrix(pol.center(red$G, red$H), 1), red$x0, red$Z)),
+               tolerance = 1e-8)
+})
+
+test_that("pol.center rejects a starting point outside the affine space", {
+  sq <- .square3()
+  expect_error(pol.center(sq$G, sq$H, A = sq$A, B = sq$B, x0 = c(0, 0, 0.6)), "Ax = B")
+})
+

@@ -11,7 +11,9 @@ pol.center(
   type = c("analytic", "chebyshev"),
   x0 = NULL,
   max_iter = 200L,
-  tol = 1e-10
+  tol = 1e-10,
+  A = NULL,
+  B = NULL
 )
 
 lim.center(
@@ -42,9 +44,14 @@ safeguard, never reached in practice.}
 
 \item{tol}{A numeric value specifying the threshold on half the Newton decrement.}
 
-\item{lim}{A list with at least two components \code{G} and \code{H} representing
-the \strong{reduced} polytope, as returned by \code{\link{lim.redpol}()}. A list
-still carrying equality constraints in its component \code{A} is rejected.}
+\item{A, B}{Optional matrix and numeric vector corresponding to \code{A} and \code{B}
+in the description of the polytope \eqn{\mathcal{P}}. If \code{NULL} (the default),
+the polytope is \eqn{\{ x : Gx \geq H \}}.}
+
+\item{lim}{A list with at least two components \code{G} and \code{H}, and possibly
+\code{A} and \code{B}: a full \code{lim} object, as returned by
+\code{\link{df2lim}()}, or a reduced polytope, as returned by
+\code{\link{lim.redpol}()}. The center is given in the coordinates of \code{lim}.}
 }
 \value{
 For \code{type = "analytic"}, a numeric vector of length \eqn{n}, the
@@ -57,15 +64,17 @@ namely:
 }
 \description{
 The functions \code{pol.center()} and \code{lim.center()} compute a center of a given
-polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Gx \geq H \}}. Two notions of center
-are available; they do not coincide and do not share the same properties.
+polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}}, the equality
+constraints being optional. Two notions of center are available; they do not coincide
+and do not share the same properties.
 }
 \details{
 Writing \eqn{d_i(x) = \langle g_i, x \rangle - H_i \geq 0} for the margin of
 inequality constraint \eqn{i}, the two centers are the following.
 \describe{
   \item{\code{"chebyshev"}}{the center of the largest ball inscribed in
-    \eqn{\mathcal{P}}, obtained by a single linear program. It involves only the
+    \eqn{\mathcal{P}}, the ball being drawn in the affine space \eqn{\{Ax = B\}};
+    obtained by a single linear program. It involves only the
     \emph{nearest} faces and ignores all the others; on an elongated polytope, it may
     lie anywhere along the long axis, and it need not be unique, since a rectangle
     admits a whole segment of Chebyshev centers.}
@@ -82,7 +91,8 @@ see \code{\link{pol.round}()}.
 The analytic center is defined by a sum over the inequality constraints. It therefore
 depends on the \emph{description} of the polytope, and not on its geometry only:
 adding a redundant constraint moves it. The function \code{\link{pol.exfoliate}()}
-should be applied first.
+should be applied first. With equality constraints, it is computed on the reduced
+polytope returned by \code{\link{lim.redpol}()}, then brought back.
 
 The analytic center is computed by damped Newton iterations. The step is bounded to
 95\% of the distance to the boundary, so that the iterate remains strictly interior,
@@ -101,7 +111,9 @@ having a small gradient. Convergence should not be assessed on the position.
 # Create a lim object from a Description file
 DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
 BOWF <- df2lim(DF)
-# These functions operate on the reduced polytope, exfoliated beforehand
+# A Chebyshev center of the full polytope, in the space of the flows
+lim.center(BOWF, type = "chebyshev")$radius
+# The analytic center is better computed once the redundant constraints are removed
 red <- lim.redpol(BOWF)
 exf <- pol.exfoliate(G = red$G, H = red$H)
 ctr <- pol.center(G = exf$G, H = exf$H, type = "analytic")
