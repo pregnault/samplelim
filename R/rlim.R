@@ -27,7 +27,9 @@
 # 'whether \code{"MiW"} for the Mirror Walk or \code{"BiW"} for the Billard Walk. 
 #' See \emph{Details} Section below.
 #' @param starting_point A numeric vector giving the coordinates of a point inside the polytope, 
-#' used as starting point in the MCMC algorithm.
+#' used as starting point in the MCMC algorithm, in the coordinates of the reduced polytope.
+#' If \code{NULL} (the default) and \code{lim} has equality constraints, the origin, which
+#' is a Chebyshev center of the reduced polytope (see \code{\link{lim.redpol}()}).
 #' @param tol A numeric value specifying the tolerance for numeric computations.
 #' @param seed An integer used to set the seed of the PRNG.
 #'
@@ -222,6 +224,18 @@ rlim<- function(lim, Hpol = NULL,
   else{
     stop("The walk type is not valid")
     
+  }
+  # Reduced by lim.redpol(), the polytope has a Chebyshev center at the origin: it is
+  # the default starting point, so that volesti need not compute its own ball with
+  # lp_solve, which may fail there. L is then given as volesti computes it, 4 sqrt(d) r.
+  # Zero rows (inequalities constant on {Ax = B}) always hold and are left out.
+  nz <- rowSums(g != 0) > 0
+  if (is.null(Hpol) && !is.null(A) && is.null(starting_point) && all(h[nz] < 0)) {
+    starting_point <- numeric(ncol(g))
+    if (is.null(random_walk[["L"]])) {
+      r <- min(-h[nz] / sqrt(rowSums(g[nz, , drop = FALSE]^2)))
+      random_walk <- c(random_walk, list("L" = 4 * sqrt(ncol(g)) * r))
+    }
   }
   if (!is.null(thin)){
     random_walk<-c(random_walk,list("walk_length"=thin))

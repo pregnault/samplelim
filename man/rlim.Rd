@@ -51,7 +51,9 @@ If not \code{NULL} (the default value), then \env{nsamp} is set to \code{(nsim-b
 See \emph{Details} Section below.}
 
 \item{starting_point}{A numeric vector giving the coordinates of a point inside the polytope, 
-used as starting point in the MCMC algorithm.}
+used as starting point in the MCMC algorithm, in the coordinates of the reduced polytope.
+If \code{NULL} (the default) and \code{lim} has equality constraints, the origin, which
+is a Chebyshev center of the reduced polytope (see \code{\link{lim.redpol}()}).}
 
 \item{tol}{A numeric value specifying the tolerance for numeric computations.}
 
