@@ -22,7 +22,7 @@ Constraint \eqn{i} is declared redundant when the attained minimum is at least
 across constraints.}
 
 \item{lim}{A list with at least two components \code{G} and \code{H} representing
-the \strong{reduced} polytope, as returned by \code{\link{lim.redpol}()}. A list
+the \emph{reduced} polytope, as returned by \code{\link{lim.redpol}()}. A list
 still carrying equality constraints in its component \code{A} is rejected.}
 }
 \value{
@@ -61,7 +61,7 @@ general, although the polytope it describes is.
 Removing redundant constraints leaves the polytope unchanged, but modifies everything
 that depends on its \emph{description} rather than on its geometry, in particular the
 analytic center and the Dikin ellipsoid, both defined as sums over the constraints.
-Exfoliation should therefore be applied \strong{before} \code{\link{pol.center}()} and
+Exfoliation should therefore be applied \emph{before} \code{\link{pol.center}()} and
 \code{\link{pol.round}()}. On the BOWF-short model, 28 of the 72 inequality
 constraints of the reduced polytope are redundant.
 }

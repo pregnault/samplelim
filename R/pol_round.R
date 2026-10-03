@@ -10,16 +10,17 @@
 #' anisotropy.
 #'
 #' The Dikin ellipsoid at an interior point \eqn{c} is
-#' \eqn{E(c) = \{x : (x-c)^\top \mathcal{H}(c) (x-c) \leq 1\}}, with
-#' \eqn{\mathcal{H}(c) = \sum_i g_i g_i^\top / d_i(c)^2} and
+#' \eqn{E(c) = \{x : (x-c)^\top \nabla^2 F(c) (x-c) \leq 1\}}, with
+#' \eqn{\nabla^2 F(c) = \sum_i g_i g_i^\top / d_i(c)^2} the Hessian of the logarithmic
+#' barrier, \eqn{g_i} the \eqn{i}-th row of \code{G} and
 #' \eqn{d_i(c) = \langle g_i, c \rangle - H_i}. It is inscribed in \eqn{\mathcal{P}} for
 #' \emph{any} interior point \eqn{c}. Applying \eqn{x = c + T x'} with
-#' \eqn{T = \mathcal{H}(c)^{-1/2}} maps it onto the unit ball, hence rounds the polytope.
+#' \eqn{T = \nabla^2 F(c)^{-1/2}} maps it onto the unit ball, hence rounds the polytope.
 #'
 #' This transformation is affine, so that its Jacobian \eqn{|\det T|} is constant. The
 #' image of the uniform distribution on the rounded polytope is therefore exactly the
 #' uniform distribution on the original one: it suffices to sample in the rounded space
-#' and to apply \code{back}, with no correction nor reweighting. This would not hold for
+#' and to apply \code{back}, with neither correction nor reweighting. This would not hold for
 #' a non-uniform target distribution, whose density would have to be transported as well.
 #'
 #' The choice of the center is of practical importance. Since \eqn{E(c)} is inscribed for
@@ -27,21 +28,21 @@
 #' available; see \code{\link{pol.center}()}. Measured on the exfoliated BOWF-short
 #' model, in minimum effective sample size per second:
 #'
-#' \tabular{lrrr}{
-#'   \tab BiW \tab MiW \tab BPS \cr
-#'   no rounding \tab 51 \tab 77 \tab 44 \cr
-#'   rounded at the Chebyshev center \tab 74 \tab 125 \tab 107 \cr
-#'   rounded at the analytic center \tab 14353 \tab 12262 \tab 19272
+#' \tabular{lrr}{
+#'   \tab BiW \tab MiW \cr
+#'   no rounding \tab 51 \tab 77 \cr
+#'   rounded at the Chebyshev center \tab 74 \tab 125 \cr
+#'   rounded at the analytic center \tab 14353 \tab 12262
 #' }
 #'
-#' Rounding from the Chebyshev center yields a factor 1.5 to 2.4, and from the analytic
-#' center a factor 160 to 440. The reason is geometric: the Chebyshev center involves the
+#' Rounding from the Chebyshev center yields a factor 1.5 to 1.6, and from the analytic
+#' center a factor 160 to 280. The reason is geometric: the Chebyshev center involves the
 #' nearest faces only, so that the ellipsoid taken there is small and nearly spherical,
 #' and fits the polytope loosely. The ellipsoid at the analytic center is elongated in
 #' the same way as the polytope, which is what allows it to straighten it.
 #'
 #' The function \code{\link{pol.exfoliate}()} should be applied first, since
-#' \eqn{\mathcal{H}} is a sum over the inequality constraints: a redundant constraint
+#' \eqn{\nabla^2 F} is a sum over the inequality constraints: a redundant constraint
 #' adds a term that distorts the ellipsoid for no geometric reason. On the BOWF-short
 #' model, exfoliating first yields a factor 55 in ellipsoid volume.
 #'
@@ -51,19 +52,20 @@
 #'   \eqn{\mathcal{P}}.
 #' @param center A character string specifying the center at which the Dikin ellipsoid is
 #'   taken, whether \code{"analytic"} (the default) or \code{"chebyshev"}. The latter is
-#'   provided so that the comparison reported in the section \emph{Details} above can be
+#'   provided so that the comparison reported in the section \emph{Details} below can be
 #'   reproduced, and is not recommended for actual sampling.
 #' @param x0 A numeric vector giving the coordinates of a strictly interior point, passed
-#'   to \code{\link{pol.center}()}.
+#'   to \code{\link{pol.center}()} as starting point of the Newton iterations. It is
+#'   unrelated to the component \code{x0} returned by \code{\link{lim.redpol}()}.
 #'
-#' @return A list with nine components; namely:
+#' @return A list with ten components; namely:
 #' \itemize{
 #'   \item \code{G} and \code{H}, describing the rounded polytope
 #'   \eqn{\{x' : G' x' \geq H'\}}, with \eqn{G' = G T} and \eqn{H' = H - G c}. Their
-#'   rows are \strong{not} normalised;
+#'   rows are \emph{not} normalised;
 #'   \item \code{center}, the center used, in the original coordinates;
 #'   \item \code{T} and \code{Tinv}, the transformation and its inverse, so that
-#'   \eqn{x = center + T x'};
+#'   \eqn{x = c + T x'}, \eqn{c} being \code{center};
 #'   \item \code{forth}, a function mapping original coordinates to rounded ones;
 #'   \item \code{back}, a function mapping rounded coordinates back to the original
 #'   space. This is the one to be applied to a sample. It accepts a numeric vector or a
@@ -95,10 +97,10 @@
 #' rg1 <- pol.ranges(G = rnd$G, H = rnd$H)[, 3]
 #' c(before = max(rg0) / min(rg0), after = max(rg1) / min(rg1))
 #'
-#' # Sample in the rounded space, then come back. Note that Hpolytope uses the
-#' # convention Ax <= b, hence the change of sign, and that rlim() requires lim
-#' # to be passed explicitly even when a Hpolytope object is supplied.
-#' smp <- rlim(lim = NULL, Hpol = Hpolytope(A = -rnd$G, b = -rnd$H), nsamp = 100)
+#' # Sample in the rounded space, then come back. Hpolytope uses the convention
+#' # Ax <= b, hence the change of sign.
+#' smp <- rlim(lim = NULL, Hpol = Hpolytope(A = -rnd$G, b = -rnd$H), nsamp = 100,
+#'             seed = 123)
 #' pts <- rnd$back(smp)
 #' @seealso \code{\link{lim.redpol}()} for reducing a polytope,
 #' \code{\link{pol.exfoliate}()} for removing its redundant constraints,
@@ -164,7 +166,7 @@ pol.round <- function(G, H, center = c("analytic", "chebyshev"), x0 = NULL) {
 
 
 #' @param lim A list with at least two components \code{G} and \code{H} representing
-#'   the \strong{reduced} polytope, as returned by \code{\link{lim.redpol}()}. A list
+#'   the \emph{reduced} polytope, as returned by \code{\link{lim.redpol}()}. A list
 #'   still carrying equality constraints in its component \code{A} is rejected.
 #' @export
 #' @rdname pol.round
