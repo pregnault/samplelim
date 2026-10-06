@@ -59,6 +59,27 @@ test_that("lim.redpol returns expected projection",{
 # 
 # })
 
+test_that("lim.redpol reduces around a Chebyshev center", {
+  DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+  model <- df2lim(DF)
+  red <- lim.redpol(model)
+  # x0 satisfies the equalities, and strictly the inequalities
+  expect_lt(max(abs(model$A %*% red$x0 - model$B)), 1e-8)
+  expect_gt(min(model$G %*% red$x0 - model$H), 0)
+  # the origin of the reduced polytope is a Chebyshev center
+  r0 <- min(-red$H / sqrt(rowSums(red$G^2)))
+  expect_equal(r0, lim.center(red, type = "chebyshev")$radius, tolerance = 1e-8)
+})
+
+test_that("lim.redpol stops on a hidden equality that fixes no unknown", {
+  # x1 + x2 + x3 + x4 = 2, x1 + x2 >= 1, x3 + x4 >= 1, 0 <= x <= 1 force x1 + x2 = 1,
+  # which the ranges of the unknowns do not reveal
+  lim_exm <- list(A = matrix(1, 1, 4), B = 2,
+                  G = rbind(c(1, 1, 0, 0), c(0, 0, 1, 1), diag(4), -diag(4)),
+                  H = c(1, 1, rep(0, 4), rep(-1, 4)))
+  expect_error(lim.redpol(lim_exm), "No interior point")
+})
+
 # Tests on the behaviour of the red2full function ----
 
 test_that("red2full returns expected values and is reversible",{

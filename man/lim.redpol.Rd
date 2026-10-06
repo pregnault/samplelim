@@ -37,7 +37,7 @@ A list with four components; namely:
 The function \code{lim.redpol()} takes as input a polytope  and returns its projection into the non-empty reduced polytope.
 Precisely, taking the polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}} as input, the function returns 
 \itemize{
-\item the matrix \code{Z}, basis of the right null space of A and \eqn{x_0} a particular solution of \eqn{P}, used for the reduction;
+\item the matrix \code{Z}, basis of the right null space of A and \eqn{x_0} a particular solution of \eqn{P}, used for the reduction: a Chebyshev center, see \code{\link{pol.center}()};
 \item the matrix \eqn{G'=GZ} and the vector \eqn{H'=H-Gx_0} describing the reduced polytope \eqn{\mathcal{P'}= \{ x \in \mathbb{R}^{n-k}: G'x \geq H'\}} with \eqn{k=\mathtt{rank}(A)}.
  }
  
