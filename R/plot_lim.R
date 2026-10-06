@@ -6,6 +6,7 @@
 #' 
 #' @return Returns NULL, invisibly.
 #' @method plot lim
+#' @export
 #' 
 #' @examples
 #' DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")

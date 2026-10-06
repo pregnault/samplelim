@@ -42,6 +42,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Philippe Regnault \email{philipperegnault@hotmail.com} (\href{https://orcid.org/0000-0002-7086-9030}{ORCID})
   \item Jacques Bréhélin \email{breheli241@unicaen.fr}
   \item Matthieu Dien \email{matthieu.dien@unicaen.fr}
   \item Théo Grente \email{theo.grente@gmail.com}
