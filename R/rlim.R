@@ -223,6 +223,18 @@ rlim<- function(lim, Hpol = NULL,
     stop("The walk type is not valid")
     
   }
+  # Reduced by lim.redpol(), the polytope has a Chebyshev center at the origin: the walk
+  # starts there, so that volesti does not compute its inner ball with lp_solve, which
+  # may fail at the origin. For BiW, L is the step length volesti would take, 4 sqrt(d) r.
+  # Zero rows of g (inequalities constant on {Ax = B}) always hold and are left out.
+  nz <- rowSums(g != 0) > 0
+  if (is.null(Hpol) && !is.null(A) && is.null(starting_point) && all(h[nz] < 0)) {
+    random_walk<-c(random_walk,list("starting_point"=numeric(ncol(g))))
+    if (type=="BiW" && is.null(jmp)){
+      r <- min(-h[nz] / sqrt(rowSums(g[nz, , drop = FALSE]^2)))
+      random_walk<-c(random_walk,list("L"=4*sqrt(ncol(g))*r))
+    }
+  }
   if (!is.null(thin)){
     random_walk<-c(random_walk,list("walk_length"=thin))
   }
