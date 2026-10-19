@@ -11,7 +11,7 @@
 #' removed.
 #' }
 #' This is the first step of the pre-processing, before the reduction by
-#' \code{\link{lim.redpol}()}.
+#' \code{\link{lim.redpol}()} and the rounding by \code{\link{lim.round}()}.
 #'
 #' All the tests are made in orthonormal coordinates of the affine space
 #' \eqn{\{Ax = B\}}, each row of \code{G} being normalised within this space, so that the

@@ -15,6 +15,16 @@
   list(G = G, H = H)
 }
 
+# Rounding applies to a reduced polytope {x : Gx >= H}: a list still carrying equality
+# constraints is refused, rather than its equalities ignored.
+.lim_check_reduced <- function(lim) {
+  if (!is.list(lim) || is.null(lim$G) || is.null(lim$H))
+    stop("`lim` must be a list with components G and H.", call. = FALSE)
+  if (length(lim$A) > 0L)
+    stop("Equality constraints found in `lim$A`: apply lim.redpol() first.", call. = FALSE)
+  invisible(TRUE)
+}
+
 # Equality constraints Ax = B, optional: A as a matrix with as many columns as G, B as a
 # vector. An empty A means no equality constraints.
 .pol_check_eq <- function(A, B, G) {

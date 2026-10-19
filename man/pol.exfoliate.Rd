@@ -55,7 +55,7 @@ on the whole of \eqn{\mathcal{P}}, are moved from \code{G} to \code{A};
 removed.
 }
 This is the first step of the pre-processing, before the reduction by
-\code{\link{lim.redpol}()}.
+\code{\link{lim.redpol}()} and the rounding by \code{\link{lim.round}()}.
 }
 \details{
 All the tests are made in orthonormal coordinates of the affine space
