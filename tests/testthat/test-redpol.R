@@ -84,6 +84,18 @@ test_that("lim.redpol stops on a hidden equality that fixes no unknown", {
   expect_gt(min(lim_exm$G %*% red$x0 - lim_exm$H), -1e-10)
 })
 
+test_that("lim.redpol keeps the whole polytope on a row with coefficients of very different sizes", {
+  # f2 = 0, 0 <= f1 <= 1 and f1 + 1e8 f2 >= 0.05: the reduced polytope is f1 in [0.05, 1]
+  lim <- list(A = matrix(c(0, 1), 1), B = 0,
+              G = rbind(c(1, 0), c(-1, 0), c(1, 1e8)), H = c(0, -1, 0.05))
+  red <- suppressWarnings(lim.redpol(lim))
+  r <- suppressWarnings(pol.ranges(G = red$G, H = red$H))
+  expect_equal(sort(unname(red$x0[1] + red$Z[1, 1] * r[1, 1:2])), c(0.05, 1), tolerance = 1e-8)
+  samp <- suppressWarnings(rlim(lim, nsamp = 300, seed = 1, type = "BiW"))
+  expect_lt(min(samp[, 1]), 0.3)
+  expect_gte(min(samp[, 1]), 0.05 - 1e-12)
+})
+
 # Tests on the behaviour of the red2full function ----
 
 test_that("red2full returns expected values and is reversible",{

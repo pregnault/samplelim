@@ -7,7 +7,11 @@
 #'
 #' The Chebyshev center is the center of the largest ball inscribed in \eqn{\mathcal{P}},
 #' the ball being taken in the affine space \eqn{\{Ax = B\}}. It is computed by one linear
-#' program, and need not be unique.
+#' program, and need not be unique. The solver satisfies \eqn{Ax = B} up to its own
+#' tolerance only, an error that a row of \code{G} with coefficients of very different
+#' sizes amplifies: beyond rounding errors, the point is projected onto \eqn{\{Ax = B\}},
+#' and its radius computed again. It is then an interior point of \eqn{\mathcal{P}}, close
+#' to a Chebyshev center.
 #'
 #' The analytic center maximises the product of the margins
 #' \eqn{\langle g_i, x \rangle - H_i}, \eqn{g_i} being the \eqn{i}-th row of \code{G}. It
@@ -37,7 +41,7 @@
 #' \item \code{radius}, the radius of the inscribed ball.
 #' }
 #' @importFrom Rglpk Rglpk_solve_LP
-#' @importFrom MASS Null
+#' @importFrom MASS Null ginv
 #' @export
 #'
 #' @rdname pol.center
@@ -94,10 +98,23 @@ lim.center <- function(lim, type = c("analytic", "chebyshev"), x0 = NULL,
   sol <- Rglpk_solve_LP(obj = c(numeric(n), 1), mat = mat, dir = dir, rhs = rhs,
                         bounds = list(lower = list(ind = seq_len(n), val = rep(-Inf, n))),
                         max = TRUE, control = list(tm_limit = .pol_tm_limit))
-  if (sol$status != 0L || sol$solution[n + 1L] <= sqrt(.Machine$double.eps))
+  x <- sol$solution[seq_len(n)]; r <- sol$solution[n + 1L]
+  # Ax = B holds up to the tolerance of the solver only, an error that an ill-scaled row
+  # of G amplifies in G x - H: beyond rounding errors, x is projected onto {Ax = B}, and
+  # the radius computed again at the projected point.
+  if (sol$status == 0L && !is.null(A)) {
+    res <- as.numeric(A %*% x - B)
+    if (max(abs(res)) > 1e3 * .Machine$double.eps * max(1, abs(B), max(abs(A)) * sum(abs(x)))) {
+      x <- x - as.numeric(ginv(A) %*% res)
+      if (any(s > 0)) r <- min(((as.numeric(G %*% x) - H) / s)[s > 0])
+    }
+  }
+  if (sol$status != 0L || r <= sqrt(.Machine$double.eps))
     stop("No interior point found: the polytope is empty, unbounded, or flat ",
-         "(some inequality holds as an equality on the whole polytope: see lim.exfoliate()).")
-  list(center = sol$solution[seq_len(n)], radius = sol$solution[n + 1L])
+         "(some inequality holds as an equality on the whole polytope: see lim.exfoliate()), ",
+         "or the linear program failed (a row of G with coefficients of very different ",
+         "sizes, or a polytope too small for the tolerances: rescale it).")
+  list(center = x, radius = r)
 }
 
 

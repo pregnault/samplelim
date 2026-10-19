@@ -68,7 +68,11 @@ being optional.
 \details{
 The Chebyshev center is the center of the largest ball inscribed in \eqn{\mathcal{P}},
 the ball being taken in the affine space \eqn{\{Ax = B\}}. It is computed by one linear
-program, and need not be unique.
+program, and need not be unique. The solver satisfies \eqn{Ax = B} up to its own
+tolerance only, an error that a row of \code{G} with coefficients of very different
+sizes amplifies: beyond rounding errors, the point is projected onto \eqn{\{Ax = B\}},
+and its radius computed again. It is then an interior point of \eqn{\mathcal{P}}, close
+to a Chebyshev center.
 
 The analytic center maximises the product of the margins
 \eqn{\langle g_i, x \rangle - H_i}, \eqn{g_i} being the \eqn{i}-th row of \code{G}. It

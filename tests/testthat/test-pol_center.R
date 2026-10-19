@@ -81,6 +81,17 @@ test_that("pol.center finds an interior point once the implicit equalities are i
                        type = "chebyshev")$radius, 0.1)
 })
 
+test_that("pol.center satisfies Ax = B on a row with coefficients of very different sizes", {
+  # f2 = 0, 0 <= f1 <= 1 and f1 + 1e8 f2 >= 0.05: the segment [0.05, 1] x {0}. The
+  # solver meets f2 = 0 to 4.5e-9 only, which the coefficient 1e8 turns into 0.45.
+  A <- matrix(c(0, 1), 1); B <- 0
+  G <- rbind(c(1, 0), c(-1, 0), c(1, 1e8)); H <- c(0, -1, 0.05)
+  ch <- pol.center(A = A, B = B, G = G, H = H, type = "chebyshev")
+  expect_lt(abs(ch$center[2]), 1e-15)
+  expect_gt(ch$radius, 0.4)
+  expect_gt(min(G %*% ch$center - H), 0.4)
+})
+
 # Tests on the behaviour of the lim.center function ----
 
 test_that("lim.center gives on the full polytope the centers of the reduced one", {
