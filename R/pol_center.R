@@ -93,7 +93,7 @@ lim.center <- function(lim, type = c("analytic", "chebyshev"), x0 = NULL,
   }
   sol <- Rglpk_solve_LP(obj = c(numeric(n), 1), mat = mat, dir = dir, rhs = rhs,
                         bounds = list(lower = list(ind = seq_len(n), val = rep(-Inf, n))),
-                        max = TRUE)
+                        max = TRUE, control = list(tm_limit = .pol_tm_limit))
   if (sol$status != 0L || sol$solution[n + 1L] <= sqrt(.Machine$double.eps))
     stop("No interior point found: the polytope is empty, unbounded, or flat ",
          "(some inequality holds as an equality on the whole polytope: see lim.exfoliate()).")

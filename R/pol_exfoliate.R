@@ -212,12 +212,12 @@ lim.exfoliate <- function(lim, tol = 1e-9) {
 
 # Linear program min (or max) obj'z subject to Mz >= rhs, the first `free` variables
 # free, the others nonnegative; status "optimal", "unbounded", "infeasible" or "failed".
-# The simplex may cycle on a degenerate polytope at the scale of the tolerances: it is
-# stopped after 10 s, and the program counts as failed.
+# The simplex is stopped after .pol_tm_limit (R/pol_utils.R), and the program then
+# counts as failed.
 .pol_lp <- function(obj, M, rhs, max = FALSE, free = length(obj)) {
   sol <- Rglpk_solve_LP(obj = obj, mat = M, dir = rep(">=", nrow(M)), rhs = rhs,
                         bounds = list(lower = list(ind = seq_len(free), val = rep(-Inf, free))),
-                        max = max, control = list(canonicalize_status = FALSE, tm_limit = 10000L))
+                        max = max, control = list(canonicalize_status = FALSE, tm_limit = .pol_tm_limit))
   st <- switch(as.character(sol$status), "5" = "optimal", "6" = "unbounded",
                "4" = "infeasible", "failed")
   list(status = st, optimum = sol$optimum, solution = sol$solution)

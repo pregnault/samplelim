@@ -67,8 +67,8 @@ pol.ranges <- function(A=NULL,B=NULL,G,H)   {
   for (i in 1:d){
     obj<-rep(0,d)
     obj[i]=1
-    ranges[i,1]=Rglpk_solve_LP(obj=obj,mat=constraints,dir=constraints_direction,rhs=rhs_vec,bounds=bounds,max=FALSE)$optimum
-    ranges[i,2]=Rglpk_solve_LP(obj=obj,mat=constraints,dir=constraints_direction,rhs=rhs_vec,bounds=bounds,max=TRUE)$optimum
+    ranges[i,1]=Rglpk_solve_LP(obj=obj,mat=constraints,dir=constraints_direction,rhs=rhs_vec,bounds=bounds,max=FALSE,control=list(tm_limit=.pol_tm_limit))$optimum
+    ranges[i,2]=Rglpk_solve_LP(obj=obj,mat=constraints,dir=constraints_direction,rhs=rhs_vec,bounds=bounds,max=TRUE,control=list(tm_limit=.pol_tm_limit))$optimum
     ranges[i,3]=ranges[i,2]-ranges[i,1]
     #A range may be equal to 0 when the variable has an empty or an infinite domain  
     if (ranges[i,3] == 0){

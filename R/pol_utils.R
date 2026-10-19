@@ -1,5 +1,10 @@
 # Checks shared by the pre-processing functions.
 
+# Time limit of GLPK for each linear program, in milliseconds. On a degenerate polytope
+# at the scale of the tolerances, the simplex may cycle without end; a program stopped
+# by the limit counts as failed.
+.pol_tm_limit <- 10000L
+
 # Description {x : Gx >= H} of a polytope: G as a matrix, H as a vector, with matching
 # dimensions and finite entries. A zero row of G, as left by lim.redpol() for an
 # inequality constant on {Ax = B}, always holds when H <= 0; with H > 0, the polytope
