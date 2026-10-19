@@ -132,3 +132,15 @@ test_that("rlim() works as expected for Hpol object", {
 
 
 
+test_that("rlim() stays in the polytope where volesti's lp_solve fails", {
+  # BOWF-short with face 35 turned into an equality: lp_solve fails on the inner ball
+  # of the reduced polytope, whose Chebyshev center lim.redpol() puts at the origin
+  DF <- system.file("extdata", "DeclarationFileBOWF-short.txt", package = "samplelim")
+  BOWF <- df2lim(DF)
+  BOWF$A <- rbind(BOWF$A, BOWF$G[35, ]); BOWF$B <- c(BOWF$B, BOWF$H[35])
+  for (type in c("BiW", "MiW")) {
+    samp <- rlim(BOWF, nsamp = 100, seed = 1, type = type)
+    expect_lt(max(abs(BOWF$A %*% t(samp) - BOWF$B)), 1e-8)
+    expect_gt(min(BOWF$G %*% t(samp) - BOWF$H), -1e-8)
+  }
+})

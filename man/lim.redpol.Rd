@@ -16,7 +16,10 @@ full2red(sample, x0, Z)
 \item{lim}{A list with four components \code{A}, \code{B}, \code{G} and \code{H} representing
 the polytope to be reduced.}
 
-\item{test}{A boolean if equal \code{TRUE} checks for additional equalities hidden in inequalities.}
+\item{test}{A boolean if equal \code{TRUE} checks for unknowns fixed by the inequalities
+(range zero, see \code{\link{pol.ranges}()}) and adds them as equalities. It does not see
+a fixed combination of unknowns; \code{\link{lim.exfoliate}()} finds them all, after
+which the check is unnecessary.}
 
 \item{sample}{A matrix where each row corresponds to a point inside either the full or the reduced polytope.}
 
@@ -37,11 +40,17 @@ A list with four components; namely:
 The function \code{lim.redpol()} takes as input a polytope  and returns its projection into the non-empty reduced polytope.
 Precisely, taking the polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}} as input, the function returns 
 \itemize{
-\item the matrix \code{Z}, basis of the right null space of A and \eqn{x_0} a particular solution of \eqn{P}, used for the reduction;
+\item the matrix \code{Z}, basis of the right null space of A and \eqn{x_0} a particular solution of \eqn{P}, used for the reduction: a Chebyshev center, see \code{\link{pol.center}()};
 \item the matrix \eqn{G'=GZ} and the vector \eqn{H'=H-Gx_0} describing the reduced polytope \eqn{\mathcal{P'}= \{ x \in \mathbb{R}^{n-k}: G'x \geq H'\}} with \eqn{k=\mathtt{rank}(A)}.
  }
  
- The function \code{full2red()} (resp. \code{red2full()}) turns a sample of points inside the full polytope \eqn{\mathcal{P}} (resp. inside the reduced polytope \eqn{\mathcal{P'}})
+ The reduction is the second step of the pre-processing: apply first
+ \code{\link{lim.exfoliate}()}, which moves to \code{A} every inequality holding as an
+ equality on the whole polytope and removes the redundant ones, so that the reduced
+ polytope has an interior point.
+}
+\details{
+The function \code{full2red()} (resp. \code{red2full()}) turns a sample of points inside the full polytope \eqn{\mathcal{P}} (resp. inside the reduced polytope \eqn{\mathcal{P'}})
  into the sample of corresponding points inside the reduced polytope \eqn{\mathcal{P'}} (resp. the full polytope \eqn{\mathcal{P}}).
 }
 \examples{
