@@ -23,7 +23,10 @@ the polytope.}
 }
 \value{
 A \eqn{n \times 3} matrix, with \eqn{n} the dimension of the polytope. The three columns of the matrix correspond respectively
-to the minimum, maximum and range along each dimension of the polytope.
+to the minimum, maximum and range along each dimension of the polytope. A bound is
+\code{-Inf} or \code{Inf} along an unbounded dimension, and \code{NA} when the
+polytope is empty or the linear program fails; a warning is then issued, as for a range
+equal to 0.
 }
 \description{
 The functions \code{pol.ranges()} and \code{lim.ranges()} compute the theoretical ranges of the polytope along each dimension of a given polytope \eqn{\mathcal{P}= \{ x \in \mathbb{R}^n: Ax = B, Gx \geq H \}}.

@@ -127,6 +127,18 @@ test_that("pol.ranges warns if a variable has an empty or a non-finite domain",{
 })
 
 
+test_that("pol.ranges reads the solver status: infinite or missing bounds",{
+  # x1 >= 0 and 0 <= x2 <= 2: x1 is unbounded above, x2 ranges over [0, 2]
+  G <- rbind(c(1, 0), c(0, 1), c(0, -1)); H <- c(0, 0, -2)
+  expect_warning(r <- pol.ranges(G=G,H=H),"Inf")
+  expect_equal(unname(r[1, ]), c(0, Inf, Inf))
+  expect_equal(unname(r[2, ]), c(0, 2, 2))
+  # an empty polytope, x1 >= 1 and x1 <= 0: no bound at all, rather than a range of 0
+  G <- rbind(c(1, 0), c(-1, 0), c(0, 1), c(0, -1)); H <- c(1, 0, 0, -1)
+  expect_warning(r <- pol.ranges(G=G,H=H),"NA")
+  expect_true(all(is.na(r[, 3])))
+})
+
 # Tests on the behaviour of the lim.ranges function ----
 
 test_that("pol.ranges returns expected outputs",{
