@@ -68,10 +68,10 @@ Constraint \eqn{i} is an implicit equality if its gap, the largest distance from
 point of \eqn{\mathcal{P}} to its hyperplane \eqn{\langle g_i, x \rangle = H_i}
 within \eqn{\{Ax = B\}}, is zero, \eqn{g_i} being the \eqn{i}-th row of \code{G}.
 There is none when \eqn{\mathcal{P}} contains a ball of \eqn{\{Ax = B\}} of radius
-larger than \eqn{\varepsilon} = \code{2 * sqrt(.Machine$double.eps)}, which one
-linear program checks. Otherwise, one linear program per constraint gives its gap,
-and the constraint of smallest gap, if at most \eqn{2\varepsilon}, is moved to
-\code{A}, with the middle of the range of
+larger than \eqn{\varepsilon} = \code{2 * sqrt(.Machine$double.eps)}, twice the
+threshold of \code{\link{pol.center}()}, which one linear program checks. Otherwise,
+one linear program per constraint gives its gap, and the constraint of smallest gap,
+if at most \eqn{2\varepsilon}, is moved to \code{A}, with the middle of the range of
 \eqn{\langle g_i, x \rangle} over \eqn{\mathcal{P}} as value (\eqn{H_i} itself for a
 gap at the level of rounding errors). The gaps of the other constraints change with
 \eqn{\{Ax = B\}}: they are computed again, one implicit equality being moved at a

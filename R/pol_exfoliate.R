@@ -23,10 +23,10 @@
 #' point of \eqn{\mathcal{P}} to its hyperplane \eqn{\langle g_i, x \rangle = H_i}
 #' within \eqn{\{Ax = B\}}, is zero, \eqn{g_i} being the \eqn{i}-th row of \code{G}.
 #' There is none when \eqn{\mathcal{P}} contains a ball of \eqn{\{Ax = B\}} of radius
-#' larger than \eqn{\varepsilon} = \code{2 * sqrt(.Machine$double.eps)}, which one
-#' linear program checks. Otherwise, one linear program per constraint gives its gap,
-#' and the constraint of smallest gap, if at most \eqn{2\varepsilon}, is moved to
-#' \code{A}, with the middle of the range of
+#' larger than \eqn{\varepsilon} = \code{2 * sqrt(.Machine$double.eps)}, twice the
+#' threshold of \code{\link{pol.center}()}, which one linear program checks. Otherwise,
+#' one linear program per constraint gives its gap, and the constraint of smallest gap,
+#' if at most \eqn{2\varepsilon}, is moved to \code{A}, with the middle of the range of
 #' \eqn{\langle g_i, x \rangle} over \eqn{\mathcal{P}} as value (\eqn{H_i} itself for a
 #' gap at the level of rounding errors). The gaps of the other constraints change with
 #' \eqn{\{Ax = B\}}: they are computed again, one implicit equality being moved at a
@@ -83,7 +83,8 @@
 pol.exfoliate <- function(A = NULL, B = NULL, G, H, tol = 1e-9) {
   P <- .pol_check(G, H); G <- P$G; H <- P$H
   E <- .pol_check_eq(A, B, G); A <- E$A; B <- E$B
-  # Flatness threshold, in the units of the unknowns.
+  # Flatness threshold: twice that of pol.center(), so that an exfoliated polytope has,
+  # in exact arithmetic, an interior point for pol.center().
   eps <- 2 * sqrt(.Machine$double.eps)
   implicit <- logical(nrow(G)); redundant <- logical(nrow(G))
   live <- rowSums(G^2) > 0                       # a zero row always holds
